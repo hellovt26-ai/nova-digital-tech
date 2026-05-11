@@ -1,0 +1,330 @@
+{
+  "meta": {
+    "title": "NOVA DIGITAL TECH — Développement Web, Applications & Automatisation",
+    "description": "Nous créons des sites web, applications mobiles, systèmes de réservation, identités de marque et outils d'automatisation IA pour les petites entreprises, startups et entrepreneurs."
+  },
+  "nav": {
+    "services": "Services",
+    "whyUs": "Pourquoi Nous",
+    "portfolio": "Réalisations",
+    "process": "Processus",
+    "packages": "Forfaits",
+    "contact": "Contact",
+    "cta": "Consultation Gratuite"
+  },
+  "hero": {
+    "badge": "La confiance des petites entreprises à travers le monde",
+    "headline": "Nous Créons Des Solutions Digitales Pour Faire Grandir Votre",
+    "headlineAccent": "Entreprise",
+    "subheadline": "Sites web, applications mobiles, systèmes de réservation, branding et automatisation conçus pour donner une image professionnelle à votre entreprise, attirer des clients et gagner du temps.",
+    "ctaPrimary": "Consultation Gratuite",
+    "ctaSecondary": "Découvrir Nos Services",
+    "trustBadges": {
+      "fastDelivery": "Livraison Rapide",
+      "modernTech": "Technologie Moderne",
+      "mobileFriendly": "Adapté Mobile",
+      "growthFocused": "Axé Croissance"
+    },
+    "floatingCards": {
+      "moreCustomers": "Plus de Clients",
+      "onlineBooking": "Réservation en Ligne",
+      "aiAutomation": "Automatisation IA",
+      "modernBranding": "Branding Moderne"
+    },
+    "mobileApp": "Application Mobile"
+  },
+  "services": {
+    "label": "Nos Services",
+    "title": "Des Services Conçus Pour La",
+    "titleAccent": "Croissance de Votre Entreprise",
+    "subtitle": "Des sites web à l'automatisation IA, nous offrons tout ce dont votre entreprise a besoin pour se démarquer en ligne et attirer plus de clients.",
+    "learnMore": "En savoir plus",
+    "items": {
+      "web": {
+        "title": "Développement de Sites Web",
+        "description": "Sites web modernes, responsifs et optimisés SEO pour les entreprises qui veulent une présence en ligne professionnelle."
+      },
+      "mobile": {
+        "title": "Développement d'Applications Mobiles",
+        "description": "Solutions d'applications iOS et Android pour entreprises, startups et plateformes de services."
+      },
+      "booking": {
+        "title": "Systèmes de Réservation",
+        "description": "Prise de rendez-vous, réservation de services, formulaires de demande client et outils de gestion d'activité."
+      },
+      "branding": {
+        "title": "Branding & Design",
+        "description": "Logos, identité de marque, visuels pour réseaux sociaux, flyers numériques et supports visuels professionnels."
+      },
+      "ai": {
+        "title": "IA & Automatisation",
+        "description": "Outils intelligents pour automatiser les tâches, améliorer le service client, organiser les prospects et gagner du temps."
+      },
+      "setup": {
+        "title": "Mise en Place Digitale",
+        "description": "Aide à la création de votre présence en ligne : formulaires de contact, pages d'atterrissage, liens réseaux sociaux et tunnels de conversion."
+      }
+    }
+  },
+  "whyUs": {
+    "label": "Pourquoi Nous",
+    "title": "Pourquoi les Entreprises Choisissent",
+    "titleAccent": "NOVA DIGITAL TECH",
+    "items": {
+      "growth": {
+        "title": "Conçu Pour la Croissance",
+        "description": "Chaque projet est conçu stratégiquement pour aider votre entreprise à attirer plus de clients et augmenter vos revenus."
+      },
+      "premium": {
+        "title": "Premium & Fiable",
+        "description": "Nous donnons à votre marque une image haut de gamme et digne de confiance pour que les clients vous choisissent."
+      },
+      "mobile": {
+        "title": "Expériences Mobile-First",
+        "description": "Chaque site et application que nous créons fonctionne parfaitement sur téléphones, tablettes et ordinateurs."
+      },
+      "workflow": {
+        "title": "Processus Simplifiés",
+        "description": "Nous simplifions la réservation, le contact et la gestion client pour vous faire gagner du temps."
+      },
+      "ai": {
+        "title": "Outils Modernes & IA",
+        "description": "Nous utilisons des outils de pointe et l'IA pour créer des solutions plus rapides et intelligentes."
+      },
+      "support": {
+        "title": "Accompagnement Complet",
+        "description": "Nous restons disponibles avant, pendant et après le lancement — votre succès est notre priorité."
+      }
+    }
+  },
+  "portfolio": {
+    "label": "Nos Réalisations",
+    "title": "Des Expériences Digitales Conçues Pour",
+    "titleAccent": "Convertir",
+    "subtitle": "Des concepts réels conçus pour montrer comment nous aidons les entreprises à transformer leur présence digitale.",
+    "viewConcept": "Voir le Concept",
+    "items": {
+      "restaurant": {
+        "type": "Restaurant",
+        "title": "Site Restaurant + Commande en Ligne",
+        "description": "Un site web moderne pour restaurant avec commande en ligne, vitrine de menu et système de réservation qui a multiplié les commandes en ligne par 3.",
+        "tags": ["Web Design", "Commande en Ligne", "SEO"]
+      },
+      "barber": {
+        "type": "Salon de Coiffure",
+        "title": "Application de Réservation Barbier",
+        "description": "Une application de réservation mobile élégante pour une chaîne de barbiers, avec disponibilité en temps réel, sélection du coiffeur et notifications push.",
+        "tags": ["Application Mobile", "Réservation", "Branding"]
+      },
+      "cleaning": {
+        "type": "Service de Nettoyage",
+        "title": "Site de Nettoyage + Système de Réservation",
+        "description": "Un site professionnel avec système de réservation intégré, cartographie des zones de service et suivis clients automatisés.",
+        "tags": ["Site Web", "Automatisation", "Réservation"]
+      }
+    }
+  },
+  "process": {
+    "label": "Notre Méthode",
+    "title": "De l'Idée au Lancement —",
+    "titleAccent": "Simple et Clair",
+    "steps": {
+      "discover": {
+        "title": "Découverte",
+        "description": "Nous découvrons votre entreprise, vos objectifs, vos services et vos clients pour bâtir la stratégie parfaite."
+      },
+      "design": {
+        "title": "Conception",
+        "description": "Nous créons un design moderne et épuré qui reflète votre marque et parle à votre audience."
+      },
+      "build": {
+        "title": "Développement",
+        "description": "Nous développons votre site, application, système de réservation ou automatisation avec une technologie moderne et évolutive."
+      },
+      "launch": {
+        "title": "Lancement",
+        "description": "Nous vous accompagnons pour la mise en ligne et vérifions que tout fonctionne parfaitement sur tous les appareils."
+      },
+      "support": {
+        "title": "Support",
+        "description": "Nous restons disponibles pour les mises à jour, modifications et améliorations — votre croissance ne s'arrête jamais."
+      }
+    }
+  },
+  "packages": {
+    "label": "Forfaits",
+    "title": "Des Solutions Pour Chaque",
+    "titleAccent": "Étape de Votre Entreprise",
+    "subtitle": "Des forfaits flexibles conçus pour s'adapter à vos besoins et votre budget. Chaque projet est sur mesure — pas de modèles génériques.",
+    "mostPopular": "Le Plus Populaire",
+    "customNote": "Tous les forfaits sont personnalisables. Contactez-nous pour un devis sur mesure.",
+    "items": {
+      "starter": {
+        "name": "Site Starter",
+        "subtitle": "Idéal pour les petites entreprises qui ont besoin d'une présence en ligne simple et professionnelle.",
+        "features": [
+          "Site de 1 à 3 pages",
+          "Design adapté mobile",
+          "Formulaire de contact",
+          "Liens réseaux sociaux",
+          "SEO de base"
+        ],
+        "cta": "Demander un Devis"
+      },
+      "pro": {
+        "name": "Business Pro",
+        "subtitle": "Idéal pour les entreprises qui ont besoin de plus de fonctionnalités et d'un branding plus fort.",
+        "features": [
+          "Site de 4 à 7 pages",
+          "Système de réservation / contact",
+          "Design premium",
+          "Visuels de marque",
+          "Structure SEO",
+          "Configuration analytics"
+        ],
+        "cta": "Demander un Devis"
+      },
+      "app": {
+        "name": "Application / Automatisation",
+        "subtitle": "Idéal pour les entreprises qui ont besoin d'applications sur mesure, de tableaux de bord, d'outils IA ou d'automatisation.",
+        "features": [
+          "Application web ou mobile sur mesure",
+          "Système de réservation ou client",
+          "Tableau de bord admin",
+          "Fonctionnalités d'automatisation",
+          "Architecture évolutive"
+        ],
+        "cta": "Réserver une Consultation"
+      }
+    }
+  },
+  "cta": {
+    "headline": "Prêt à Transformer Votre",
+    "headlineAccent": "Présence en Ligne ?",
+    "subheadline": "Créons ensemble une présence digitale qui donne une image professionnelle à votre entreprise, attire plus de clients et accélère votre croissance.",
+    "ctaPrimary": "Consultation Gratuite",
+    "ctaSecondary": "Envoyez-nous un Email"
+  },
+  "contact": {
+    "label": "Contactez-Nous",
+    "title": "Commençons Votre",
+    "titleAccent": "Projet",
+    "subtitle": "Parlez-nous de votre entreprise et de vos besoins. Nous vous répondons sous 24 heures.",
+    "form": {
+      "name": "Nom Complet",
+      "namePlaceholder": "Jean Dupont",
+      "business": "Nom de l'Entreprise",
+      "businessPlaceholder": "Votre Entreprise",
+      "email": "Email",
+      "emailPlaceholder": "vous@email.com",
+      "phone": "Téléphone",
+      "phonePlaceholder": "(555) 123-4567",
+      "service": "De Quoi Avez-Vous Besoin ?",
+      "servicePlaceholder": "Sélectionnez un service...",
+      "message": "Message",
+      "messagePlaceholder": "Parlez-nous de votre projet, vos objectifs et votre calendrier...",
+      "submit": "Envoyer le Message",
+      "serviceOptions": {
+        "website": "Site Web",
+        "mobileApp": "Application Mobile",
+        "bookingSystem": "Système de Réservation",
+        "branding": "Branding",
+        "aiAutomation": "IA / Automatisation",
+        "notSure": "Pas Encore Sûr"
+      }
+    },
+    "info": {
+      "title": "Informations de Contact",
+      "emailLabel": "Email",
+      "socialLabel": "Réseaux Sociaux",
+      "locationLabel": "Localisation",
+      "locationValue": "Service Mondial / Accompagnement Local"
+    },
+    "guarantee": {
+      "title": "Réponse Garantie Sous 24h",
+      "description": "Nous répondons à chaque demande sous 24 heures. Que vous ayez besoin d'un site complet ou simplement de conseils, nous sommes là pour vous."
+    }
+  },
+  "footer": {
+    "tagline": "Web • Applications • Automatisation",
+    "copyright": "© 2026 NOVA DIGITAL TECH. Tous droits réservés.",
+    "home": "Accueil"
+  },
+  "techStack": {
+    "label": "Construit Avec Des Technologies Modernes"
+  },
+  "testimonials": {
+    "label": "Témoignages Clients",
+    "title": "Ce Que Nos Clients",
+    "titleAccent": "Disent de Nous",
+    "items": {
+      "1": {
+        "quote": "NOVA a complètement transformé notre présence en ligne. Nous sommes passés de zéro à des demandes chaque jour. Le système de réservation nous fait gagner des heures d'appels téléphoniques.",
+        "name": "Sandra Mitchell",
+        "role": "Propriétaire, CleanPro Services"
+      },
+      "2": {
+        "quote": "Ils nous ont créé une application de réservation que nos clients adorent utiliser. Les rendez-vous manqués ont chuté de moitié et nos avis ont augmenté. L'équipe était professionnelle du début à la fin.",
+        "name": "Marcus Johnson",
+        "role": "Fondateur, FreshCuts Barbershop"
+      },
+      "3": {
+        "quote": "Nous avions besoin d'un site moderne capable de gérer les commandes en ligne et les réservations. NOVA a dépassé nos attentes — le design est magnifique et fonctionne parfaitement sur mobile.",
+        "name": "Elena Rodriguez",
+        "role": "Gérante, Bella Cucina Restaurant"
+      }
+    }
+  },
+  "clientResults": {
+    "items": {
+      "1": { "value": "+45%", "label": "Augmentation des Réservations" },
+      "2": { "value": "2x", "label": "Temps de Réponse Plus Rapide" },
+      "3": { "value": "+60%", "label": "Croissance de la Visibilité" },
+      "4": { "value": "98%", "label": "Score Adapté Mobile" }
+    }
+  },
+  "showcase": {
+    "label": "Démos de Produits",
+    "title": "Des Solutions Réelles Que Nous",
+    "titleAccent": "Créons Pour les Entreprises",
+    "subtitle": "Découvrez les produits digitaux et systèmes que nous concevons, développons et déployons chaque jour pour de vraies entreprises.",
+    "dashboard": {
+      "title": "Tableaux de Bord Intelligents",
+      "description": "Nous créons des tableaux de bord personnalisés qui donnent aux propriétaires d'entreprise une visibilité en temps réel sur leurs revenus, réservations, activité client et métriques de croissance.",
+      "features": {
+        "1": "Analytique revenus et réservations en temps réel",
+        "2": "Suivi d'activité client et CRM",
+        "3": "Rapports automatisés et perspectives de croissance"
+      }
+    },
+    "barber": {
+      "title": "Applications de Réservation Intelligentes",
+      "description": "Applications mobiles de réservation avec disponibilité en temps réel, sélection du coiffeur et rappels automatisés."
+    },
+    "restaurant": {
+      "title": "Systèmes de Commande en Ligne",
+      "description": "Plateformes de commande complètes avec gestion de menu, panier et traitement des paiements intégrés."
+    }
+  },
+  "transformation": {
+    "label": "L'Effet NOVA",
+    "title": "De Dépassé à",
+    "titleAccent": "Moderne & Professionnel",
+    "before": "Avant",
+    "after": "Après NOVA",
+    "items": {
+      "1": {
+        "before": "Site web obsolète, peu professionnel, lent et non adapté aux appareils mobiles",
+        "after": "Site moderne, rapide et adapté mobile qui inspire confiance et convertit les visiteurs en clients"
+      },
+      "2": {
+        "before": "Gestion manuelle des réservations par téléphone, SMS et papier — rendez-vous manqués en permanence",
+        "after": "Système de réservation automatisé avec disponibilité en temps réel, rappels et zéro rendez-vous manqué"
+      },
+      "3": {
+        "before": "Branding faible sans identité visuelle — l'entreprise paraît générique et oubliable",
+        "after": "Identité de marque premium avec logo, couleurs et visuels professionnels qui se démarquent de la concurrence"
+      }
+    }
+  }
+}

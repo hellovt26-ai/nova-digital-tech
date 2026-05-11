@@ -1,0 +1,330 @@
+{
+  "meta": {
+    "title": "NOVA DIGITAL TECH — Devlopman Web, Aplikasyon & Otomatizasyon",
+    "description": "Nou kreye sit entènèt, aplikasyon mobil, sistèm rezèvasyon, idantite mak ak zouti otomatizasyon IA pou ti biznis, startup ak antreprenè."
+  },
+  "nav": {
+    "services": "Sèvis",
+    "whyUs": "Poukisa Nou",
+    "portfolio": "Travay Nou",
+    "process": "Pwosesis",
+    "packages": "Pake",
+    "contact": "Kontakte Nou",
+    "cta": "Konsiltasyon Gratis"
+  },
+  "hero": {
+    "badge": "Ti Biznis Fè Nou Konfyans Toupatou nan Monn Lan",
+    "headline": "Nou Kreye Solisyon Digital Pou Fè Biznis Ou",
+    "headlineAccent": "Grandi",
+    "subheadline": "Sit entènèt, aplikasyon mobil, sistèm rezèvasyon, branding ak otomatizasyon ki fèt pou biznis ou sanble pwofesyonèl, atire kliyan epi ekonomize tan.",
+    "ctaPrimary": "Konsiltasyon Gratis",
+    "ctaSecondary": "Wè Sèvis Nou Yo",
+    "trustBadges": {
+      "fastDelivery": "Livrezon Rapid",
+      "modernTech": "Teknoloji Modèn",
+      "mobileFriendly": "Adapte pou Mobil",
+      "growthFocused": "Fokis sou Kwasans"
+    },
+    "floatingCards": {
+      "moreCustomers": "Plis Kliyan",
+      "onlineBooking": "Rezèvasyon Anliy",
+      "aiAutomation": "Otomatizasyon IA",
+      "modernBranding": "Branding Modèn"
+    },
+    "mobileApp": "Aplikasyon Mobil"
+  },
+  "services": {
+    "label": "Kisa Nou Fè",
+    "title": "Sèvis Konstwi Pou",
+    "titleAccent": "Kwasans Biznis Ou",
+    "subtitle": "Soti nan sit entènèt rive nan otomatizasyon IA, nou bay tout sa biznis ou bezwen pou li briye anliy epi atire plis kliyan.",
+    "learnMore": "Aprann plis",
+    "items": {
+      "web": {
+        "title": "Devlopman Sit Entènèt",
+        "description": "Sit entènèt modèn, responsif epi pare pou SEO pou biznis ki bezwen sanble pwofesyonèl anliy."
+      },
+      "mobile": {
+        "title": "Devlopman Aplikasyon Mobil",
+        "description": "Solisyon aplikasyon iOS ak Android pou biznis, startup ak platfòm sèvis."
+      },
+      "booking": {
+        "title": "Sistèm Rezèvasyon",
+        "description": "Planifikasyon randevou, rezèvasyon sèvis, fòmilè demann kliyan ak zouti jesyon biznis."
+      },
+      "branding": {
+        "title": "Branding & Dizayn",
+        "description": "Logo, idantite mak, grafik rezo sosyal, afich dijital ak vizyèl pwofesyonèl."
+      },
+      "ai": {
+        "title": "IA & Otomatizasyon",
+        "description": "Zouti entelijan ki otomatize travay, amelyore sipò kliyan, òganize pwospecks epi ekonomize tan."
+      },
+      "setup": {
+        "title": "Konfigirasyon Digital Biznis",
+        "description": "Ede biznis kreye prezans anliy yo: fòmilè kontak, paj aterisaj, lyen rezo sosyal ak tinèl konvèsyon."
+      }
+    }
+  },
+  "whyUs": {
+    "label": "Poukisa Nou",
+    "title": "Poukisa Biznis Yo Chwazi",
+    "titleAccent": "NOVA DIGITAL TECH",
+    "items": {
+      "growth": {
+        "title": "Konsevwa pou Kwasans",
+        "description": "Chak pwojè nou bati fèt stratejikman pou ede biznis ou atire plis kliyan epi ogmante revni ou."
+      },
+      "premium": {
+        "title": "Premium & Fyab",
+        "description": "Nou bay mak ou yon aparans premium epi ki bay konfyans pou kliyan yo chwazi ou."
+      },
+      "mobile": {
+        "title": "Eksperyans Mobile-First",
+        "description": "Chak sit entènèt ak aplikasyon nou kreye fonksyone pafètman sou telefòn, tablèt ak òdinatè."
+      },
+      "workflow": {
+        "title": "Pwosesis Senplifye",
+        "description": "Nou senplifye rezèvasyon, kontak ak jesyon kliyan pou ou pase mwens tan sou administrasyon."
+      },
+      "ai": {
+        "title": "Zouti Modèn & IA",
+        "description": "Nou itilize zouti dènye teknoloji ak IA pou kreye solisyon pi rapid epi pi entelijan."
+      },
+      "support": {
+        "title": "Sipò Konplè",
+        "description": "Nou disponib anvan, pandan ak apre lansman — siksè ou se priyorite nou."
+      }
+    }
+  },
+  "portfolio": {
+    "label": "Travay Nou",
+    "title": "Eksperyans Digital Ki Fèt Pou",
+    "titleAccent": "Konvèti",
+    "subtitle": "Konsèp reyèl konsevwa pou montre kijan nou ede biznis transfòme prezans digital yo.",
+    "viewConcept": "Wè Konsèp La",
+    "items": {
+      "restaurant": {
+        "type": "Restoran",
+        "title": "Sit Restoran + Kòmand Anliy",
+        "description": "Yon sit entènèt modèn pou restoran ak kòmand anliy, vitrin meni ak sistèm rezèvasyon ki te miltipliye kòmand anliy pa 3.",
+        "tags": ["Dizayn Web", "Kòmand Anliy", "SEO"]
+      },
+      "barber": {
+        "type": "Salon Kwafè",
+        "title": "Aplikasyon Rezèvasyon Barbier",
+        "description": "Yon aplikasyon rezèvasyon mobil elegant pou yon chenn salon kwafè, ak disponiblite an tan reyèl, seleksyon kwafè ak notifikasyon push.",
+        "tags": ["Aplikasyon Mobil", "Rezèvasyon", "Branding"]
+      },
+      "cleaning": {
+        "type": "Sèvis Netwayaj",
+        "title": "Sit Netwayaj + Sistèm Rezèvasyon",
+        "description": "Yon sit pwofesyonèl ak sistèm rezèvasyon entegre, kat zòn sèvis ak swivi kliyan otomatize.",
+        "tags": ["Sit Entènèt", "Otomatizasyon", "Rezèvasyon"]
+      }
+    }
+  },
+  "process": {
+    "label": "Kijan Nou Travay",
+    "title": "Soti nan Lide Rive nan Lansman —",
+    "titleAccent": "Senp epi Klè",
+    "steps": {
+      "discover": {
+        "title": "Dekouvèt",
+        "description": "Nou aprann sou biznis ou, objektif ou, sèvis ou ak kliyan ou pou bati estrateji pafè a."
+      },
+      "design": {
+        "title": "Konsepsyon",
+        "description": "Nou kreye yon design modèn epi pwòp ki matche ak mak ou epi ki pale ak odyans ou."
+      },
+      "build": {
+        "title": "Devlopman",
+        "description": "Nou devlope sit, aplikasyon, sistèm rezèvasyon oswa otomatizasyon ak teknoloji modèn epi evolutif."
+      },
+      "launch": {
+        "title": "Lansman",
+        "description": "Nou ede ou mete anliy epi asire tout bagay fonksyone pafètman sou tout aparèy."
+      },
+      "support": {
+        "title": "Sipò",
+        "description": "Nou rete disponib pou mizajou, chanjman ak amelyorasyon — kwasans ou pa janm kanpe."
+      }
+    }
+  },
+  "packages": {
+    "label": "Pake",
+    "title": "Solisyon Pou Chak",
+    "titleAccent": "Etap Biznis Ou",
+    "subtitle": "Pake fleksib ki konsevwa pou matche ak bezwen ak bidjè ou. Chak pwojè se sou mezir — pa gen modèl jenerik.",
+    "mostPopular": "Pi Popilè",
+    "customNote": "Tout pake yo pèsonalizab. Kontakte nou pou yon devi sou mezir.",
+    "items": {
+      "starter": {
+        "name": "Sit Starter",
+        "subtitle": "Ideyal pou ti biznis ki bezwen yon prezans anliy senp epi pwofesyonèl.",
+        "features": [
+          "Sit entènèt 1 a 3 paj",
+          "Dizayn adapte mobil",
+          "Fòmilè kontak",
+          "Lyen rezo sosyal",
+          "SEO debaz"
+        ],
+        "cta": "Mande yon Devi"
+      },
+      "pro": {
+        "name": "Business Pro",
+        "subtitle": "Ideyal pou biznis ki bezwen plis fonksyonalite ak yon branding pi fò.",
+        "features": [
+          "Sit entènèt 4 a 7 paj",
+          "Sistèm rezèvasyon / kontak",
+          "Dizayn premium",
+          "Vizyèl mak",
+          "Estrikti SEO",
+          "Konfigirasyon analytics"
+        ],
+        "cta": "Mande yon Devi"
+      },
+      "app": {
+        "name": "Aplikasyon / Otomatizasyon",
+        "subtitle": "Ideyal pou biznis ki bezwen aplikasyon pèsonalize, tablo debò, zouti IA oswa otomatizasyon.",
+        "features": [
+          "Aplikasyon web oswa mobil sou mezir",
+          "Sistèm rezèvasyon oswa kliyan",
+          "Tablo debò admin",
+          "Fonksyonalite otomatizasyon",
+          "Achitektir evolutif"
+        ],
+        "cta": "Rezève yon Konsiltasyon"
+      }
+    }
+  },
+  "cta": {
+    "headline": "Pare Pou Amelyore Prezans",
+    "headlineAccent": "Biznis Ou Anliy?",
+    "subheadline": "Ann bati yon prezans digital ki fè biznis ou sanble pwofesyonèl, atire plis kliyan epi grandi pi vit.",
+    "ctaPrimary": "Konsiltasyon Gratis",
+    "ctaSecondary": "Voye yon Email"
+  },
+  "contact": {
+    "label": "Kontakte Nou",
+    "title": "Ann Kòmanse",
+    "titleAccent": "Pwojè Ou",
+    "subtitle": "Di nou sou biznis ou ak sa ou bezwen. Nou pral reponn ou nan 24 èdtan.",
+    "form": {
+      "name": "Non Konplè",
+      "namePlaceholder": "Jan Batis",
+      "business": "Non Biznis",
+      "businessPlaceholder": "Biznis Ou",
+      "email": "Imèl",
+      "emailPlaceholder": "ou@email.com",
+      "phone": "Telefòn",
+      "phonePlaceholder": "(555) 123-4567",
+      "service": "Kisa Ou Bezwen?",
+      "servicePlaceholder": "Chwazi yon sèvis...",
+      "message": "Mesaj",
+      "messagePlaceholder": "Pale nou de pwojè ou, objektif ou ak kalandriye ou...",
+      "submit": "Voye Mesaj",
+      "serviceOptions": {
+        "website": "Sit Entènèt",
+        "mobileApp": "Aplikasyon Mobil",
+        "bookingSystem": "Sistèm Rezèvasyon",
+        "branding": "Branding",
+        "aiAutomation": "IA / Otomatizasyon",
+        "notSure": "Poko Sèten"
+      }
+    },
+    "info": {
+      "title": "Enfòmasyon Kontak",
+      "emailLabel": "Imèl",
+      "socialLabel": "Rezo Sosyal",
+      "locationLabel": "Lokasyon",
+      "locationValue": "Sèvis Mondyal / Sipò Biznis Lokal"
+    },
+    "guarantee": {
+      "title": "Garanti Repons Rapid",
+      "description": "Nou reponn chak demann nan 24 èdtan. Kit ou bezwen yon sit konplè oswa jis konsèy sou pwochen mouvman digital ou, nou la pou ede ou."
+    }
+  },
+  "footer": {
+    "tagline": "Web • Aplikasyon • Otomatizasyon",
+    "copyright": "© 2026 NOVA DIGITAL TECH. Tout dwa rezève.",
+    "home": "Akèy"
+  },
+  "techStack": {
+    "label": "Konstwi Ak Teknoloji Modèn"
+  },
+  "testimonials": {
+    "label": "Istwa Kliyan",
+    "title": "Sa Kliyan Nou Yo",
+    "titleAccent": "Di Sou Nou",
+    "items": {
+      "1": {
+        "quote": "NOVA transfòme prezans anliy nou nèt. Nou pase de zewo a resevwa demann chak jou. Sistèm rezèvasyon an fè nou ekonomize plizyè èdtan nan telefòn.",
+        "name": "Sandra Mitchell",
+        "role": "Pwopriyetè, CleanPro Services"
+      },
+      "2": {
+        "quote": "Yo kreye yon aplikasyon rezèvasyon kliyan nou yo renmen itilize. Randevou manke yo bese pa mwatye epi revizyon nou yo ogmante. Ekip la te pwofesyonèl depi kòmansman rive nan fen.",
+        "name": "Marcus Johnson",
+        "role": "Fondatè, FreshCuts Barbershop"
+      },
+      "3": {
+        "quote": "Nou te bezwen yon sit modèn ki ka jere kòmand anliy ak rezèvasyon. NOVA depase sa nou te espere — dizayn lan superb epi li fonksyone pafètman sou mobil.",
+        "name": "Elena Rodriguez",
+        "role": "Manadjè, Bella Cucina Restaurant"
+      }
+    }
+  },
+  "clientResults": {
+    "items": {
+      "1": { "value": "+45%", "label": "Ogmantasyon Rezèvasyon Kliyan" },
+      "2": { "value": "2x", "label": "Tan Repons Pi Rapid" },
+      "3": { "value": "+60%", "label": "Kwasans Vizibilite Anliy" },
+      "4": { "value": "98%", "label": "Skò Adapte Mobil" }
+    }
+  },
+  "showcase": {
+    "label": "Demo Pwodwi",
+    "title": "Solisyon Reyèl Nou",
+    "titleAccent": "Bati Pou Biznis",
+    "subtitle": "Wè ki kalite pwodwi digital ak sistèm nou konsevwa, devlope epi deplwaye pou reyèl biznis chak jou.",
+    "dashboard": {
+      "title": "Tablo Debò Entelijan",
+      "description": "Nou bati tablo debò pèsonalize ki bay pwopriyetè biznis vizibilite an tan reyèl sou revni yo, rezèvasyon, aktivite kliyan ak metrik kwasans — tout nan yon sèl entèfas pwòp.",
+      "features": {
+        "1": "Analiz revni ak rezèvasyon an tan reyèl",
+        "2": "Swivi aktivite kliyan ak CRM",
+        "3": "Rapò otomatize ak ensiknan kwasans"
+      }
+    },
+    "barber": {
+      "title": "Aplikasyon Rezèvasyon Entelijan",
+      "description": "Aplikasyon mobil rezèvasyon ak disponiblite an tan reyèl, seleksyon kwafè ak rapèl otomatize."
+    },
+    "restaurant": {
+      "title": "Sistèm Kòmand Anliy",
+      "description": "Platfòm kòmand konplè ak jesyon meni, pànye ak tretman peman entegre."
+    }
+  },
+  "transformation": {
+    "label": "Efè NOVA",
+    "title": "Soti nan Ansyen Rive nan",
+    "titleAccent": "Modèn & Pwofesyonèl",
+    "before": "Anvan",
+    "after": "Apre NOVA",
+    "items": {
+      "1": {
+        "before": "Sit entènèt demode ki pa sanble pwofesyonèl, lan epi ki pa fonksyone sou mobil",
+        "after": "Sit modèn, rapid epi adapte mobil ki bati konfyans epi konvèti vizitè an kliyan"
+      },
+      "2": {
+        "before": "Jere rezèvasyon alamen pa telefòn, tèks ak papye — randevou manke tout tan",
+        "after": "Sistèm rezèvasyon otomatize ak disponiblite an tan reyèl, rapèl epi zewo randevou manke"
+      },
+      "3": {
+        "before": "Branding fèb san idantite vizyèl — biznis la sanble jenerik epi kliyan bliye li",
+        "after": "Idantite mak premium ak logo, koulè ak vizyèl pwofesyonèl ki demarke nan konkirans lan"
+      }
+    }
+  }
+}

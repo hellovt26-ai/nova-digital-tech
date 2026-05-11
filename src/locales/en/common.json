@@ -1,0 +1,330 @@
+{
+  "meta": {
+    "title": "NOVA DIGITAL TECH — Web, App Development & Automation",
+    "description": "We build premium websites, mobile apps, booking systems, branding, and AI automation tools for small businesses, startups, and entrepreneurs."
+  },
+  "nav": {
+    "services": "Services",
+    "whyUs": "Why Us",
+    "portfolio": "Portfolio",
+    "process": "Process",
+    "packages": "Packages",
+    "contact": "Contact",
+    "cta": "Free Consultation"
+  },
+  "hero": {
+    "badge": "Trusted by Small Businesses Worldwide",
+    "headline": "We Build Digital Solutions That Help Your Business",
+    "headlineAccent": "Grow",
+    "subheadline": "Websites, mobile apps, booking systems, branding, and automation built to make your business look professional, attract customers, and save time.",
+    "ctaPrimary": "Get a Free Consultation",
+    "ctaSecondary": "View Our Services",
+    "trustBadges": {
+      "fastDelivery": "Fast Delivery",
+      "modernTech": "Modern Technology",
+      "mobileFriendly": "Mobile Friendly",
+      "growthFocused": "Growth Focused"
+    },
+    "floatingCards": {
+      "moreCustomers": "More Customers",
+      "onlineBooking": "Online Booking",
+      "aiAutomation": "AI Automation",
+      "modernBranding": "Modern Branding"
+    },
+    "mobileApp": "Mobile App"
+  },
+  "services": {
+    "label": "What We Do",
+    "title": "Services Built for",
+    "titleAccent": "Business Growth",
+    "subtitle": "From websites to AI automation, we deliver everything your business needs to stand out online and attract more customers.",
+    "learnMore": "Learn more",
+    "items": {
+      "web": {
+        "title": "Website Development",
+        "description": "Modern, responsive, SEO-ready websites for businesses that need to look professional online."
+      },
+      "mobile": {
+        "title": "Mobile App Development",
+        "description": "iOS and Android app solutions for businesses, startups, and service platforms."
+      },
+      "booking": {
+        "title": "Booking Systems",
+        "description": "Appointment scheduling, service booking, customer request forms, and business workflow tools."
+      },
+      "branding": {
+        "title": "Branding & Design",
+        "description": "Logos, brand identity, social media graphics, digital flyers, and business visuals."
+      },
+      "ai": {
+        "title": "AI & Automation",
+        "description": "Smart tools that automate tasks, improve customer support, organize leads, and save time."
+      },
+      "setup": {
+        "title": "Business Digital Setup",
+        "description": "Help businesses set up online presence, contact forms, landing pages, social media links, and customer funnels."
+      }
+    }
+  },
+  "whyUs": {
+    "label": "Why Us",
+    "title": "Why Businesses Choose",
+    "titleAccent": "NOVA DIGITAL TECH",
+    "items": {
+      "growth": {
+        "title": "Designed for Growth",
+        "description": "Every project we build is strategically designed to help your business attract more customers and increase revenue."
+      },
+      "premium": {
+        "title": "Premium & Trustworthy",
+        "description": "We make your brand look premium and trustworthy so customers choose you over the competition."
+      },
+      "mobile": {
+        "title": "Mobile-First Experiences",
+        "description": "Every website and app we build looks and works flawlessly on phones, tablets, and desktops."
+      },
+      "workflow": {
+        "title": "Simplified Workflows",
+        "description": "We simplify booking, contact, and customer flow so you spend less time on admin and more on your business."
+      },
+      "ai": {
+        "title": "Modern Tools & AI",
+        "description": "We use cutting-edge tools and AI to build faster, smarter solutions that keep you ahead of the curve."
+      },
+      "support": {
+        "title": "End-to-End Support",
+        "description": "We offer support before, during, and after launch — your success is our priority."
+      }
+    }
+  },
+  "portfolio": {
+    "label": "Our Work",
+    "title": "Digital Experiences Built to",
+    "titleAccent": "Convert",
+    "subtitle": "Real concepts designed to showcase how we help businesses transform their digital presence.",
+    "viewConcept": "View Concept",
+    "items": {
+      "restaurant": {
+        "type": "Restaurant",
+        "title": "Restaurant Website + Online Ordering Concept",
+        "description": "A modern restaurant website with online ordering, menu showcase, and reservation system that helped increase online orders by 3x.",
+        "tags": ["Web Design", "Online Ordering", "SEO"]
+      },
+      "barber": {
+        "type": "Barber Shop",
+        "title": "Barber Booking App Concept",
+        "description": "A sleek mobile booking app for a barbershop chain, featuring real-time availability, stylist selection, and push notification reminders.",
+        "tags": ["Mobile App", "Booking System", "Branding"]
+      },
+      "cleaning": {
+        "type": "Cleaning Service",
+        "title": "Cleaning Service Website + Booking System",
+        "description": "A professional website with integrated booking system, service area mapping, and automated customer follow-ups for a cleaning company.",
+        "tags": ["Website", "Automation", "Booking"]
+      }
+    }
+  },
+  "process": {
+    "label": "How We Work",
+    "title": "From Idea to Launch —",
+    "titleAccent": "Simple and Clear",
+    "steps": {
+      "discover": {
+        "title": "Discover",
+        "description": "We learn about your business, goals, services, and customers to build the perfect strategy."
+      },
+      "design": {
+        "title": "Design",
+        "description": "We create a clean, modern layout that matches your brand and speaks to your audience."
+      },
+      "build": {
+        "title": "Build",
+        "description": "We develop the website, app, booking system, or automation with modern, scalable technology."
+      },
+      "launch": {
+        "title": "Launch",
+        "description": "We help you go live and make sure everything works smoothly across all devices."
+      },
+      "support": {
+        "title": "Support",
+        "description": "We stay available for updates, changes, and improvements — your growth never stops."
+      }
+    }
+  },
+  "packages": {
+    "label": "Packages",
+    "title": "Solutions for Every",
+    "titleAccent": "Business Stage",
+    "subtitle": "Flexible packages designed to match your needs and budget. Every project is custom — no cookie-cutter templates.",
+    "mostPopular": "Most Popular",
+    "customNote": "All packages are customizable. Contact us for a tailored quote.",
+    "items": {
+      "starter": {
+        "name": "Starter Website",
+        "subtitle": "Best for small businesses that need a clean online presence.",
+        "features": [
+          "1–3 page website",
+          "Mobile-friendly design",
+          "Contact form",
+          "Social media links",
+          "Basic SEO setup"
+        ],
+        "cta": "Request Quote"
+      },
+      "pro": {
+        "name": "Business Pro",
+        "subtitle": "Best for businesses that need more features and stronger branding.",
+        "features": [
+          "4–7 page website",
+          "Booking / contact system",
+          "Premium design",
+          "Brand visuals",
+          "SEO structure",
+          "Analytics setup"
+        ],
+        "cta": "Request Quote"
+      },
+      "app": {
+        "name": "App / Automation Build",
+        "subtitle": "Best for businesses that need custom apps, dashboards, AI tools, or workflow automation.",
+        "features": [
+          "Custom web app or mobile app",
+          "Booking or customer system",
+          "Admin dashboard",
+          "Automation features",
+          "Scalable structure"
+        ],
+        "cta": "Book Consultation"
+      }
+    }
+  },
+  "cta": {
+    "headline": "Ready to Upgrade Your",
+    "headlineAccent": "Business Online?",
+    "subheadline": "Let's build a digital presence that makes your business look professional, attract more customers, and grow faster.",
+    "ctaPrimary": "Get a Free Consultation",
+    "ctaSecondary": "Email Us Now"
+  },
+  "contact": {
+    "label": "Get In Touch",
+    "title": "Let's Start Your",
+    "titleAccent": "Project",
+    "subtitle": "Tell us about your business and what you need. We'll get back to you within 24 hours.",
+    "form": {
+      "name": "Full Name",
+      "namePlaceholder": "John Doe",
+      "business": "Business Name",
+      "businessPlaceholder": "Your Business",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "phone": "Phone",
+      "phonePlaceholder": "(555) 123-4567",
+      "service": "What Do You Need?",
+      "servicePlaceholder": "Select a service...",
+      "message": "Message",
+      "messagePlaceholder": "Tell us about your project, goals, and timeline...",
+      "submit": "Send Message",
+      "serviceOptions": {
+        "website": "Website",
+        "mobileApp": "Mobile App",
+        "bookingSystem": "Booking System",
+        "branding": "Branding",
+        "aiAutomation": "AI / Automation",
+        "notSure": "Not Sure Yet"
+      }
+    },
+    "info": {
+      "title": "Contact Info",
+      "emailLabel": "Email",
+      "socialLabel": "Social",
+      "locationLabel": "Location",
+      "locationValue": "Worldwide Service / Local Business Support"
+    },
+    "guarantee": {
+      "title": "Quick Response Guarantee",
+      "description": "We respond to every inquiry within 24 hours. Whether you need a full website or just advice on your next digital move, we're here to help."
+    }
+  },
+  "footer": {
+    "tagline": "Web • Apps • Automation",
+    "copyright": "© 2026 NOVA DIGITAL TECH. All rights reserved.",
+    "home": "Home"
+  },
+  "techStack": {
+    "label": "Built With Modern Technologies"
+  },
+  "testimonials": {
+    "label": "Client Stories",
+    "title": "What Our Clients",
+    "titleAccent": "Say About Us",
+    "items": {
+      "1": {
+        "quote": "NOVA completely transformed our online presence. We went from zero web presence to getting inquiries every single day. The booking system they built saved us hours of phone calls.",
+        "name": "Sandra Mitchell",
+        "role": "Owner, CleanPro Services"
+      },
+      "2": {
+        "quote": "They built us a booking app that our clients actually love using. Missed appointments dropped by half and our reviews went up. The team was professional from start to finish.",
+        "name": "Marcus Johnson",
+        "role": "Founder, FreshCuts Barbershop"
+      },
+      "3": {
+        "quote": "We needed a modern website that could handle online orders and reservations. NOVA delivered beyond what we expected — the design is stunning and it works perfectly on mobile.",
+        "name": "Elena Rodriguez",
+        "role": "Manager, Bella Cucina Restaurant"
+      }
+    }
+  },
+  "clientResults": {
+    "items": {
+      "1": { "value": "+45%", "label": "Increase in Customer Bookings" },
+      "2": { "value": "2x", "label": "Faster Response Time" },
+      "3": { "value": "+60%", "label": "Online Visibility Growth" },
+      "4": { "value": "98%", "label": "Mobile-Friendly Score" }
+    }
+  },
+  "showcase": {
+    "label": "Live Product Demos",
+    "title": "Real Solutions We",
+    "titleAccent": "Build for Businesses",
+    "subtitle": "See the kind of digital products and systems we design, develop, and deploy for real businesses every day.",
+    "dashboard": {
+      "title": "Business Intelligence Dashboards",
+      "description": "We build custom dashboards that give business owners real-time visibility into their revenue, bookings, customer activity, and growth metrics — all in one clean interface.",
+      "features": {
+        "1": "Real-time revenue and booking analytics",
+        "2": "Customer activity tracking and CRM",
+        "3": "Automated reports and growth insights"
+      }
+    },
+    "barber": {
+      "title": "Smart Booking Applications",
+      "description": "Mobile-first booking apps with real-time availability, stylist selection, and automated reminders."
+    },
+    "restaurant": {
+      "title": "Online Ordering Systems",
+      "description": "Complete ordering platforms with menu management, cart, and payment processing built in."
+    }
+  },
+  "transformation": {
+    "label": "The NOVA Effect",
+    "title": "From Outdated to",
+    "titleAccent": "Modern & Professional",
+    "before": "Before",
+    "after": "After NOVA",
+    "items": {
+      "1": {
+        "before": "Outdated website that looks unprofessional, slow, and doesn't work on mobile devices",
+        "after": "Modern, fast, mobile-friendly website that builds trust and converts visitors into customers"
+      },
+      "2": {
+        "before": "Manually managing bookings through phone calls, texts, and paper — missing appointments constantly",
+        "after": "Automated booking system with real-time availability, reminders, and zero missed appointments"
+      },
+      "3": {
+        "before": "Weak branding with no visual identity — business looks generic and forgettable to customers",
+        "after": "Premium brand identity with professional logo, colors, and visuals that stand out from the competition"
+      }
+    }
+  }
+}
