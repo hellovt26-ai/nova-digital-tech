@@ -16,7 +16,7 @@ export default function Particles() {
     if (!ctx) return;
 
     let animId: number;
-    const count = 20;
+    const count = 40;
     const particles: { x: number; y: number; vx: number; vy: number; size: number; opacity: number }[] = [];
 
     const resize = () => {
@@ -30,10 +30,10 @@ export default function Particles() {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        size: Math.random() * 1.5 + 0.5,
-        opacity: Math.random() * 0.3 + 0.05,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 2.5 + 0.8,
+        opacity: Math.random() * 0.5 + 0.15,
       });
     }
 
@@ -57,12 +57,12 @@ export default function Particles() {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 100) {
+          if (dist < 130) {
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.03 * (1 - dist / 100)})`;
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = `rgba(0, 229, 255, ${0.08 * (1 - dist / 130)})`;
+            ctx.lineWidth = 0.6;
             ctx.stroke();
           }
         });
@@ -81,7 +81,7 @@ export default function Particles() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-0"
-      style={{ opacity: 0.6 }}
+      style={{ opacity: 0.85 }}
     />
   );
 }
