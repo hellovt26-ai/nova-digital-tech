@@ -1,29 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 260">
   <defs>
-    <linearGradient id="blueGrad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#0055ff"/>
-      <stop offset="40%" style="stop-color:#0088ff"/>
-      <stop offset="100%" style="stop-color:#00c8ff"/>
+    <linearGradient id="blueGrad" x1="0%" y1="100%" x2="80%" y2="0%">
+      <stop offset="0%" stop-color="#0033bb"/>
+      <stop offset="40%" stop-color="#0070ff"/>
+      <stop offset="75%" stop-color="#00a8ff"/>
+      <stop offset="100%" stop-color="#00d8ff"/>
     </linearGradient>
-    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff"/>
-      <stop offset="50%" style="stop-color:#d0d0d0"/>
-      <stop offset="100%" style="stop-color:#a0a8b0"/>
+    <linearGradient id="silverGrad" x1="20%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="40%" stop-color="#dce0e8"/>
+      <stop offset="75%" stop-color="#b0b8c4"/>
+      <stop offset="100%" stop-color="#8892a4"/>
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feGaussianBlur stdDeviation="2" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
   </defs>
-  <!-- Left blue part: upward arrow N-leg -->
-  <path d="M 40,195 L 40,90 L 95,25 L 95,70 L 65,105 L 95,140 L 95,195 Z" fill="url(#blueGrad)" filter="url(#glow)"/>
-  <!-- Right silver part: downward arrow N-leg -->
-  <path d="M 200,45 L 200,150 L 145,215 L 145,170 L 175,135 L 145,100 L 145,45 Z" fill="url(#silverGrad)"/>
-  <!-- Blue top diagonal connector -->
-  <path d="M 95,25 L 145,45 L 145,100 L 95,70 Z" fill="url(#blueGrad)" filter="url(#glow)"/>
-  <!-- Silver bottom diagonal connector -->
-  <path d="M 145,215 L 95,195 L 95,140 L 145,170 Z" fill="url(#silverGrad)"/>
+
+  <!-- Layer 1: Blue upper diagonal (behind white right piece) -->
+  <path d="M 90,18 L 150,45 L 150,112 L 90,78 Z"
+        fill="url(#blueGrad)" filter="url(#glow)"/>
+
+  <!-- Layer 2: White lower diagonal (behind blue left piece) -->
+  <path d="M 150,242 L 90,215 L 90,148 L 150,182 Z"
+        fill="url(#silverGrad)"/>
+
+  <!-- Layer 3: Blue left vertical + arrow peak (in front, creates interlocking) -->
+  <path d="M 40,218 L 40,80 L 90,18 L 90,78 L 63,110 L 90,148 L 90,218 Z"
+        fill="url(#blueGrad)" filter="url(#glow)"/>
+
+  <!-- Layer 4: White right vertical + arrow peak (in front, creates interlocking) -->
+  <path d="M 200,42 L 200,180 L 150,242 L 150,182 L 177,150 L 150,112 L 150,42 Z"
+        fill="url(#silverGrad)"/>
 </svg>
