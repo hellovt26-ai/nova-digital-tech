@@ -1,6 +1,6 @@
 "use client";
 
-import { Zap } from "lucide-react";
+import Image from "next/image";
 import { useI18n } from "@/lib/i18n";
 import { playNav } from "@/lib/sounds";
 
@@ -45,9 +45,13 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-nova-cyan to-nova-blue flex items-center justify-center">
-              <Zap className="w-4 h-4 text-white" />
-            </div>
+            <Image
+              src="/nova-digital-tech/logo.svg"
+              alt="NOVA Digital Tech"
+              width={32}
+              height={32}
+              className="w-8 h-8 drop-shadow-[0_0_6px_rgba(0,136,255,0.3)]"
+            />
             <div>
               <span className="text-base font-bold text-white">
                 NOVA DIGITAL TECH
