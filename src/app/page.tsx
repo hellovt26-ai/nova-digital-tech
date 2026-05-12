@@ -28,7 +28,7 @@ export default function Home() {
     <>
       <Particles />
       <Navbar />
-      <main className="relative z-10">
+      <main className="relative z-10 overflow-x-hidden">
         <Hero />
         <VideoSection />
         <TechStack />
