@@ -11,6 +11,8 @@ import {
   Zap,
   Shield,
   Rocket,
+  Globe,
+  Users,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
@@ -61,6 +63,11 @@ export default function Hero() {
               {t("hero.subheadline")}
             </p>
 
+            <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
+              <Globe className="w-4 h-4 text-nova-cyan/50" />
+              <span>{t("hero.studioTag")}</span>
+            </div>
+
             <div className="mt-8 flex flex-wrap gap-4">
               <a
                 href="#contact"
@@ -71,7 +78,7 @@ export default function Hero() {
                 <Rocket className="w-4 h-4" />
               </a>
               <a
-                href="#services"
+                href="#portfolio"
                 onClick={playClick}
                 className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all active:scale-95"
               >

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Mail } from "lucide-react";
+import { Rocket, Mail, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
 
@@ -47,6 +47,10 @@ export default function CTA() {
               {t("cta.ctaSecondary")}
             </a>
           </div>
+
+          <p className="mt-6 text-xs text-gray-600">
+            {t("cta.guarantee")}
+          </p>
         </motion.div>
       </div>
     </section>

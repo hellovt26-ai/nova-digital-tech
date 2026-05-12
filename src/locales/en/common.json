@@ -14,11 +14,12 @@
   },
   "hero": {
     "badge": "Trusted by Small Businesses Worldwide",
-    "headline": "We Build Digital Solutions That Help Your Business",
+    "headline": "We Build Modern Websites, Apps & Automation For Businesses Ready To",
     "headlineAccent": "Grow",
-    "subheadline": "Websites, mobile apps, booking systems, branding, and automation built to make your business look professional, attract customers, and save time.",
-    "ctaPrimary": "Get a Free Consultation",
-    "ctaSecondary": "View Our Services",
+    "subheadline": "We help businesses look professional online, attract more customers, automate workflows, and create premium digital experiences.",
+    "ctaPrimary": "Book Free Consultation",
+    "ctaSecondary": "View Our Work",
+    "studioTag": "Boutique Digital Studio — Built for Modern Entrepreneurs",
     "trustBadges": {
       "fastDelivery": "Fast Delivery",
       "modernTech": "Modern Technology",
@@ -101,8 +102,9 @@
     "label": "Our Work",
     "title": "Digital Experiences Built to",
     "titleAccent": "Convert",
-    "subtitle": "Real concepts designed to showcase how we help businesses transform their digital presence.",
+    "subtitle": "Concept demos showing how we help restaurants, barbershops, cleaning companies, and service businesses transform their online presence.",
     "viewConcept": "View Concept",
+    "cta": "Start a Project Like This",
     "items": {
       "restaurant": {
         "type": "Restaurant",
@@ -202,8 +204,9 @@
     "headline": "Ready to Upgrade Your",
     "headlineAccent": "Business Online?",
     "subheadline": "Let's build a digital presence that makes your business look professional, attract more customers, and grow faster.",
-    "ctaPrimary": "Get a Free Consultation",
-    "ctaSecondary": "Email Us Now"
+    "ctaPrimary": "Start Your Project",
+    "ctaSecondary": "Email Us Now",
+    "guarantee": "No commitment required — free consultation, real advice."
   },
   "contact": {
     "label": "Get In Touch",

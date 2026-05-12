@@ -14,11 +14,12 @@
   },
   "hero": {
     "badge": "La confiance des petites entreprises à travers le monde",
-    "headline": "Nous Créons Des Solutions Digitales Pour Faire Grandir Votre",
-    "headlineAccent": "Entreprise",
-    "subheadline": "Sites web, applications mobiles, systèmes de réservation, branding et automatisation conçus pour donner une image professionnelle à votre entreprise, attirer des clients et gagner du temps.",
+    "headline": "Nous Créons Des Sites Web, Apps & Automatisation Pour Les Entreprises Prêtes À",
+    "headlineAccent": "Grandir",
+    "subheadline": "Nous aidons les entreprises à avoir une image professionnelle en ligne, attirer plus de clients, automatiser leurs processus et créer des expériences digitales premium.",
     "ctaPrimary": "Consultation Gratuite",
-    "ctaSecondary": "Découvrir Nos Services",
+    "ctaSecondary": "Voir Nos Réalisations",
+    "studioTag": "Studio Digital Boutique — Conçu pour les Entrepreneurs Modernes",
     "trustBadges": {
       "fastDelivery": "Livraison Rapide",
       "modernTech": "Technologie Moderne",
@@ -101,8 +102,9 @@
     "label": "Nos Réalisations",
     "title": "Des Expériences Digitales Conçues Pour",
     "titleAccent": "Convertir",
-    "subtitle": "Des concepts réels conçus pour montrer comment nous aidons les entreprises à transformer leur présence digitale.",
+    "subtitle": "Démos conceptuelles montrant comment nous aidons les restaurants, salons de coiffure, services de nettoyage et entreprises à transformer leur présence en ligne.",
     "viewConcept": "Voir le Concept",
+    "cta": "Lancer un Projet Comme Celui-ci",
     "items": {
       "restaurant": {
         "type": "Restaurant",
@@ -202,8 +204,9 @@
     "headline": "Prêt à Transformer Votre",
     "headlineAccent": "Présence en Ligne ?",
     "subheadline": "Créons ensemble une présence digitale qui donne une image professionnelle à votre entreprise, attire plus de clients et accélère votre croissance.",
-    "ctaPrimary": "Consultation Gratuite",
-    "ctaSecondary": "Envoyez-nous un Email"
+    "ctaPrimary": "Lancez Votre Projet",
+    "ctaSecondary": "Envoyez-nous un Email",
+    "guarantee": "Sans engagement — consultation gratuite, conseils concrets."
   },
   "contact": {
     "label": "Contactez-Nous",

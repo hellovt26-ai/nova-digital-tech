@@ -14,11 +14,12 @@
   },
   "hero": {
     "badge": "Ti Biznis Fè Nou Konfyans Toupatou nan Monn Lan",
-    "headline": "Nou Kreye Solisyon Digital Pou Fè Biznis Ou",
+    "headline": "Nou Bati Sit Web Modèn, App & Otomatizasyon Pou Biznis Ki Pare Pou",
     "headlineAccent": "Grandi",
-    "subheadline": "Sit entènèt, aplikasyon mobil, sistèm rezèvasyon, branding ak otomatizasyon ki fèt pou biznis ou sanble pwofesyonèl, atire kliyan epi ekonomize tan.",
-    "ctaPrimary": "Konsiltasyon Gratis",
-    "ctaSecondary": "Wè Sèvis Nou Yo",
+    "subheadline": "Nou ede biznis yo sanble pwofesyonèl anliy, atire plis kliyan, otomatize travay yo epi kreye eksperyans digital premium.",
+    "ctaPrimary": "Rezève Konsiltasyon Gratis",
+    "ctaSecondary": "Wè Travay Nou",
+    "studioTag": "Estidyo Digital Boutik — Konstwi Pou Antreprenè Modèn",
     "trustBadges": {
       "fastDelivery": "Livrezon Rapid",
       "modernTech": "Teknoloji Modèn",
@@ -101,8 +102,9 @@
     "label": "Travay Nou",
     "title": "Eksperyans Digital Ki Fèt Pou",
     "titleAccent": "Konvèti",
-    "subtitle": "Konsèp reyèl konsevwa pou montre kijan nou ede biznis transfòme prezans digital yo.",
+    "subtitle": "Demo konsèp ki montre kijan nou ede restoran, salon kwafè, konpayi netwayaj ak biznis sèvis transfòme prezans anliy yo.",
     "viewConcept": "Wè Konsèp La",
+    "cta": "Kòmanse yon Pwojè Konsa",
     "items": {
       "restaurant": {
         "type": "Restoran",
@@ -202,8 +204,9 @@
     "headline": "Pare Pou Amelyore Prezans",
     "headlineAccent": "Biznis Ou Anliy?",
     "subheadline": "Ann bati yon prezans digital ki fè biznis ou sanble pwofesyonèl, atire plis kliyan epi grandi pi vit.",
-    "ctaPrimary": "Konsiltasyon Gratis",
-    "ctaSecondary": "Voye yon Email"
+    "ctaPrimary": "Kòmanse Pwojè Ou",
+    "ctaSecondary": "Voye yon Email",
+    "guarantee": "San angajman — konsiltasyon gratis, konsèy reyèl."
   },
   "contact": {
     "label": "Kontakte Nou",

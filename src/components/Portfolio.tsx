@@ -2,35 +2,288 @@
 
 import { motion } from "framer-motion";
 import {
-  UtensilsCrossed,
   Scissors,
+  Star,
+  Clock,
+  Bell,
+  UtensilsCrossed,
+  ShoppingCart,
+  MapPin,
   SprayCan,
+  Home,
   ArrowRight,
+  Smartphone,
+  Monitor,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { playClick, playHover } from "@/lib/sounds";
 
+function PhoneMockup({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="w-full max-w-[260px] mx-auto">
+      <div className="rounded-[2.5rem] glass-strong border border-white/10 overflow-hidden shadow-2xl shadow-black/60 p-1.5">
+        <div className="rounded-[2rem] bg-[#0c0c14] overflow-hidden">
+          <div className="flex justify-center pt-2 pb-1">
+            <div className="w-20 h-5 rounded-full bg-black border border-white/5" />
+          </div>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-const projectKeys = [
-  {
-    key: "restaurant",
-    icon: UtensilsCrossed,
-    gradient: "from-orange-500/20 via-red-500/10 to-transparent",
-    accentColor: "text-orange-400",
-    borderColor: "hover:border-orange-500/20",
-  },
+function LaptopMockup({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="w-full max-w-[520px] mx-auto">
+      <div className="rounded-t-xl glass-strong border border-white/10 border-b-0 overflow-hidden shadow-2xl shadow-black/60">
+        <div className="flex items-center gap-1.5 px-3 py-2 border-b border-white/5">
+          <div className="w-2 h-2 rounded-full bg-red-500/60" />
+          <div className="w-2 h-2 rounded-full bg-yellow-500/60" />
+          <div className="w-2 h-2 rounded-full bg-green-500/60" />
+          <div className="ml-3 flex-1 h-4 rounded bg-white/5 max-w-[200px]" />
+        </div>
+        <div className="bg-[#0c0c14]">
+          {children}
+        </div>
+      </div>
+      <div className="h-3 bg-gradient-to-b from-white/10 to-white/5 rounded-b-lg mx-4" />
+    </div>
+  );
+}
+
+function BarberProject() {
+  return (
+    <PhoneMockup>
+      <div className="bg-gradient-to-b from-nova-cyan/8 to-transparent p-4">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <p className="text-[10px] text-gray-500">Good Morning</p>
+            <p className="text-sm font-semibold text-white">Marcus J.</p>
+          </div>
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-[10px] font-bold text-white">MJ</div>
+        </div>
+        <div className="rounded-xl bg-white/5 border border-white/5 p-3 mb-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Scissors className="w-3.5 h-3.5 text-nova-cyan" />
+            <span className="text-xs font-medium text-white">Next Appointment</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[11px] text-gray-400">Fade + Beard Trim</p>
+              <p className="text-[10px] text-gray-500">Today, 2:30 PM</p>
+            </div>
+            <div className="px-2 py-1 rounded-md bg-emerald-500/20 text-[9px] text-emerald-400 font-medium">Confirmed</div>
+          </div>
+        </div>
+        <div className="rounded-xl bg-white/5 border border-white/5 p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Bell className="w-3.5 h-3.5 text-yellow-400" />
+            <span className="text-xs font-medium text-white">Reminder Sent</span>
+          </div>
+          <p className="text-[10px] text-gray-500">Client notified 1 hour before appointment</p>
+        </div>
+      </div>
+      <div className="px-4 pb-4 space-y-2">
+        <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Available Barbers</p>
+        {[
+          { name: "DJ Cuts", rating: "4.9", time: "3:00 PM", avail: true, specialty: "Fades & Tapers" },
+          { name: "Mike Style", rating: "4.8", time: "4:15 PM", avail: true, specialty: "Beard Design" },
+          { name: "Ray Fresh", rating: "5.0", time: "Full", avail: false, specialty: "Kids Cuts" },
+        ].map((barber) => (
+          <div key={barber.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] border border-white/5">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400/50 to-pink-400/50 flex items-center justify-center text-[9px] font-bold text-white">
+              {barber.name.split(" ").map(w => w[0]).join("")}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-1">
+                <span className="text-[11px] font-medium text-white">{barber.name}</span>
+                <Star className="w-2.5 h-2.5 text-yellow-500" fill="currentColor" />
+                <span className="text-[9px] text-gray-500">{barber.rating}</span>
+              </div>
+              <p className="text-[8px] text-gray-600">{barber.specialty}</p>
+            </div>
+            <span className={`text-[9px] font-medium ${barber.avail ? "text-nova-cyan" : "text-gray-600"}`}>{barber.time}</span>
+          </div>
+        ))}
+        <div className="grid grid-cols-3 gap-2 mt-3">
+          {["Fade", "Lineup", "Beard"].map((s) => (
+            <div key={s} className="text-center py-2 rounded-lg bg-white/5 border border-white/5 text-[9px] text-gray-400">{s}</div>
+          ))}
+        </div>
+        <button className="w-full mt-2 py-2.5 rounded-xl bg-gradient-to-r from-nova-cyan to-nova-blue text-[11px] font-semibold text-black">
+          Book Appointment
+        </button>
+      </div>
+    </PhoneMockup>
+  );
+}
+
+function RestaurantProject() {
+  return (
+    <LaptopMockup>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500/30 to-red-500/30 flex items-center justify-center">
+              <UtensilsCrossed className="w-3.5 h-3.5 text-orange-400" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-white">Bella Cucina</p>
+              <div className="flex items-center gap-1">
+                <Star className="w-2 h-2 text-yellow-500" fill="currentColor" />
+                <span className="text-[8px] text-gray-500">4.8 (324)</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-3 text-[9px] text-gray-500">
+            <span className="text-white">Menu</span>
+            <span>Reservations</span>
+            <span>About</span>
+          </div>
+          <div className="relative">
+            <ShoppingCart className="w-4 h-4 text-gray-400" />
+            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 flex items-center justify-center text-[6px] font-bold text-white">3</div>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/5 border border-orange-500/10 p-4 mb-4">
+          <p className="text-sm font-semibold text-white mb-1">Order Online</p>
+          <p className="text-[10px] text-gray-400 mb-3">Fresh Italian cuisine delivered to your door</p>
+          <div className="flex gap-2">
+            {["Popular", "Pizza", "Pasta", "Salads", "Desserts"].map((cat, i) => (
+              <span key={cat} className={`px-2.5 py-1 rounded-full text-[8px] font-medium ${i === 0 ? "bg-orange-500/20 text-orange-400" : "bg-white/5 text-gray-500"}`}>{cat}</span>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          {[
+            { name: "Margherita Pizza", price: "$14.99", time: "20 min" },
+            { name: "Truffle Pasta", price: "$18.99", time: "25 min" },
+            { name: "Caesar Salad", price: "$11.99", time: "10 min" },
+            { name: "Tiramisu", price: "$9.99", time: "5 min" },
+          ].map((item) => (
+            <div key={item.name} className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
+              <div className="w-full h-12 rounded-md bg-gradient-to-br from-orange-500/10 to-red-500/5 flex items-center justify-center mb-2">
+                <UtensilsCrossed className="w-4 h-4 text-orange-400/40" />
+              </div>
+              <p className="text-[10px] font-medium text-white">{item.name}</p>
+              <div className="flex items-center justify-between mt-1">
+                <span className="text-[10px] font-semibold text-orange-400">{item.price}</span>
+                <span className="text-[8px] text-gray-600"><Clock className="w-2 h-2 inline mr-0.5" />{item.time}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-lg bg-gradient-to-r from-orange-500/10 to-transparent border border-orange-500/10 p-3 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] text-gray-400">Cart Total (3 items)</p>
+            <p className="text-sm font-bold text-white">$45.97</p>
+          </div>
+          <button className="px-4 py-2 rounded-lg bg-orange-500 text-[10px] font-semibold text-white">Checkout</button>
+        </div>
+      </div>
+    </LaptopMockup>
+  );
+}
+
+function CleaningProject() {
+  return (
+    <LaptopMockup>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500/30 to-cyan-500/30 flex items-center justify-center">
+              <SprayCan className="w-3.5 h-3.5 text-emerald-400" />
+            </div>
+            <p className="text-xs font-semibold text-white">CleanPro Services</p>
+          </div>
+          <div className="flex gap-3 text-[9px] text-gray-500">
+            <span className="text-white">Services</span>
+            <span>Pricing</span>
+            <span>Areas</span>
+            <span>Book Now</span>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/5 border border-emerald-500/10 p-4 mb-4">
+          <p className="text-sm font-semibold text-white mb-1">Book Your Clean</p>
+          <p className="text-[10px] text-gray-400 mb-3">Professional cleaning, hassle-free scheduling</p>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { name: "Standard", price: "$120", icon: Home },
+              { name: "Deep Clean", price: "$220", icon: SprayCan },
+              { name: "Move-In/Out", price: "$350", icon: MapPin },
+            ].map((pkg) => (
+              <div key={pkg.name} className={`rounded-lg p-2.5 text-center border ${pkg.name === "Deep Clean" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-white/[0.03] border-white/5"}`}>
+                <pkg.icon className={`w-4 h-4 mx-auto mb-1 ${pkg.name === "Deep Clean" ? "text-emerald-400" : "text-gray-500"}`} />
+                <p className="text-[9px] font-medium text-white">{pkg.name}</p>
+                <p className={`text-[10px] font-semibold ${pkg.name === "Deep Clean" ? "text-emerald-400" : "text-gray-400"}`}>{pkg.price}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-3">
+          <div className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
+            <p className="text-[10px] font-medium text-gray-400 mb-2">Select Date</p>
+            <div className="grid grid-cols-5 gap-1">
+              {["Mon", "Tue", "Wed", "Thu", "Fri"].map((d, i) => (
+                <div key={d} className={`text-center py-1.5 rounded text-[8px] ${i === 2 ? "bg-emerald-500/20 text-emerald-400 font-medium" : "bg-white/5 text-gray-500"}`}>
+                  <p>{d}</p>
+                  <p className="font-semibold">{12 + i}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
+            <p className="text-[10px] font-medium text-gray-400 mb-2">Time Slots</p>
+            <div className="space-y-1">
+              {["9:00 AM", "11:00 AM", "2:00 PM"].map((time, i) => (
+                <div key={time} className={`px-2 py-1.5 rounded text-[9px] text-center ${i === 1 ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-gray-500"}`}>{time}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/10 p-3 flex items-center justify-between">
+          <div>
+            <p className="text-[10px] text-gray-400">Deep Clean — Wed, Jan 14</p>
+            <p className="text-sm font-bold text-white">$220.00</p>
+          </div>
+          <button className="px-4 py-2 rounded-lg bg-emerald-500 text-[10px] font-semibold text-white">Confirm Booking</button>
+        </div>
+      </div>
+    </LaptopMockup>
+  );
+}
+
+const projects = [
   {
     key: "barber",
-    icon: Scissors,
-    gradient: "from-blue-500/20 via-indigo-500/10 to-transparent",
-    accentColor: "text-blue-400",
-    borderColor: "hover:border-blue-500/20",
+    MockupComponent: BarberProject,
+    deviceIcon: Smartphone,
+    deviceLabel: "Mobile App",
+    color: "from-cyan-500/20 to-blue-500/20",
+    accentColor: "text-nova-cyan",
+  },
+  {
+    key: "restaurant",
+    MockupComponent: RestaurantProject,
+    deviceIcon: Monitor,
+    deviceLabel: "Website + Ordering",
+    color: "from-orange-500/20 to-red-500/20",
+    accentColor: "text-orange-400",
   },
   {
     key: "cleaning",
-    icon: SprayCan,
-    gradient: "from-emerald-500/20 via-cyan-500/10 to-transparent",
+    MockupComponent: CleaningProject,
+    deviceIcon: Monitor,
+    deviceLabel: "Website + Booking",
+    color: "from-emerald-500/20 to-cyan-500/20",
     accentColor: "text-emerald-400",
-    borderColor: "hover:border-emerald-500/20",
   },
 ];
 
@@ -61,52 +314,53 @@ export default function Portfolio() {
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {projectKeys.map((project, i) => (
+        <div className="space-y-24">
+          {projects.map((project, i) => (
             <motion.div
               key={project.key}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              className={`group rounded-2xl glass overflow-hidden border border-transparent ${project.borderColor} transition-all duration-500`}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.7 }}
+              onMouseEnter={playHover}
+              className={`grid lg:grid-cols-2 gap-10 lg:gap-16 items-center ${i % 2 === 1 ? "lg:grid-flow-dense" : ""}`}
             >
-              <div className={`relative h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center`}>
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]" />
-                <div className="relative">
-                  <div className="w-16 h-16 rounded-2xl glass-strong flex items-center justify-center">
-                    <project.icon className={`w-8 h-8 ${project.accentColor}`} />
+              <div className={i % 2 === 1 ? "lg:col-start-2" : ""}>
+                <project.MockupComponent />
+              </div>
+
+              <div className={i % 2 === 1 ? "lg:col-start-1" : ""}>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${project.color} flex items-center justify-center`}>
+                    <project.deviceIcon className={`w-4 h-4 ${project.accentColor}`} />
                   </div>
-                </div>
-                <div className="absolute top-4 right-4">
-                  <span className={`text-xs font-medium ${project.accentColor} glass px-3 py-1 rounded-full`}>
+                  <span className="text-xs text-gray-500 uppercase tracking-wider">
                     {t(`portfolio.items.${project.key}.type`)}
                   </span>
                 </div>
-              </div>
-              <div className="p-6">
-                <h3 className="text-base font-semibold text-white mb-2">
+
+                <h3 className="text-2xl font-bold text-white mb-3">
                   {t(`portfolio.items.${project.key}.title`)}
                 </h3>
-                <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                <p className="text-sm text-gray-400 leading-relaxed mb-6">
                   {t(`portfolio.items.${project.key}.description`)}
                 </p>
-                <div className="flex flex-wrap gap-2 mb-5">
+
+                <div className="flex flex-wrap gap-2 mb-6">
                   {tArray(`portfolio.items.${project.key}.tags`).map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] text-gray-500 px-2.5 py-1 rounded-full bg-white/5 uppercase tracking-wider"
-                    >
+                    <span key={tag} className="px-3 py-1 rounded-full glass text-[11px] text-gray-400">
                       {tag}
                     </span>
                   ))}
                 </div>
+
                 <a
                   href="#contact"
-                  className="inline-flex items-center gap-1.5 text-sm text-nova-cyan hover:text-white transition-colors group/link"
+                  onClick={playClick}
+                  className="inline-flex items-center gap-2 text-sm text-nova-cyan hover:text-white transition-colors font-medium"
                 >
-                  {t("portfolio.viewConcept")}
-                  <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+                  {t("portfolio.cta")}
+                  <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             </motion.div>

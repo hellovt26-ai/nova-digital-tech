@@ -3,11 +3,10 @@ import Hero from "@/components/Hero";
 import VideoSection from "@/components/VideoSection";
 import TechStack from "@/components/TechStack";
 import Services from "@/components/Services";
-import Showcase from "@/components/Showcase";
 import ClientResults from "@/components/ClientResults";
+import Portfolio from "@/components/Portfolio";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Testimonials from "@/components/Testimonials";
-import Portfolio from "@/components/Portfolio";
 import Transformation from "@/components/Transformation";
 import Process from "@/components/Process";
 import Packages from "@/components/Packages";
@@ -25,12 +24,11 @@ export default function Home() {
         <Hero />
         <VideoSection />
         <TechStack />
-        <Services />
-        <Showcase />
         <ClientResults />
+        <Services />
+        <Portfolio />
         <WhyChooseUs />
         <Testimonials />
-        <Portfolio />
         <Transformation />
         <Process />
         <Packages />
