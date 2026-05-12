@@ -437,5 +437,40 @@
         "after": "Premium brand identity with professional logo, colors, and visuals that stand out from the competition"
       }
     }
+  },
+  "deposit": {
+    "label": "Secure Payments",
+    "title": "Secure Project",
+    "titleAccent": "Deposit",
+    "subtitle": "For approved projects and custom digital services. Begin your project with a secure deposit after your free consultation.",
+    "steps": [
+      "Free Consultation",
+      "Project Agreement",
+      "Secure Deposit"
+    ],
+    "items": {
+      "website": {
+        "title": "Website Project",
+        "description": "Consultation & onboarding for a modern, responsive business website."
+      },
+      "branding": {
+        "title": "Branding & Design",
+        "description": "Logo, brand identity, and professional visual design project."
+      },
+      "app": {
+        "title": "App / Automation",
+        "description": "Custom app, dashboard, or automation system consultation & build."
+      }
+    },
+    "depositNote": "Project deposit",
+    "cta": "Secure Deposit",
+    "scopeNote": "Final pricing depends on project scope and requirements. Deposits are applied toward your total project cost.",
+    "trust": [
+      "Secure payments powered by Stripe",
+      "Personalized consultation first",
+      "All major cards accepted",
+      "Transparent project planning"
+    ],
+    "acceptedLabel": "Accepted payments"
   }
 }

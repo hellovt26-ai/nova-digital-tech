@@ -437,5 +437,40 @@
         "after": "Identité de marque premium avec logo, couleurs et visuels professionnels qui se démarquent de la concurrence"
       }
     }
+  },
+  "deposit": {
+    "label": "Paiements Sécurisés",
+    "title": "Dépôt de Projet",
+    "titleAccent": "Sécurisé",
+    "subtitle": "Pour les projets approuvés et services digitaux sur mesure. Démarrez votre projet avec un dépôt sécurisé après votre consultation gratuite.",
+    "steps": [
+      "Consultation Gratuite",
+      "Accord de Projet",
+      "Dépôt Sécurisé"
+    ],
+    "items": {
+      "website": {
+        "title": "Projet Site Web",
+        "description": "Consultation et démarrage pour un site web professionnel et responsive."
+      },
+      "branding": {
+        "title": "Branding & Design",
+        "description": "Logo, identité de marque et projet de design visuel professionnel."
+      },
+      "app": {
+        "title": "App / Automatisation",
+        "description": "Consultation et développement d'application, tableau de bord ou système d'automatisation."
+      }
+    },
+    "depositNote": "Dépôt de projet",
+    "cta": "Dépôt Sécurisé",
+    "scopeNote": "Le prix final dépend de la portée et des exigences du projet. Les dépôts sont appliqués au coût total du projet.",
+    "trust": [
+      "Paiements sécurisés par Stripe",
+      "Consultation personnalisée d'abord",
+      "Toutes les cartes acceptées",
+      "Planification transparente du projet"
+    ],
+    "acceptedLabel": "Paiements acceptés"
   }
 }

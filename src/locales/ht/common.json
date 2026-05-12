@@ -437,5 +437,40 @@
         "after": "Idantite mak premium ak logo, koulè ak vizyèl pwofesyonèl ki demarke nan konkirans lan"
       }
     }
+  },
+  "deposit": {
+    "label": "Peman Sekirize",
+    "title": "Depo Pwojè",
+    "titleAccent": "Sekirize",
+    "subtitle": "Pou pwojè ki apwouve ak sèvis dijital sou mezi. Kòmanse pwojè ou ak yon depo sekirize apre konsiltasyon gratis ou.",
+    "steps": [
+      "Konsiltasyon Gratis",
+      "Akò Pwojè",
+      "Depo Sekirize"
+    ],
+    "items": {
+      "website": {
+        "title": "Pwojè Sit Web",
+        "description": "Konsiltasyon ak démaraj pou yon sit web pwofesyonèl ak responsive."
+      },
+      "branding": {
+        "title": "Branding & Design",
+        "description": "Logo, idantite mak ak pwojè design vizyèl pwofesyonèl."
+      },
+      "app": {
+        "title": "App / Otomatizasyon",
+        "description": "Konsiltasyon ak devlopman aplikasyon, tablo bò oswa sistèm otomatizasyon."
+      }
+    },
+    "depositNote": "Depo pwojè",
+    "cta": "Depo Sekirize",
+    "scopeNote": "Pri final depann de pòte ak egzijans pwojè a. Depo yo aplike nan pri total pwojè a.",
+    "trust": [
+      "Peman sekirize pa Stripe",
+      "Konsiltasyon pèsonalize anvan",
+      "Tout kat aksepte",
+      "Planifikasyon pwojè transparan"
+    ],
+    "acceptedLabel": "Peman aksepte"
   }
 }

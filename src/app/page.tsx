@@ -17,6 +17,7 @@ import Process from "@/components/Process";
 import Packages from "@/components/Packages";
 import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
+import ProjectDeposit from "@/components/ProjectDeposit";
 import Footer from "@/components/Footer";
 import Particles from "@/components/Particles";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -46,6 +47,7 @@ export default function Home() {
         <Packages />
         <CTA />
         <Contact />
+        <ProjectDeposit />
       </main>
       <Footer />
       <ScrollToTop />
