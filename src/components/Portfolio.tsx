@@ -14,6 +14,11 @@ import {
   ArrowRight,
   Smartphone,
   Monitor,
+  Music,
+  Headphones,
+  Sliders,
+  ExternalLink,
+  CheckCircle,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick, playHover } from "@/lib/sounds";
@@ -312,6 +317,119 @@ export default function Portfolio() {
           <p className="mt-4 text-gray-400 max-w-2xl mx-auto">
             {t("portfolio.subtitle")}
           </p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.7 }}
+          className="relative rounded-2xl glass-strong border border-nova-cyan/20 glow-cyan overflow-hidden mb-24"
+        >
+          <div className="absolute top-4 right-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
+              <CheckCircle className="w-3 h-3" />
+              {t("portfolio.live")}
+            </span>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 p-6 lg:p-10 items-center">
+            <div>
+              <PhoneMockup>
+                <div className="bg-gradient-to-b from-purple-500/10 to-transparent p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <Music className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-semibold text-white">Mix-MasterPro</p>
+                      <p className="text-[9px] text-gray-500">Studio Session</p>
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white/5 border border-white/5 p-3 mb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-gray-400">Track 1 — Vocals</span>
+                      <Headphones className="w-3 h-3 text-purple-400" />
+                    </div>
+                    <div className="h-8 rounded-lg bg-gradient-to-r from-purple-500/30 via-pink-500/20 to-purple-500/10 relative overflow-hidden">
+                      <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-purple-500/20 to-transparent" />
+                      <div className="absolute inset-0 flex items-center justify-center gap-[2px]">
+                        {Array.from({ length: 30 }).map((_, i) => (
+                          <div key={i} className="w-[2px] bg-purple-400/60 rounded-full" style={{ height: `${Math.random() * 80 + 20}%` }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white/5 border border-white/5 p-3 mb-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[10px] text-gray-400">Track 2 — Beat</span>
+                      <Sliders className="w-3 h-3 text-cyan-400" />
+                    </div>
+                    <div className="h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-cyan-500/5 relative overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center gap-[2px]">
+                        {Array.from({ length: 30 }).map((_, i) => (
+                          <div key={i} className="w-[2px] bg-cyan-400/50 rounded-full" style={{ height: `${Math.random() * 70 + 15}%` }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-4 pb-4">
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {["EQ", "Reverb", "Delay", "Filter"].map((fx) => (
+                      <div key={fx} className="text-center py-2 rounded-lg bg-white/5 border border-white/5 text-[8px] text-gray-400">{fx}</div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 mb-3">
+                    <div className="rounded-lg bg-purple-500/10 border border-purple-500/20 p-2 text-center">
+                      <p className="text-[9px] text-purple-400 font-medium">Vocal Preset</p>
+                    </div>
+                    <div className="rounded-lg bg-white/5 border border-white/5 p-2 text-center">
+                      <p className="text-[9px] text-gray-500">Master Preset</p>
+                    </div>
+                  </div>
+                  <button className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-[11px] font-semibold text-white">
+                    Export Mix
+                  </button>
+                </div>
+              </PhoneMockup>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500/30 to-pink-500/30 flex items-center justify-center">
+                  <Smartphone className="w-4 h-4 text-purple-400" />
+                </div>
+                <span className="text-xs text-gray-500 uppercase tracking-wider">iOS App — Live on App Store</span>
+              </div>
+
+              <h3 className="text-2xl font-bold text-white mb-3">
+                Mix-MasterPro
+              </h3>
+              <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                {t("portfolio.items.mixmaster.description")}
+              </p>
+
+              <div className="flex flex-wrap gap-2 mb-6">
+                {["iOS App", "Audio Engine", "Multi-Track Mixing", "Studio UI", "Subscription Model"].map((tag) => (
+                  <span key={tag} className="px-3 py-1 rounded-full glass text-[11px] text-gray-400">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <a
+                href="https://apps.apple.com/ca/app/mix-masterpro/id6761647582"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={playClick}
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transition-all hover:scale-[1.02] active:scale-95"
+              >
+                {t("portfolio.viewAppStore")}
+                <ExternalLink className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
         </motion.div>
 
         <div className="space-y-24">

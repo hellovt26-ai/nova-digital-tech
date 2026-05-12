@@ -104,8 +104,13 @@
     "titleAccent": "Convertir",
     "subtitle": "Démos conceptuelles montrant comment nous aidons les restaurants, salons de coiffure, services de nettoyage et entreprises à transformer leur présence en ligne.",
     "viewConcept": "Voir le Concept",
+    "live": "Disponible sur l'App Store",
+    "viewAppStore": "Voir sur l'App Store",
     "cta": "Lancer un Projet Comme Celui-ci",
     "items": {
+      "mixmaster": {
+        "description": "Une application mobile professionnelle de mixage musical avec édition multi-piste, EQ, réverbération, delay, presets et export qualité studio. Conçue pour les créateurs qui veulent un son soigné, où qu'ils soient."
+      },
       "restaurant": {
         "type": "Restaurant",
         "title": "Site Restaurant + Commande en Ligne",

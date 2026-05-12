@@ -104,8 +104,13 @@
     "titleAccent": "Konvèti",
     "subtitle": "Demo konsèp ki montre kijan nou ede restoran, salon kwafè, konpayi netwayaj ak biznis sèvis transfòme prezans anliy yo.",
     "viewConcept": "Wè Konsèp La",
+    "live": "Anliy sou App Store",
+    "viewAppStore": "Wè sou App Store",
     "cta": "Kòmanse yon Pwojè Konsa",
     "items": {
+      "mixmaster": {
+        "description": "Yon aplikasyon mobil pwofesyonèl pou miksaj mizik ak edit milti-pist, EQ, revèb, delay, preset ak ekspòtasyon kalite estidyo. Konstwi pou kreyatè ki vle son pwofesyonèl nenpòt kote."
+      },
       "restaurant": {
         "type": "Restoran",
         "title": "Sit Restoran + Kòmand Anliy",

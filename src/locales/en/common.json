@@ -104,8 +104,13 @@
     "titleAccent": "Convert",
     "subtitle": "Concept demos showing how we help restaurants, barbershops, cleaning companies, and service businesses transform their online presence.",
     "viewConcept": "View Concept",
+    "live": "Live on App Store",
+    "viewAppStore": "View on App Store",
     "cta": "Start a Project Like This",
     "items": {
+      "mixmaster": {
+        "description": "A professional mobile music mixing app with multi-track editing, EQ, reverb, delay, presets, and studio-quality export. Built for creators who want fast, polished sound from anywhere."
+      },
       "restaurant": {
         "type": "Restaurant",
         "title": "Restaurant Website + Online Ordering Concept",
