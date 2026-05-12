@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Rocket, Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { playClick } from "@/lib/sounds";
 
 export default function CTA() {
   const { t } = useI18n();
@@ -31,14 +32,16 @@ export default function CTA() {
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02]"
+              onClick={playClick}
+              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95"
             >
               {t("cta.ctaPrimary")}
               <Rocket className="w-4 h-4" />
             </a>
             <a
               href="mailto:hellovt26@gmail.com"
-              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all"
+              onClick={playClick}
+              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all active:scale-95"
             >
               <Mail className="w-4 h-4" />
               {t("cta.ctaSecondary")}

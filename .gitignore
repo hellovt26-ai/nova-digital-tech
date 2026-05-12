@@ -23,3 +23,5 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+generate-vo.ps1
+*.mp3

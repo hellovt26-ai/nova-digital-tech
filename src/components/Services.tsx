@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { playHover } from "@/lib/sounds";
 
 const serviceKeys = [
   { key: "web", icon: Globe, color: "from-cyan-500/20 to-blue-500/20", iconColor: "text-cyan-400" },
@@ -58,7 +59,8 @@ export default function Services() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="group relative rounded-2xl glass p-6 lg:p-8 hover:bg-white/[0.06] transition-all duration-500 cursor-default"
+              onMouseEnter={playHover}
+              className="group relative rounded-2xl glass p-6 lg:p-8 hover:bg-white/[0.06] transition-all duration-300 cursor-default"
             >
               <div
                 className={`w-12 h-12 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-5`}

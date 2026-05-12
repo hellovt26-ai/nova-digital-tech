@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Check, Star, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { playClick } from "@/lib/sounds";
 
 const packageKeys = [
   { key: "starter", popular: false },
@@ -85,7 +86,8 @@ export default function Packages() {
 
                 <a
                   href="#contact"
-                  className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold transition-all ${
+                  onClick={playClick}
+                  className={`w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-semibold transition-all active:scale-95 ${
                     pkg.popular
                       ? "text-black bg-gradient-to-r from-nova-cyan to-nova-blue hover:shadow-lg hover:shadow-nova-cyan/25"
                       : "text-white glass hover:bg-white/10"

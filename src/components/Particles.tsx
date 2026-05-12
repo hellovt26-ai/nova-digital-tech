@@ -8,10 +8,15 @@ export default function Particles() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
     let animId: number;
+    const count = 20;
     const particles: { x: number; y: number; vx: number; vy: number; size: number; opacity: number }[] = [];
 
     const resize = () => {
@@ -21,12 +26,12 @@ export default function Particles() {
     resize();
     window.addEventListener("resize", resize);
 
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
         size: Math.random() * 1.5 + 0.5,
         opacity: Math.random() * 0.3 + 0.05,
       });
@@ -52,11 +57,11 @@ export default function Particles() {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
+          if (dist < 100) {
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.03 * (1 - dist / 120)})`;
+            ctx.strokeStyle = `rgba(0, 229, 255, ${0.03 * (1 - dist / 100)})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
