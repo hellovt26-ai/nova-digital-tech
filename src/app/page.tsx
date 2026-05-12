@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import VideoSection from "@/components/VideoSection";
 import TechStack from "@/components/TechStack";
 import Services from "@/components/Services";
 import Showcase from "@/components/Showcase";
@@ -22,6 +23,7 @@ export default function Home() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
+        <VideoSection />
         <TechStack />
         <Services />
         <Showcase />
