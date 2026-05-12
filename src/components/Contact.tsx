@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Send } from "lucide-react";
+import { Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
 
@@ -43,6 +43,7 @@ export default function Contact() {
     service: "",
     message: "",
   });
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -50,15 +51,41 @@ export default function Contact() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(
-      `New Inquiry from ${formData.name} — ${formData.service}`
-    );
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nBusiness: ${formData.business}\nEmail: ${formData.email}\nPhone: ${formData.phone}\nService: ${formData.service}\n\nMessage:\n${formData.message}`
-    );
-    window.location.href = `mailto:hellovt26@gmail.com?subject=${subject}&body=${body}`;
+    setStatus("sending");
+
+    try {
+      const res = await fetch("https://formsubmit.co/ajax/hellovt26@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          business: formData.business,
+          email: formData.email,
+          phone: formData.phone,
+          service: formData.service,
+          message: formData.message,
+          _subject: `NOVA Digital Tech — New Inquiry from ${formData.name}`,
+          _template: "table",
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setFormData({ name: "", business: "", email: "", phone: "", service: "", message: "" });
+        setTimeout(() => setStatus("idle"), 5000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 4000);
+      }
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
 
   return (
@@ -190,14 +217,36 @@ export default function Contact() {
               />
             </div>
 
-            <button
-              type="submit"
-              onClick={playClick}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95"
-            >
-              {t("contact.form.submit")}
-              <Send className="w-4 h-4" />
-            </button>
+            {status === "success" ? (
+              <div className="flex items-center gap-2 px-6 py-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                <CheckCircle className="w-5 h-5" />
+                <span className="text-sm font-medium">Message sent! We&apos;ll get back to you within 24 hours.</span>
+              </div>
+            ) : status === "error" ? (
+              <div className="flex items-center gap-2 px-6 py-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
+                <AlertCircle className="w-5 h-5" />
+                <span className="text-sm font-medium">Something went wrong. Please try again or email us directly.</span>
+              </div>
+            ) : (
+              <button
+                type="submit"
+                disabled={status === "sending"}
+                onClick={playClick}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {status === "sending" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    {t("contact.form.submit")}
+                    <Send className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            )}
           </motion.form>
 
           <motion.div
