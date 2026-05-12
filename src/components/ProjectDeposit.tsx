@@ -41,8 +41,7 @@ const deposits = [
     color: "from-cyan-500/20 to-blue-500/20",
     iconColor: "text-cyan-400",
     amount: "$150",
-    // Replace with your Stripe Payment Link
-    stripeLink: "https://buy.stripe.com/REPLACE_WEBSITE_LINK",
+    stripeLink: "https://buy.stripe.com/cNi5kwaGc4nccdb327fjG00",
   },
   {
     key: "branding",
@@ -50,8 +49,7 @@ const deposits = [
     color: "from-purple-500/20 to-pink-500/20",
     iconColor: "text-purple-400",
     amount: "$75",
-    // Replace with your Stripe Payment Link
-    stripeLink: "https://buy.stripe.com/REPLACE_BRANDING_LINK",
+    stripeLink: "https://buy.stripe.com/9B67sEcOk4nc5ON5affjG01",
   },
   {
     key: "app",
@@ -59,8 +57,7 @@ const deposits = [
     color: "from-emerald-500/20 to-cyan-500/20",
     iconColor: "text-emerald-400",
     amount: "$250",
-    // Replace with your Stripe Payment Link
-    stripeLink: "https://buy.stripe.com/REPLACE_APP_LINK",
+    stripeLink: "https://buy.stripe.com/3cI6oAcOk9HwdhfauzfjG02",
   },
 ];
 
