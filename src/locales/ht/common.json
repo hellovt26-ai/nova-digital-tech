@@ -14,9 +14,9 @@
   },
   "hero": {
     "badge": "Ti Biznis Fè Nou Konfyans Toupatou nan Monn Lan",
-    "headline": "Nou Bati Sit Web Modèn, App & Otomatizasyon Pou Biznis Ki Pare Pou",
-    "headlineAccent": "Grandi",
-    "subheadline": "Nou ede biznis yo sanble pwofesyonèl anliy, atire plis kliyan, otomatize travay yo epi kreye eksperyans digital premium.",
+    "headline": "Biznis Ou Merite Pi Bon Pase Yon",
+    "headlineAccent": "Sit Web Ki Depase",
+    "subheadline": "Nou kreye sit web, aplikasyon, sistèm otomatizasyon ak eksperyans mak ki ede biznis yo atire kliyan epi grandi pi vit.",
     "ctaPrimary": "Rezève Konsiltasyon Gratis",
     "ctaSecondary": "Wè Travay Nou",
     "studioTag": "Estidyo Digital Boutik — Konstwi Pou Antreprenè Modèn",
@@ -312,6 +312,60 @@
     "restaurant": {
       "title": "Sistèm Kòmand Anliy",
       "description": "Platfòm kòmand konplè ak jesyon meni, pànye ak tretman peman entegre."
+    }
+  },
+  "founder": {
+    "label": "Estidyo Nou",
+    "title": "Konstwi Ak Kreyativite &",
+    "titleAccent": "Teknoloji",
+    "description": "NOVA DIGITAL TECH te kreye pou ede biznis modèn bati eksperyans digital pi fò atravè sit web, aplikasyon, mak, otomatizasyon ak solisyon IA.",
+    "description2": "Nou se yon estidyo boutik, dirije pa fondatè l, ki trete chak pwojè tankou pa li. Pa gen modèl, pa gen rakousi — jis travay premium ak zouti modèn epi estrateji kreyatif.",
+    "values": [
+      "Devlopman Modèn",
+      "Design Kreyatif",
+      "Estrateji Entelijan",
+      "Fokis sou Kwasans"
+    ],
+    "stat": "Fèt Sou Mezi"
+  },
+  "industries": {
+    "label": "Kilès Nou Ede",
+    "title": "Endistri Nou",
+    "titleAccent": "Sèvi",
+    "subtitle": "Nou konprann endistri ou. Solisyon nou yo adapte pou bezwen espesifik biznis tankou pa ou.",
+    "items": {
+      "restaurants": {
+        "title": "Restoran",
+        "description": "Sit modèn ak kòmand anliy, vitrin meni ak sistèm rezèvasyon."
+      },
+      "barbershops": {
+        "title": "Salon Kwafè",
+        "description": "Aplikasyon rezèvasyon ak disponiblite an tan reyèl ak rapèl otomatize."
+      },
+      "cleaning": {
+        "title": "Sèvis Netwayaj",
+        "description": "Sit pwofesyonèl ak sistèm rezèvasyon ak suivi kliyan otomatize."
+      },
+      "startups": {
+        "title": "Startup",
+        "description": "Devlopman MVP, paj atèrisaj, tablo bò ak aplikasyon evolitif."
+      },
+      "local": {
+        "title": "Biznis Lokal",
+        "description": "Prezans anliy pwofesyonèl ak SEO, fòmilè ak entegrasyon sosyal."
+      },
+      "beauty": {
+        "title": "Bote & Salon",
+        "description": "Platfòm rezèvasyon elegan ak meni sèvis ak jesyon kliyan."
+      },
+      "logistics": {
+        "title": "Lojistik & Transpò",
+        "description": "Tablo bò flòt, sistèm dispatsh ak pòtay suivi kliyan."
+      },
+      "entrepreneurs": {
+        "title": "Antreprenè",
+        "description": "Mak pèsonèl, pòtfolyo, paj atèrisaj ak platfòm pwodwi dijital."
+      }
     }
   },
   "transformation": {

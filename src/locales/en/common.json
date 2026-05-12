@@ -14,9 +14,9 @@
   },
   "hero": {
     "badge": "Trusted by Small Businesses Worldwide",
-    "headline": "We Build Modern Websites, Apps & Automation For Businesses Ready To",
-    "headlineAccent": "Grow",
-    "subheadline": "We help businesses look professional online, attract more customers, automate workflows, and create premium digital experiences.",
+    "headline": "Your Business Deserves Better Than An",
+    "headlineAccent": "Outdated Website",
+    "subheadline": "We create websites, apps, automation systems, and branding experiences that help businesses attract customers and grow faster.",
     "ctaPrimary": "Book Free Consultation",
     "ctaSecondary": "View Our Work",
     "studioTag": "Boutique Digital Studio — Built for Modern Entrepreneurs",
@@ -312,6 +312,60 @@
     "restaurant": {
       "title": "Online Ordering Systems",
       "description": "Complete ordering platforms with menu management, cart, and payment processing built in."
+    }
+  },
+  "founder": {
+    "label": "Our Studio",
+    "title": "Built With Creativity &",
+    "titleAccent": "Technology",
+    "description": "NOVA DIGITAL TECH was created to help modern businesses build stronger digital experiences through websites, apps, branding, automation, and AI-powered solutions.",
+    "description2": "We're a boutique, founder-led studio that treats every project like our own. No templates, no shortcuts — just premium work built with modern tools and creative strategy.",
+    "values": [
+      "Modern Development",
+      "Creative Design",
+      "Smart Strategy",
+      "Growth Focused"
+    ],
+    "stat": "Custom Built"
+  },
+  "industries": {
+    "label": "Who We Help",
+    "title": "Industries We",
+    "titleAccent": "Serve",
+    "subtitle": "We understand your industry. Our solutions are tailored to the specific needs of businesses like yours.",
+    "items": {
+      "restaurants": {
+        "title": "Restaurants",
+        "description": "Modern websites with online ordering, menu showcases, and reservation systems."
+      },
+      "barbershops": {
+        "title": "Barbershops",
+        "description": "Booking apps with real-time availability, stylist selection, and reminders."
+      },
+      "cleaning": {
+        "title": "Cleaning Services",
+        "description": "Professional sites with booking systems, service areas, and customer follow-ups."
+      },
+      "startups": {
+        "title": "Startups",
+        "description": "MVP development, landing pages, dashboards, and scalable web applications."
+      },
+      "local": {
+        "title": "Local Businesses",
+        "description": "Professional online presence with SEO, contact forms, and social integration."
+      },
+      "beauty": {
+        "title": "Beauty & Salons",
+        "description": "Elegant booking platforms with service menus, galleries, and client management."
+      },
+      "logistics": {
+        "title": "Logistics & Trucking",
+        "description": "Fleet dashboards, dispatch systems, and customer tracking portals."
+      },
+      "entrepreneurs": {
+        "title": "Entrepreneurs",
+        "description": "Personal brands, portfolios, landing pages, and digital product platforms."
+      }
     }
   },
   "transformation": {

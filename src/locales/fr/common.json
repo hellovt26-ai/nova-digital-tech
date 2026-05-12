@@ -14,9 +14,9 @@
   },
   "hero": {
     "badge": "La confiance des petites entreprises à travers le monde",
-    "headline": "Nous Créons Des Sites Web, Apps & Automatisation Pour Les Entreprises Prêtes À",
-    "headlineAccent": "Grandir",
-    "subheadline": "Nous aidons les entreprises à avoir une image professionnelle en ligne, attirer plus de clients, automatiser leurs processus et créer des expériences digitales premium.",
+    "headline": "Votre Entreprise Mérite Mieux Qu'un",
+    "headlineAccent": "Site Web Obsolète",
+    "subheadline": "Nous créons des sites web, applications, systèmes d'automatisation et expériences de marque qui aident les entreprises à attirer des clients et à croître plus rapidement.",
     "ctaPrimary": "Consultation Gratuite",
     "ctaSecondary": "Voir Nos Réalisations",
     "studioTag": "Studio Digital Boutique — Conçu pour les Entrepreneurs Modernes",
@@ -312,6 +312,60 @@
     "restaurant": {
       "title": "Systèmes de Commande en Ligne",
       "description": "Plateformes de commande complètes avec gestion de menu, panier et traitement des paiements intégrés."
+    }
+  },
+  "founder": {
+    "label": "Notre Studio",
+    "title": "Construit Avec Créativité &",
+    "titleAccent": "Technologie",
+    "description": "NOVA DIGITAL TECH a été créé pour aider les entreprises modernes à construire des expériences digitales plus fortes à travers des sites web, applications, branding, automatisation et solutions IA.",
+    "description2": "Nous sommes un studio boutique, dirigé par son fondateur, qui traite chaque projet comme le sien. Pas de modèles, pas de raccourcis — juste du travail premium avec des outils modernes et une stratégie créative.",
+    "values": [
+      "Développement Moderne",
+      "Design Créatif",
+      "Stratégie Intelligente",
+      "Axé Croissance"
+    ],
+    "stat": "Fait Sur Mesure"
+  },
+  "industries": {
+    "label": "Qui Nous Aidons",
+    "title": "Les Industries Que Nous",
+    "titleAccent": "Servons",
+    "subtitle": "Nous comprenons votre industrie. Nos solutions sont adaptées aux besoins spécifiques d'entreprises comme la vôtre.",
+    "items": {
+      "restaurants": {
+        "title": "Restaurants",
+        "description": "Sites modernes avec commande en ligne, vitrines de menu et systèmes de réservation."
+      },
+      "barbershops": {
+        "title": "Salons de Coiffure",
+        "description": "Applications de réservation avec disponibilité en temps réel et rappels automatisés."
+      },
+      "cleaning": {
+        "title": "Services de Nettoyage",
+        "description": "Sites professionnels avec systèmes de réservation et suivi client automatisé."
+      },
+      "startups": {
+        "title": "Startups",
+        "description": "Développement MVP, pages d'atterrissage, tableaux de bord et applications évolutives."
+      },
+      "local": {
+        "title": "Commerces Locaux",
+        "description": "Présence en ligne professionnelle avec SEO, formulaires et intégration sociale."
+      },
+      "beauty": {
+        "title": "Beauté & Salons",
+        "description": "Plateformes de réservation élégantes avec menus de services et gestion client."
+      },
+      "logistics": {
+        "title": "Logistique & Transport",
+        "description": "Tableaux de bord de flotte, systèmes de dispatch et portails de suivi client."
+      },
+      "entrepreneurs": {
+        "title": "Entrepreneurs",
+        "description": "Marques personnelles, portfolios, pages d'atterrissage et plateformes de produits digitaux."
+      }
     }
   },
   "transformation": {

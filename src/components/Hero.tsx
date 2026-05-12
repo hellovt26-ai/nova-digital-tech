@@ -13,6 +13,8 @@ import {
   Rocket,
   Globe,
   Users,
+  Code2,
+  BarChart3,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
@@ -54,12 +56,12 @@ export default function Hero() {
               {t("hero.badge")}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight">
               {t("hero.headline")}{" "}
               <span className="text-gradient">{t("hero.headlineAccent")}</span>
             </h1>
 
-            <p className="mt-6 text-lg text-gray-400 leading-relaxed max-w-xl">
+            <p className="mt-6 text-lg sm:text-xl text-gray-400 leading-relaxed max-w-xl">
               {t("hero.subheadline")}
             </p>
 
@@ -72,7 +74,7 @@ export default function Hero() {
               <a
                 href="#contact"
                 onClick={playClick}
-                className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95"
               >
                 {t("hero.ctaPrimary")}
                 <Rocket className="w-4 h-4" />
@@ -80,7 +82,7 @@ export default function Hero() {
               <a
                 href="#portfolio"
                 onClick={playClick}
-                className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-4 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all active:scale-95"
               >
                 {t("hero.ctaSecondary")}
               </a>
@@ -121,20 +123,42 @@ export default function Hero() {
                   <div className="space-y-3">
                     <div className="flex gap-3">
                       <div className="w-1/3 h-24 rounded-lg bg-gradient-to-br from-nova-cyan/20 to-transparent border border-white/5 flex items-center justify-center">
-                        <TrendingUp className="w-8 h-8 text-nova-cyan/50" />
+                        <BarChart3 className="w-8 h-8 text-nova-cyan/50" />
                       </div>
                       <div className="flex-1 space-y-2">
                         <div className="h-3 w-3/4 rounded bg-white/10" />
                         <div className="h-3 w-1/2 rounded bg-white/5" />
-                        <div className="h-8 w-full rounded-lg bg-gradient-to-r from-nova-cyan/20 to-nova-blue/20 mt-2" />
+                        <motion.div
+                          animate={{ width: ["40%", "85%", "40%"] }}
+                          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                          className="h-8 rounded-lg bg-gradient-to-r from-nova-cyan/20 to-nova-blue/20 mt-2"
+                        />
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
-                      {[1, 2, 3].map((i) => (
-                        <div key={i} className="h-16 rounded-lg bg-white/5 border border-white/5" />
+                      {[TrendingUp, Users, Code2].map((Icon, i) => (
+                        <motion.div
+                          key={i}
+                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          transition={{ duration: 2, delay: i * 0.5, repeat: Infinity }}
+                          className="h-16 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center"
+                        >
+                          <Icon className="w-5 h-5 text-white/20" />
+                        </motion.div>
                       ))}
                     </div>
-                    <div className="h-20 rounded-lg bg-white/5 border border-white/5" />
+                    <div className="h-20 rounded-lg bg-white/5 border border-white/5 p-3">
+                      <div className="flex items-end gap-1 h-full">
+                        {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85].map((h, i) => (
+                          <motion.div
+                            key={i}
+                            animate={{ height: [`${h * 0.5}%`, `${h}%`, `${h * 0.5}%`] }}
+                            transition={{ duration: 2, delay: i * 0.15, repeat: Infinity, ease: "easeInOut" }}
+                            className="flex-1 rounded-sm bg-gradient-to-t from-nova-cyan/30 to-nova-blue/20"
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

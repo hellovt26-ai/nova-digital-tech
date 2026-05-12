@@ -10,14 +10,15 @@ import {
   Headphones,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { playHover } from "@/lib/sounds";
 
 const reasonKeys = [
-  { key: "growth", icon: TrendingUp },
-  { key: "premium", icon: Award },
-  { key: "mobile", icon: Smartphone },
-  { key: "workflow", icon: Workflow },
-  { key: "ai", icon: Cpu },
-  { key: "support", icon: Headphones },
+  { key: "growth", icon: TrendingUp, color: "from-cyan-500/20 to-blue-500/20", iconColor: "text-cyan-400" },
+  { key: "premium", icon: Award, color: "from-amber-500/20 to-orange-500/20", iconColor: "text-amber-400" },
+  { key: "mobile", icon: Smartphone, color: "from-blue-500/20 to-indigo-500/20", iconColor: "text-blue-400" },
+  { key: "workflow", icon: Workflow, color: "from-emerald-500/20 to-teal-500/20", iconColor: "text-emerald-400" },
+  { key: "ai", icon: Cpu, color: "from-purple-500/20 to-violet-500/20", iconColor: "text-purple-400" },
+  { key: "support", icon: Headphones, color: "from-pink-500/20 to-rose-500/20", iconColor: "text-pink-400" },
 ];
 
 export default function WhyChooseUs() {
@@ -52,12 +53,13 @@ export default function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="relative rounded-2xl p-6 lg:p-8 group"
+              onMouseEnter={playHover}
+              className="relative rounded-2xl glass p-6 lg:p-8 group hover:bg-white/[0.05] transition-all duration-300 card-lift"
             >
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-white/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative">
-                <div className="w-11 h-11 rounded-lg bg-nova-cyan/10 flex items-center justify-center mb-4 group-hover:bg-nova-cyan/15 transition-colors">
-                  <reason.icon className="w-5 h-5 text-nova-cyan" />
+                <div className={`w-11 h-11 rounded-lg bg-gradient-to-br ${reason.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <reason.icon className={`w-5 h-5 ${reason.iconColor}`} />
                 </div>
                 <h3 className="text-base font-semibold text-white mb-2">
                   {t(`whyUs.items.${reason.key}.title`)}

@@ -3,8 +3,10 @@ import Hero from "@/components/Hero";
 import VideoSection from "@/components/VideoSection";
 import TechStack from "@/components/TechStack";
 import Services from "@/components/Services";
+import Industries from "@/components/Industries";
 import ClientResults from "@/components/ClientResults";
 import Portfolio from "@/components/Portfolio";
+import FounderStudio from "@/components/FounderStudio";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import Testimonials from "@/components/Testimonials";
 import Transformation from "@/components/Transformation";
@@ -27,7 +29,9 @@ export default function Home() {
         <TechStack />
         <ClientResults />
         <Services />
+        <Industries />
         <Portfolio />
+        <FounderStudio />
         <WhyChooseUs />
         <Testimonials />
         <Transformation />
