@@ -368,6 +368,55 @@
       }
     }
   },
+  "featuredOffer": {
+    "badge": "Service Le Plus Populaire",
+    "title": "Site Web Professionnel +",
+    "titleAccent": "Système de Réservation",
+    "description": "Tout ce dont votre entreprise a besoin pour avoir une image professionnelle en ligne et commencer à convertir les visiteurs en clients — livré rapidement, conçu pour grandir.",
+    "features": [
+      "Site web moderne et responsive (jusqu'à 5 pages)",
+      "Design optimisé mobile sur tous les appareils",
+      "Système de réservation ou de contact en ligne",
+      "Branding professionnel & identité visuelle",
+      "Lancement rapide — prêt en jours, pas en mois"
+    ],
+    "cta": "Commencer Aujourd'hui",
+    "availability": "Places limitées disponibles"
+  },
+  "latestTransformations": {
+    "label": "Transformations Business",
+    "title": "Dernières Transformations",
+    "titleAccent": "Business",
+    "subtitle": "Découvrez comment nous réimaginons les entreprises avec des sites modernes, applications, branding et systèmes d'automatisation.",
+    "cta": "Vous voulez une transformation comme celle-ci ? Parlons-en",
+    "items": {
+      "restaurant": {
+        "type": "Restaurant",
+        "title": "Refonte de Site Restaurant",
+        "description": "D'une page obsolète à une plateforme moderne de commande et réservation."
+      },
+      "barber": {
+        "type": "Salon de Coiffure",
+        "title": "App de Réservation Barbier",
+        "description": "Un système de réservation mobile élégant avec disponibilité en temps réel."
+      },
+      "cleaning": {
+        "type": "Service de Nettoyage",
+        "title": "Modernisation Entreprise de Nettoyage",
+        "description": "Site professionnel avec réservation automatisée et suivi client."
+      },
+      "startup": {
+        "type": "Startup",
+        "title": "Landing Page Startup",
+        "description": "Page d'atterrissage à haute conversion avec design moderne et analytique."
+      }
+    }
+  },
+  "miniCta": {
+    "headline": "Prêt à Moderniser Votre Entreprise ?",
+    "subheadline": "Obtenez une consultation gratuite et découvrez comment nous pouvons transformer votre présence en ligne.",
+    "cta": "Consultation Gratuite"
+  },
   "transformation": {
     "label": "L'Effet NOVA",
     "title": "De Dépassé à",

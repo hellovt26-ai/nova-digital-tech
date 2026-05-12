@@ -368,6 +368,55 @@
       }
     }
   },
+  "featuredOffer": {
+    "badge": "Most Popular Service",
+    "title": "Modern Business Website +",
+    "titleAccent": "Booking Setup",
+    "description": "Everything your business needs to look professional online and start converting visitors into customers — delivered fast, built to grow.",
+    "features": [
+      "Modern responsive website (up to 5 pages)",
+      "Mobile-optimized design that works on all devices",
+      "Online booking or contact system",
+      "Professional branding & visual identity",
+      "Fast launch — ready in days, not months"
+    ],
+    "cta": "Get Started Today",
+    "availability": "Limited spots available"
+  },
+  "latestTransformations": {
+    "label": "Business Upgrades",
+    "title": "Latest Business",
+    "titleAccent": "Transformations",
+    "subtitle": "See how we reimagine outdated businesses with modern websites, apps, branding, and automation systems.",
+    "cta": "Want a transformation like this? Let's talk",
+    "items": {
+      "restaurant": {
+        "type": "Restaurant",
+        "title": "Restaurant Website Redesign",
+        "description": "From an outdated page to a modern ordering and reservation platform."
+      },
+      "barber": {
+        "type": "Barber Shop",
+        "title": "Barber Booking App",
+        "description": "A sleek mobile booking system with real-time availability."
+      },
+      "cleaning": {
+        "type": "Cleaning Service",
+        "title": "Cleaning Business Upgrade",
+        "description": "Professional site with automated booking and customer follow-ups."
+      },
+      "startup": {
+        "type": "Startup",
+        "title": "Startup Landing Page",
+        "description": "High-converting landing page with modern design and analytics."
+      }
+    }
+  },
+  "miniCta": {
+    "headline": "Ready to Upgrade Your Business?",
+    "subheadline": "Get a free consultation and see how we can transform your online presence.",
+    "cta": "Book Free Consultation"
+  },
   "transformation": {
     "label": "The NOVA Effect",
     "title": "From Outdated to",

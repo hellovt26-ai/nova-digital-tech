@@ -368,6 +368,55 @@
       }
     }
   },
+  "featuredOffer": {
+    "badge": "Sèvis Ki Pi Popilè",
+    "title": "Sit Web Modèn Biznis +",
+    "titleAccent": "Sistèm Rezèvasyon",
+    "description": "Tout sa biznis ou bezwen pou sanble pwofesyonèl anliy epi kòmanse konvèti vizitè an kliyan — livre rapid, konstwi pou grandi.",
+    "features": [
+      "Sit web modèn ak responsive (jiska 5 paj)",
+      "Design optimize pou mobil sou tout aparèy",
+      "Sistèm rezèvasyon oswa kontak anliy",
+      "Branding pwofesyonèl ak idantite vizyèl",
+      "Lansman rapid — pare nan jou, pa nan mwa"
+    ],
+    "cta": "Kòmanse Jodi a",
+    "availability": "Plas limite disponib"
+  },
+  "latestTransformations": {
+    "label": "Transfòmasyon Biznis",
+    "title": "Dènye Transfòmasyon",
+    "titleAccent": "Biznis",
+    "subtitle": "Gade kijan nou reimajine biznis demode ak sit modèn, aplikasyon, mak ak sistèm otomatizasyon.",
+    "cta": "Ou vle yon transfòmasyon konsa? Ann pale",
+    "items": {
+      "restaurant": {
+        "type": "Restoran",
+        "title": "Refont Sit Restoran",
+        "description": "Soti nan yon paj demode rive nan yon platfòm modèn kòmand ak rezèvasyon."
+      },
+      "barber": {
+        "type": "Salon Kwafè",
+        "title": "App Rezèvasyon Barbye",
+        "description": "Yon sistèm rezèvasyon mobil elegan ak disponiblite an tan reyèl."
+      },
+      "cleaning": {
+        "type": "Sèvis Netwayaj",
+        "title": "Modènizasyon Biznis Netwayaj",
+        "description": "Sit pwofesyonèl ak rezèvasyon otomatize epi suivi kliyan."
+      },
+      "startup": {
+        "type": "Startup",
+        "title": "Paj Atèrisaj Startup",
+        "description": "Paj atèrisaj ki konvèti anpil ak design modèn epi analitik."
+      }
+    }
+  },
+  "miniCta": {
+    "headline": "Pare Pou Modènize Biznis Ou?",
+    "subheadline": "Jwenn yon konsiltasyon gratis epi wè kijan nou ka transfòme prezans anliy ou.",
+    "cta": "Konsiltasyon Gratis"
+  },
   "transformation": {
     "label": "Efè NOVA",
     "title": "Soti nan Ansyen Rive nan",
