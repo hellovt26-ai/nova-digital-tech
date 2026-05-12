@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Play, ExternalLink, ArrowRight } from "lucide-react";
+import { Play, X, ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
 
@@ -10,29 +11,34 @@ const transformations = [
     key: "restaurant",
     gradient: "from-orange-500/20 to-red-500/20",
     accent: "text-orange-400",
-    borderAccent: "border-orange-500/20",
+    videoId: "V6iChXof_Ek",
+    thumbnail: "https://img.youtube.com/vi/V6iChXof_Ek/hqdefault.jpg",
   },
   {
     key: "barber",
     gradient: "from-blue-500/20 to-indigo-500/20",
     accent: "text-blue-400",
-    borderAccent: "border-blue-500/20",
+    videoId: "NZTVJ57hDGk",
+    thumbnail: "https://img.youtube.com/vi/NZTVJ57hDGk/hqdefault.jpg",
   },
   {
     key: "cleaning",
     gradient: "from-emerald-500/20 to-teal-500/20",
     accent: "text-emerald-400",
-    borderAccent: "border-emerald-500/20",
+    videoId: "K0XmP-SSvYU",
+    thumbnail: "https://img.youtube.com/vi/K0XmP-SSvYU/hqdefault.jpg",
   },
   {
     key: "startup",
     gradient: "from-purple-500/20 to-violet-500/20",
     accent: "text-purple-400",
-    borderAccent: "border-purple-500/20",
+    videoId: "gpyX0euLJdo",
+    thumbnail: "https://img.youtube.com/vi/gpyX0euLJdo/hqdefault.jpg",
   },
 ];
 
 function TransformationCard({ item, index }: { item: typeof transformations[0]; index: number }) {
+  const [playing, setPlaying] = useState(false);
   const { t } = useI18n();
 
   return (
@@ -41,41 +47,52 @@ function TransformationCard({ item, index }: { item: typeof transformations[0]; 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className={`group relative rounded-2xl glass overflow-hidden hover:bg-white/[0.04] transition-all duration-500 card-lift`}
+      className="group relative rounded-2xl glass overflow-hidden hover:bg-white/[0.04] transition-all duration-500 card-lift"
     >
-      <div className={`aspect-[16/10] bg-gradient-to-br ${item.gradient} relative overflow-hidden`}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-full h-full p-4">
-            <div className="w-full h-full rounded-lg bg-black/40 backdrop-blur-sm border border-white/10 p-3 overflow-hidden">
-              <div className="flex gap-1 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-red-400/60" />
-                <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/60" />
-                <div className="w-1.5 h-1.5 rounded-full bg-green-400/60" />
-              </div>
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="space-y-1.5"
-              >
-                <div className="h-8 rounded bg-white/10" />
-                <div className="grid grid-cols-3 gap-1">
-                  <div className="h-6 rounded bg-white/5" />
-                  <div className="h-6 rounded bg-white/5" />
-                  <div className="h-6 rounded bg-white/5" />
-                </div>
-                <div className="h-4 w-2/3 rounded bg-white/8" />
-                <div className="h-4 w-1/2 rounded bg-white/5" />
-                <div className="h-6 w-20 rounded bg-gradient-to-r from-nova-cyan/30 to-nova-blue/20" />
-              </motion.div>
+      <div className="aspect-[16/10] relative overflow-hidden">
+        {playing ? (
+          <div className="w-full h-full relative">
+            {/* Scale up and shift to crop out Veo watermark */}
+            <div className="absolute inset-0 overflow-hidden">
+              <iframe
+                src={`https://www.youtube.com/embed/${item.videoId}?autoplay=1&mute=0&controls=1&modestbranding=1&rel=0&showinfo=0`}
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+                className="absolute top-[-5%] left-[-2%] w-[104%] h-[115%]"
+              />
             </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); setPlaying(false); playClick(); }}
+              className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80 transition-colors"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
           </div>
-        </div>
+        ) : (
+          <button
+            onClick={() => { setPlaying(true); playClick(); }}
+            className={`w-full h-full bg-gradient-to-br ${item.gradient} relative cursor-pointer`}
+          >
+            {/* YouTube thumbnail as background */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-60"
+              style={{ backgroundImage: `url(${item.thumbnail})` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/30 backdrop-blur-sm">
-          <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-            <Play className="w-5 h-5 text-white ml-0.5" fill="currentColor" />
-          </div>
-        </div>
+            {/* Play button */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/25 group-hover:scale-110 group-hover:bg-white/25 transition-all duration-300">
+                <Play className="w-6 h-6 text-white ml-0.5" fill="currentColor" />
+              </div>
+            </div>
+
+            {/* Duration badge */}
+            <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/60 backdrop-blur-sm text-[10px] text-white/80">
+              0:08
+            </div>
+          </button>
+        )}
       </div>
 
       <div className="p-5">
