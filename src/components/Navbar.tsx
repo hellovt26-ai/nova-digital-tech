@@ -37,15 +37,15 @@ export default function Navbar() {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-24 lg:h-28">
           <a href="#" className="flex items-center gap-2.5 group" onClick={playClick}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/nova-digital-tech/logo.png"
               alt="NOVA Digital Tech"
-              width={52}
-              height={52}
-              className="w-[52px] h-[52px] object-contain drop-shadow-[0_0_10px_rgba(0,136,255,0.4)]"
+              width={156}
+              height={156}
+              className="w-[156px] h-[156px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)]"
             />
             <div>
               <span className="text-lg font-bold tracking-tight text-white">
