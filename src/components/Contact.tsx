@@ -209,8 +209,11 @@ export default function Contact() {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
 
-    // Redirect to Stripe Payment Link
-    window.location.href = option.stripeLink;
+    // Close modal first, then redirect
+    setStep("processing");
+    setTimeout(() => {
+      window.location.href = option.stripeLink;
+    }, 300);
   };
 
   const handleBackToForm = () => {
@@ -218,6 +221,32 @@ export default function Contact() {
     setStep("form");
     setSelectedConsultation(null);
   };
+
+  // ─── PROCESSING / REDIRECTING STATE ───
+  if (step === "processing") {
+    return (
+      <section id="contact" className="relative py-24 lg:py-32">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4 }}
+          >
+            <div className="w-20 h-20 rounded-full bg-nova-cyan/10 border border-nova-cyan/20 flex items-center justify-center mx-auto mb-6">
+              <Loader2 className="w-10 h-10 text-nova-cyan animate-spin" />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-3">
+              Redirecting to <span className="text-gradient">Secure Payment</span>
+            </h2>
+            <p className="text-gray-400 text-sm">
+              You&apos;re being redirected to Stripe for secure checkout...
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
 
   // ─── SUCCESS STATE ───
   if (step === "success") {
@@ -405,7 +434,7 @@ export default function Contact() {
                   required
                   value={formData.service}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
+                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center]"
                 >
                   <option value="" disabled>
                     {t("contact.form.servicePlaceholder")}
@@ -425,7 +454,7 @@ export default function Contact() {
                   name="language"
                   value={formData.language}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
+                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center]"
                 >
                   <option value="" disabled>Select language</option>
                   {languageOptions.map((lang) => (
@@ -446,7 +475,7 @@ export default function Contact() {
                 name="budget"
                 value={formData.budget}
                 onChange={handleChange}
-                className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
+                className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23666%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%209l6%206%206-6%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[right_1rem_center]"
               >
                 <option value="" disabled>Select your budget range</option>
                 {budgetRanges.map((range) => (

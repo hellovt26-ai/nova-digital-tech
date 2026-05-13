@@ -21,6 +21,21 @@ body {
   color: #fff;
 }
 
+/* Custom select dropdown styling */
+select option {
+  background: #111119;
+  color: #e5e7eb;
+  padding: 12px 16px;
+}
+select option:checked,
+select option:hover {
+  background: #1a1a2e;
+  color: #fff;
+}
+select::-ms-expand {
+  display: none;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
