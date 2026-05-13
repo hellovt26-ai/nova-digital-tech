@@ -615,11 +615,12 @@ export default function Contact() {
               transition={{ duration: 0.3, ease: "easeOut" }}
               className="relative w-full sm:max-w-3xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto bg-[#0c0c14] sm:rounded-3xl sm:glass-strong border-t sm:border border-white/10 p-5 sm:p-8 shadow-2xl shadow-black/40"
             >
-              {/* Close button */}
+              {/* Close button — sticky on mobile so always visible */}
               <button
                 onClick={handleBackToForm}
-                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5 z-10"
+                className="sticky top-0 ml-auto p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/10 z-10 flex items-center gap-1.5 mb-2"
               >
+                <span className="text-xs sm:hidden">Close</span>
                 <X className="w-5 h-5" />
               </button>
 
