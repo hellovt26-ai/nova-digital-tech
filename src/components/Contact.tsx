@@ -1,8 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2, Lock, Globe, Palette, Code2, Check } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Mail,
+  MapPin,
+  Send,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  Lock,
+  Globe,
+  Palette,
+  Code2,
+  Check,
+  ArrowRight,
+  Shield,
+  X,
+  Sparkles,
+  Home,
+  FolderOpen,
+} from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
 
@@ -33,61 +51,136 @@ const serviceOptionKeys = [
   "notSure",
 ] as const;
 
-const depositOptions = [
-  {
-    id: "free",
-    label: "Free Consultation",
-    description: "No deposit — just a conversation",
-    amount: "$0",
-    icon: Send,
-    color: "border-gray-600 hover:border-gray-500",
-    activeColor: "border-nova-cyan bg-nova-cyan/10",
-    stripeLink: "",
-  },
+const budgetRanges = [
+  "Under $500",
+  "$500 – $1,000",
+  "$1,000 – $2,500",
+  "$2,500 – $5,000",
+  "$5,000+",
+  "Not sure yet",
+];
+
+const languageOptions = [
+  { value: "English", label: "English" },
+  { value: "French", label: "Français" },
+  { value: "Haitian Creole", label: "Kreyòl Ayisyen" },
+];
+
+const consultationOptions = [
   {
     id: "website",
-    label: "Website Deposit",
-    description: "Website & landing pages",
-    amount: "$150",
+    title: "Website Consultation",
+    description: "For business websites, landing pages, redesigns, and online presence help.",
+    amount: 150,
+    displayAmount: "$150",
     icon: Globe,
-    color: "border-white/10 hover:border-cyan-500/30",
-    activeColor: "border-cyan-400 bg-cyan-500/10",
+    color: "from-cyan-500 to-blue-500",
+    borderColor: "border-cyan-500/30 hover:border-cyan-400",
+    activeColor: "border-cyan-400 bg-cyan-500/10 shadow-lg shadow-cyan-500/10",
+    iconColor: "text-cyan-400",
+    popular: true,
     stripeLink: "https://buy.stripe.com/cNi5kwaGc4nccdb327fjG00",
   },
   {
     id: "branding",
-    label: "Branding Deposit",
-    description: "Logo, colors & identity",
-    amount: "$75",
+    title: "Branding Consultation",
+    description: "For logos, branding, flyers, social media visuals, and business identity.",
+    amount: 75,
+    displayAmount: "$75",
     icon: Palette,
-    color: "border-white/10 hover:border-purple-500/30",
-    activeColor: "border-purple-400 bg-purple-500/10",
+    color: "from-purple-500 to-pink-500",
+    borderColor: "border-purple-500/30 hover:border-purple-400",
+    activeColor: "border-purple-400 bg-purple-500/10 shadow-lg shadow-purple-500/10",
+    iconColor: "text-purple-400",
+    popular: false,
     stripeLink: "https://buy.stripe.com/9B67sEcOk4nc5ON5affjG01",
   },
   {
     id: "app",
-    label: "App & Automation",
-    description: "Mobile apps & AI tools",
-    amount: "$250",
+    title: "App & Automation",
+    description: "For mobile apps, booking systems, dashboards, AI tools, and automation workflows.",
+    amount: 250,
+    displayAmount: "$250",
     icon: Code2,
-    color: "border-white/10 hover:border-emerald-500/30",
-    activeColor: "border-emerald-400 bg-emerald-500/10",
+    color: "from-emerald-500 to-cyan-500",
+    borderColor: "border-emerald-500/30 hover:border-emerald-400",
+    activeColor: "border-emerald-400 bg-emerald-500/10 shadow-lg shadow-emerald-500/10",
+    iconColor: "text-emerald-400",
+    popular: false,
     stripeLink: "https://buy.stripe.com/3cI6oAcOk9HwdhfauzfjG02",
   },
 ];
 
+type FlowStep = "form" | "modal" | "processing" | "success" | "cancelled";
+
+const STORAGE_KEY = "nova_consultation_data";
+
 export default function Contact() {
   const { t } = useI18n();
+  const [step, setStep] = useState<FlowStep>("form");
+  const [selectedConsultation, setSelectedConsultation] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     business: "",
     email: "",
     phone: "",
     service: "",
+    language: "",
+    budget: "",
     message: "",
   });
-  const [selectedDeposit, setSelectedDeposit] = useState("free");
-  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+
+  // Check URL params on mount for Stripe return
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const consultationStatus = params.get("consultation");
+
+    if (consultationStatus === "success") {
+      // Send the saved form data email
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const data = JSON.parse(saved);
+        sendEmail(data);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      setStep("success");
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+    } else if (consultationStatus === "cancelled") {
+      setStep("cancelled");
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const sendEmail = useCallback(async (data: Record<string, string>) => {
+    try {
+      await fetch("https://formsubmit.co/ajax/hellovt26@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          _subject: `New Paid Consultation Request — NOVA DIGITAL TECH`,
+          _template: "table",
+          "Consultation Type": data.consultationType || "N/A",
+          "Payment Amount": data.paymentAmount || "N/A",
+          "Client Name": data.name,
+          "Business Name": data.business || "N/A",
+          "Client Email": data.email,
+          "Phone Number": data.phone || "N/A",
+          "Service Needed": data.service,
+          "Preferred Language": data.language || "N/A",
+          "Budget Range": data.budget || "N/A",
+          "Project Message": data.message || "N/A",
+          "Submitted At": new Date().toLocaleString(),
+        }),
+      });
+    } catch {
+      // Silently fail — payment already confirmed
+    }
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -95,50 +188,117 @@ export default function Contact() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus("sending");
-
-    try {
-      const res = await fetch("https://formsubmit.co/ajax/hellovt26@gmail.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          business: formData.business,
-          email: formData.email,
-          phone: formData.phone,
-          service: formData.service,
-          deposit: depositOptions.find((d) => d.id === selectedDeposit)?.label || "Free Consultation",
-          message: formData.message,
-          _subject: `NOVA Digital Tech — New Inquiry from ${formData.name}${selectedDeposit !== "free" ? " (Deposit Selected)" : ""}`,
-          _template: "table",
-        }),
-      });
-
-      if (res.ok) {
-        setStatus("success");
-        const deposit = depositOptions.find((d) => d.id === selectedDeposit);
-        setFormData({ name: "", business: "", email: "", phone: "", service: "", message: "" });
-        if (deposit && deposit.stripeLink) {
-          setTimeout(() => {
-            window.open(deposit.stripeLink, "_blank");
-          }, 1500);
-        }
-        setTimeout(() => setStatus("idle"), 5000);
-      } else {
-        setStatus("error");
-        setTimeout(() => setStatus("idle"), 4000);
-      }
-    } catch {
-      setStatus("error");
-      setTimeout(() => setStatus("idle"), 4000);
-    }
+    playClick();
+    setStep("modal");
   };
 
+  const handleSecureConsultation = () => {
+    if (!selectedConsultation) return;
+    playClick();
+
+    const option = consultationOptions.find((o) => o.id === selectedConsultation);
+    if (!option) return;
+
+    // Save form data + consultation info to localStorage
+    const dataToSave = {
+      ...formData,
+      consultationType: option.title,
+      paymentAmount: option.displayAmount,
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+
+    // Redirect to Stripe Payment Link
+    window.location.href = option.stripeLink;
+  };
+
+  const handleBackToForm = () => {
+    playClick();
+    setStep("form");
+    setSelectedConsultation(null);
+  };
+
+  // ─── SUCCESS STATE ───
+  if (step === "success") {
+    return (
+      <section id="contact" className="relative py-24 lg:py-32">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-emerald-400" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Consultation <span className="text-gradient">Confirmed</span>
+            </h2>
+            <p className="text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+              Thank you. Your consultation request has been received.
+              We&apos;ll review your project details and contact you soon.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href="#"
+                onClick={playClick}
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all active:scale-95"
+              >
+                <Home className="w-4 h-4" />
+                Back To Home
+              </a>
+              <a
+                href="#portfolio"
+                onClick={playClick}
+                className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-white glass rounded-xl hover:bg-white/10 transition-all active:scale-95"
+              >
+                <FolderOpen className="w-4 h-4" />
+                Visit Portfolio
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  // ─── CANCELLED STATE ───
+  if (step === "cancelled") {
+    return (
+      <section id="contact" className="relative py-24 lg:py-32">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
+        <div className="relative max-w-2xl mx-auto px-4 sm:px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="w-20 h-20 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto mb-6">
+              <AlertCircle className="w-10 h-10 text-amber-400" />
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
+              Consultation <span className="text-amber-400">Not Completed</span>
+            </h2>
+            <p className="text-gray-400 mb-8 max-w-md mx-auto leading-relaxed">
+              Your request was not submitted yet. Please complete your consultation
+              payment to confirm your project request.
+            </p>
+            <button
+              onClick={() => { setStep("form"); playClick(); }}
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all active:scale-95"
+            >
+              <ArrowRight className="w-4 h-4 rotate-180" />
+              Return To Form
+            </button>
+          </motion.div>
+        </div>
+      </section>
+    );
+  }
+
+  // ─── MAIN FORM + MODAL ───
   return (
     <section id="contact" className="relative py-24 lg:py-32">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
@@ -169,9 +329,10 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
             transition={{ duration: 0.6 }}
-            onSubmit={handleSubmit}
+            onSubmit={handleContinue}
             className="lg:col-span-3 space-y-5"
           >
+            {/* Name + Business */}
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
@@ -202,6 +363,7 @@ export default function Contact() {
               </div>
             </div>
 
+            {/* Email + Phone */}
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
@@ -232,74 +394,70 @@ export default function Contact() {
               </div>
             </div>
 
+            {/* Service + Language */}
+            <div className="grid sm:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
+                  {t("contact.form.service")}
+                </label>
+                <select
+                  name="service"
+                  required
+                  value={formData.service}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>
+                    {t("contact.form.servicePlaceholder")}
+                  </option>
+                  {serviceOptionKeys.map((key) => (
+                    <option key={key} value={t(`contact.form.serviceOptions.${key}`)} className="bg-[#111119]">
+                      {t(`contact.form.serviceOptions.${key}`)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
+                  Preferred Language
+                </label>
+                <select
+                  name="language"
+                  value={formData.language}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
+                >
+                  <option value="" disabled>Select language</option>
+                  {languageOptions.map((lang) => (
+                    <option key={lang.value} value={lang.value} className="bg-[#111119]">
+                      {lang.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Budget Range */}
             <div>
               <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
-                {t("contact.form.service")}
+                Budget Range
               </label>
               <select
-                name="service"
-                required
-                value={formData.service}
+                name="budget"
+                value={formData.budget}
                 onChange={handleChange}
                 className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-[#111119] appearance-none cursor-pointer"
               >
-                <option value="" disabled>
-                  {t("contact.form.servicePlaceholder")}
-                </option>
-                {serviceOptionKeys.map((key) => (
-                  <option key={key} value={t(`contact.form.serviceOptions.${key}`)} className="bg-[#111119]">
-                    {t(`contact.form.serviceOptions.${key}`)}
+                <option value="" disabled>Select your budget range</option>
+                {budgetRanges.map((range) => (
+                  <option key={range} value={range} className="bg-[#111119]">
+                    {range}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-xs text-gray-500 uppercase tracking-wider mb-3">
-                Project Deposit <span className="text-gray-600 normal-case">(optional)</span>
-              </label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {depositOptions.map((dep) => (
-                  <button
-                    key={dep.id}
-                    type="button"
-                    onClick={() => { setSelectedDeposit(dep.id); playClick(); }}
-                    className={`relative rounded-xl border p-3 text-center transition-all duration-200 cursor-pointer active:scale-95 ${
-                      selectedDeposit === dep.id ? dep.activeColor : dep.color
-                    }`}
-                  >
-                    <dep.icon className={`w-5 h-5 mx-auto mb-1.5 ${
-                      selectedDeposit === dep.id ? "text-white" : "text-gray-500"
-                    }`} />
-                    <p className={`text-[11px] font-semibold ${
-                      selectedDeposit === dep.id ? "text-white" : "text-gray-400"
-                    }`}>
-                      {dep.label.split(" ")[0]}
-                    </p>
-                    <p className={`text-lg font-bold mt-0.5 ${
-                      selectedDeposit === dep.id ? "text-white" : "text-gray-300"
-                    }`}>
-                      {dep.amount}
-                    </p>
-                    <p className="text-[9px] text-gray-600 mt-0.5 leading-tight">
-                      {dep.description}
-                    </p>
-                    {selectedDeposit === dep.id && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-nova-cyan flex items-center justify-center">
-                        <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />
-                      </div>
-                    )}
-                  </button>
-                ))}
-              </div>
-              {selectedDeposit !== "free" && (
-                <p className="mt-2 text-[10px] text-gray-500 flex items-center gap-1">
-                  <Lock className="w-3 h-3 text-nova-cyan" />
-                  Secure payment via Stripe — you&apos;ll be redirected after submitting
-                </p>
-              )}
-            </div>
-
+            {/* Message */}
             <div>
               <label className="block text-xs text-gray-500 uppercase tracking-wider mb-2">
                 {t("contact.form.message")}
@@ -314,38 +472,17 @@ export default function Contact() {
               />
             </div>
 
-            {status === "success" ? (
-              <div className="flex items-center gap-2 px-6 py-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
-                <CheckCircle className="w-5 h-5" />
-                <span className="text-sm font-medium">Message sent! We&apos;ll get back to you within 24 hours.</span>
-              </div>
-            ) : status === "error" ? (
-              <div className="flex items-center gap-2 px-6 py-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400">
-                <AlertCircle className="w-5 h-5" />
-                <span className="text-sm font-medium">Something went wrong. Please try again or email us directly.</span>
-              </div>
-            ) : (
-              <button
-                type="submit"
-                disabled={status === "sending"}
-                onClick={playClick}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                {status === "sending" ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    {t("contact.form.submit")}
-                    <Send className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            )}
+            {/* Continue Button */}
+            <button
+              type="submit"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.02] active:scale-95"
+            >
+              Continue To Consultation Options
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </motion.form>
 
+          {/* Right sidebar — contact info */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -358,20 +495,13 @@ export default function Contact() {
                 {t("contact.info.title")}
               </h3>
               <div className="space-y-5">
-                <a
-                  href="mailto:hellovt26@gmail.com"
-                  className="flex items-center gap-4 group"
-                >
+                <a href="mailto:hellovt26@gmail.com" className="flex items-center gap-4 group">
                   <div className="w-10 h-10 rounded-lg bg-nova-cyan/10 flex items-center justify-center group-hover:bg-nova-cyan/20 transition-colors">
                     <Mail className="w-5 h-5 text-nova-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">
-                      {t("contact.info.emailLabel")}
-                    </p>
-                    <p className="text-sm text-gray-300 group-hover:text-white transition-colors">
-                      hellovt26@gmail.com
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">{t("contact.info.emailLabel")}</p>
+                    <p className="text-sm text-gray-300 group-hover:text-white transition-colors">hellovt26@gmail.com</p>
                   </div>
                 </a>
 
@@ -380,27 +510,11 @@ export default function Contact() {
                     <InstagramIcon />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">
-                      {t("contact.info.socialLabel")}
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">{t("contact.info.socialLabel")}</p>
                     <div className="flex items-center gap-3 mt-1 flex-wrap">
-                      <a
-                        href="https://www.instagram.com/novadigitaltech"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-gray-300 hover:text-nova-cyan transition-colors"
-                      >
-                        Instagram
-                      </a>
+                      <a href="https://www.instagram.com/novadigitaltech" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-nova-cyan transition-colors">Instagram</a>
                       <span className="text-gray-600">|</span>
-                      <a
-                        href="https://www.facebook.com/share/19VhkMaqdY/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-gray-300 hover:text-nova-cyan transition-colors"
-                      >
-                        Facebook
-                      </a>
+                      <a href="https://www.facebook.com/share/19VhkMaqdY/" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-nova-cyan transition-colors">Facebook</a>
                     </div>
                   </div>
                 </div>
@@ -410,27 +524,11 @@ export default function Contact() {
                     <YouTubeIcon />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">
-                      Music
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">Music</p>
                     <div className="flex items-center gap-3 mt-1 flex-wrap">
-                      <a
-                        href="https://www.youtube.com/@DjSonikmusic"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-gray-300 hover:text-red-400 transition-colors"
-                      >
-                        DJ Sonik
-                      </a>
+                      <a href="https://www.youtube.com/@DjSonikmusic" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-red-400 transition-colors">DJ Sonik</a>
                       <span className="text-gray-600">|</span>
-                      <a
-                        href="https://www.youtube.com/@Djpulzemusic1"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-gray-300 hover:text-red-400 transition-colors"
-                      >
-                        DJ Pulze
-                      </a>
+                      <a href="https://www.youtube.com/@Djpulzemusic1" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-red-400 transition-colors">DJ Pulze</a>
                     </div>
                   </div>
                 </div>
@@ -440,28 +538,134 @@ export default function Contact() {
                     <MapPin className="w-5 h-5 text-nova-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider">
-                      {t("contact.info.locationLabel")}
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      {t("contact.info.locationValue")}
-                    </p>
+                    <p className="text-xs text-gray-500 uppercase tracking-wider">{t("contact.info.locationLabel")}</p>
+                    <p className="text-sm text-gray-300">{t("contact.info.locationValue")}</p>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="rounded-2xl glass p-6">
-              <h4 className="text-sm font-semibold text-white mb-2">
-                {t("contact.guarantee.title")}
-              </h4>
-              <p className="text-sm text-gray-400 leading-relaxed">
-                {t("contact.guarantee.description")}
-              </p>
+              <h4 className="text-sm font-semibold text-white mb-2">{t("contact.guarantee.title")}</h4>
+              <p className="text-sm text-gray-400 leading-relaxed">{t("contact.guarantee.description")}</p>
             </div>
           </motion.div>
         </div>
       </div>
+
+      {/* ─── CONSULTATION OPTIONS MODAL ─── */}
+      <AnimatePresence>
+        {step === "modal" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+          >
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 bg-black/70 backdrop-blur-md"
+              onClick={handleBackToForm}
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl glass-strong border border-white/10 p-6 sm:p-8 shadow-2xl shadow-black/40"
+            >
+              {/* Close button */}
+              <button
+                onClick={handleBackToForm}
+                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Header */}
+              <div className="text-center mb-8">
+                <div className="w-12 h-12 rounded-xl bg-nova-cyan/10 border border-nova-cyan/20 flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-6 h-6 text-nova-cyan" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-white">
+                  Choose Your <span className="text-gradient">Consultation</span>
+                </h3>
+                <p className="mt-2 text-sm text-gray-400 max-w-md mx-auto">
+                  Select the consultation that best fits your project. This fee reserves your review time and may be applied toward your project.
+                </p>
+              </div>
+
+              {/* Consultation Cards */}
+              <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                {consultationOptions.map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => { setSelectedConsultation(option.id); playClick(); }}
+                    className={`relative rounded-2xl border p-5 text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
+                      selectedConsultation === option.id ? option.activeColor : option.borderColor
+                    }`}
+                  >
+                    {option.popular && (
+                      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-full">
+                        Most Popular
+                      </div>
+                    )}
+
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${option.color} bg-opacity-20 flex items-center justify-center mb-3`}>
+                      <option.icon className={`w-5 h-5 ${option.iconColor}`} />
+                    </div>
+
+                    <h4 className="text-sm font-semibold text-white mb-1">{option.title}</h4>
+                    <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">{option.description}</p>
+
+                    <div className="text-2xl font-bold text-white">{option.displayAmount}</div>
+                    <p className="text-[10px] text-gray-600 mt-0.5">consultation fee</p>
+
+                    {selectedConsultation === option.id && (
+                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-nova-cyan flex items-center justify-center">
+                        <Check className="w-3 h-3 text-black" strokeWidth={3} />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+
+              {/* Reassurance text */}
+              <div className="text-center space-y-1.5 mb-6">
+                <p className="text-[11px] text-gray-500">
+                  No full project payment required today. We review your request after consultation confirmation.
+                </p>
+              </div>
+
+              {/* Secure button */}
+              <button
+                onClick={handleSecureConsultation}
+                disabled={!selectedConsultation}
+                className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+              >
+                <Lock className="w-4 h-4" />
+                Secure My Consultation
+              </button>
+
+              {/* Trust footer */}
+              <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-4 text-[11px] text-gray-600">
+                <span className="flex items-center gap-1.5">
+                  <Shield className="w-3.5 h-3.5 text-nova-cyan" />
+                  Secure payment powered by Stripe
+                </span>
+                <span className="hidden sm:block text-gray-700">•</span>
+                <span className="flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5 text-nova-cyan" />
+                  256-bit SSL encryption
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
