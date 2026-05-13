@@ -36,16 +36,16 @@ export default function Navbar() {
         scrolled ? "glass-strong shadow-lg shadow-black/20" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-24 lg:h-28">
-          <a href="#" className="flex items-center group" onClick={playClick}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="flex items-center justify-between h-20 lg:h-28">
+          <a href="#" className="flex items-center group flex-shrink-0" onClick={playClick}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/nova-digital-tech/logo.png"
               alt="NOVA Digital Tech"
               width={280}
               height={280}
-              className="w-[280px] h-[280px] lg:w-[280px] lg:h-[280px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -ml-14 lg:ml-16 -mr-16 lg:-mr-44"
+              className="w-[120px] h-[120px] sm:w-[160px] sm:h-[160px] lg:w-[280px] lg:h-[280px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -ml-4 sm:-ml-6 lg:ml-16 -mr-4 sm:-mr-6 lg:-mr-44"
             />
           </a>
 

@@ -72,7 +72,7 @@ export default function ProjectDeposit() {
   const { t } = useI18n();
 
   return (
-    <section id="deposit" className="relative py-24 lg:py-32">
+    <section id="deposit" className="relative py-24 lg:py-32 overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-nova-cyan/[0.01] to-transparent" />
 
