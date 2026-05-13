@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2, Lock, Globe, Palette, Code2, Check } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
 
@@ -33,6 +33,49 @@ const serviceOptionKeys = [
   "notSure",
 ] as const;
 
+const depositOptions = [
+  {
+    id: "free",
+    label: "Free Consultation",
+    description: "No deposit — just a conversation",
+    amount: "$0",
+    icon: Send,
+    color: "border-gray-600 hover:border-gray-500",
+    activeColor: "border-nova-cyan bg-nova-cyan/10",
+    stripeLink: "",
+  },
+  {
+    id: "website",
+    label: "Website Deposit",
+    description: "Website & landing pages",
+    amount: "$150",
+    icon: Globe,
+    color: "border-white/10 hover:border-cyan-500/30",
+    activeColor: "border-cyan-400 bg-cyan-500/10",
+    stripeLink: "https://buy.stripe.com/cNi5kwaGc4nccdb327fjG00",
+  },
+  {
+    id: "branding",
+    label: "Branding Deposit",
+    description: "Logo, colors & identity",
+    amount: "$75",
+    icon: Palette,
+    color: "border-white/10 hover:border-purple-500/30",
+    activeColor: "border-purple-400 bg-purple-500/10",
+    stripeLink: "https://buy.stripe.com/9B67sEcOk4nc5ON5affjG01",
+  },
+  {
+    id: "app",
+    label: "App & Automation",
+    description: "Mobile apps & AI tools",
+    amount: "$250",
+    icon: Code2,
+    color: "border-white/10 hover:border-emerald-500/30",
+    activeColor: "border-emerald-400 bg-emerald-500/10",
+    stripeLink: "https://buy.stripe.com/3cI6oAcOk9HwdhfauzfjG02",
+  },
+];
+
 export default function Contact() {
   const { t } = useI18n();
   const [formData, setFormData] = useState({
@@ -43,6 +86,7 @@ export default function Contact() {
     service: "",
     message: "",
   });
+  const [selectedDeposit, setSelectedDeposit] = useState("free");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
   const handleChange = (
@@ -68,15 +112,22 @@ export default function Contact() {
           email: formData.email,
           phone: formData.phone,
           service: formData.service,
+          deposit: depositOptions.find((d) => d.id === selectedDeposit)?.label || "Free Consultation",
           message: formData.message,
-          _subject: `NOVA Digital Tech — New Inquiry from ${formData.name}`,
+          _subject: `NOVA Digital Tech — New Inquiry from ${formData.name}${selectedDeposit !== "free" ? " (Deposit Selected)" : ""}`,
           _template: "table",
         }),
       });
 
       if (res.ok) {
         setStatus("success");
+        const deposit = depositOptions.find((d) => d.id === selectedDeposit);
         setFormData({ name: "", business: "", email: "", phone: "", service: "", message: "" });
+        if (deposit && deposit.stripeLink) {
+          setTimeout(() => {
+            window.open(deposit.stripeLink, "_blank");
+          }, 1500);
+        }
         setTimeout(() => setStatus("idle"), 5000);
       } else {
         setStatus("error");
@@ -201,6 +252,52 @@ export default function Contact() {
                   </option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <label className="block text-xs text-gray-500 uppercase tracking-wider mb-3">
+                Project Deposit <span className="text-gray-600 normal-case">(optional)</span>
+              </label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {depositOptions.map((dep) => (
+                  <button
+                    key={dep.id}
+                    type="button"
+                    onClick={() => { setSelectedDeposit(dep.id); playClick(); }}
+                    className={`relative rounded-xl border p-3 text-center transition-all duration-200 cursor-pointer active:scale-95 ${
+                      selectedDeposit === dep.id ? dep.activeColor : dep.color
+                    }`}
+                  >
+                    <dep.icon className={`w-5 h-5 mx-auto mb-1.5 ${
+                      selectedDeposit === dep.id ? "text-white" : "text-gray-500"
+                    }`} />
+                    <p className={`text-[11px] font-semibold ${
+                      selectedDeposit === dep.id ? "text-white" : "text-gray-400"
+                    }`}>
+                      {dep.label.split(" ")[0]}
+                    </p>
+                    <p className={`text-lg font-bold mt-0.5 ${
+                      selectedDeposit === dep.id ? "text-white" : "text-gray-300"
+                    }`}>
+                      {dep.amount}
+                    </p>
+                    <p className="text-[9px] text-gray-600 mt-0.5 leading-tight">
+                      {dep.description}
+                    </p>
+                    {selectedDeposit === dep.id && (
+                      <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-nova-cyan flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 text-black" strokeWidth={3} />
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+              {selectedDeposit !== "free" && (
+                <p className="mt-2 text-[10px] text-gray-500 flex items-center gap-1">
+                  <Lock className="w-3 h-3 text-nova-cyan" />
+                  Secure payment via Stripe — you&apos;ll be redirected after submitting
+                </p>
+              )}
             </div>
 
             <div>
