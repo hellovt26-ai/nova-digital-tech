@@ -130,6 +130,16 @@ export default function Contact() {
     message: "",
   });
 
+  // Hide sticky CTA and scroll-to-top when modal is open
+  useEffect(() => {
+    if (step === "modal") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [step]);
+
   // Check URL params on mount for Stripe return
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -589,72 +599,80 @@ export default function Contact() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+            className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center sm:p-4"
           >
             {/* Backdrop */}
             <div
-              className="absolute inset-0 bg-black/70 backdrop-blur-md"
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
               onClick={handleBackToForm}
             />
 
-            {/* Modal */}
+            {/* Modal — full screen on mobile, centered card on desktop */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-3xl glass-strong border border-white/10 p-6 sm:p-8 shadow-2xl shadow-black/40"
+              className="relative w-full sm:max-w-3xl h-full sm:h-auto sm:max-h-[90vh] overflow-y-auto bg-[#0c0c14] sm:rounded-3xl sm:glass-strong border-t sm:border border-white/10 p-5 sm:p-8 shadow-2xl shadow-black/40"
             >
               {/* Close button */}
               <button
                 onClick={handleBackToForm}
-                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5"
+                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-white transition-colors rounded-lg hover:bg-white/5 z-10"
               >
                 <X className="w-5 h-5" />
               </button>
 
               {/* Header */}
-              <div className="text-center mb-8">
-                <div className="w-12 h-12 rounded-xl bg-nova-cyan/10 border border-nova-cyan/20 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-6 h-6 text-nova-cyan" />
+              <div className="text-center mb-6 sm:mb-8 pt-2">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-nova-cyan/10 border border-nova-cyan/20 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-nova-cyan" />
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white">
+                <h3 className="text-xl sm:text-3xl font-bold text-white">
                   Choose Your <span className="text-gradient">Consultation</span>
                 </h3>
-                <p className="mt-2 text-sm text-gray-400 max-w-md mx-auto">
-                  Select the consultation that best fits your project. This fee reserves your review time and may be applied toward your project.
+                <p className="mt-2 text-xs sm:text-sm text-gray-400 max-w-md mx-auto">
+                  This fee reserves your review time and may be applied toward your project.
                 </p>
               </div>
 
-              {/* Consultation Cards */}
-              <div className="grid sm:grid-cols-3 gap-4 mb-6">
+              {/* Consultation Cards — stacked on mobile, 3 cols on desktop */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
                 {consultationOptions.map((option) => (
                   <button
                     key={option.id}
                     type="button"
                     onClick={() => { setSelectedConsultation(option.id); playClick(); }}
-                    className={`relative rounded-2xl border p-5 text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
+                    className={`relative rounded-2xl border p-4 sm:p-5 text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
                       selectedConsultation === option.id ? option.activeColor : option.borderColor
                     }`}
                   >
                     {option.popular && (
-                      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-full">
+                      <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-full whitespace-nowrap">
                         Most Popular
                       </div>
                     )}
 
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${option.color} bg-opacity-20 flex items-center justify-center mb-3`}>
-                      <option.icon className={`w-5 h-5 ${option.iconColor}`} />
+                    <div className="flex sm:block items-center gap-4">
+                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${option.color} bg-opacity-20 flex items-center justify-center sm:mb-3 flex-shrink-0`}>
+                        <option.icon className={`w-5 h-5 ${option.iconColor}`} />
+                      </div>
+                      <div className="flex-1 sm:block">
+                        <div className="flex sm:block items-center justify-between">
+                          <div>
+                            <h4 className="text-sm font-semibold text-white">{option.title}</h4>
+                            <p className="text-[11px] text-gray-500 leading-relaxed hidden sm:block sm:mb-3 sm:mt-1">{option.description}</p>
+                          </div>
+                          <div className="text-right sm:text-left">
+                            <div className="text-xl sm:text-2xl font-bold text-white">{option.displayAmount}</div>
+                          </div>
+                        </div>
+                        <p className="text-[11px] text-gray-500 leading-relaxed sm:hidden mt-0.5">{option.description}</p>
+                      </div>
                     </div>
 
-                    <h4 className="text-sm font-semibold text-white mb-1">{option.title}</h4>
-                    <p className="text-[11px] text-gray-500 mb-3 leading-relaxed">{option.description}</p>
-
-                    <div className="text-2xl font-bold text-white">{option.displayAmount}</div>
-                    <p className="text-[10px] text-gray-600 mt-0.5">consultation fee</p>
-
                     {selectedConsultation === option.id && (
-                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-nova-cyan flex items-center justify-center">
+                      <div className="absolute top-3 right-3 sm:top-3 sm:right-3 w-5 h-5 rounded-full bg-nova-cyan flex items-center justify-center">
                         <Check className="w-3 h-3 text-black" strokeWidth={3} />
                       </div>
                     )}
@@ -663,33 +681,33 @@ export default function Contact() {
               </div>
 
               {/* Reassurance text */}
-              <div className="text-center space-y-1.5 mb-6">
-                <p className="text-[11px] text-gray-500">
-                  No full project payment required today. We review your request after consultation confirmation.
-                </p>
-              </div>
+              <p className="text-center text-[11px] text-gray-500 mb-5">
+                No full project payment required today.
+              </p>
 
-              {/* Secure button */}
-              <button
-                onClick={handleSecureConsultation}
-                disabled={!selectedConsultation}
-                className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
-              >
-                <Lock className="w-4 h-4" />
-                Secure My Consultation
-              </button>
+              {/* Secure button — sticky on mobile */}
+              <div className="sticky bottom-0 bg-[#0c0c14] sm:bg-transparent pt-3 pb-2 sm:pb-0 -mx-5 px-5 sm:mx-0 sm:px-0">
+                <button
+                  onClick={handleSecureConsultation}
+                  disabled={!selectedConsultation}
+                  className="w-full inline-flex items-center justify-center gap-2 px-8 py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all hover:scale-[1.01] active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+                >
+                  <Lock className="w-4 h-4" />
+                  Secure My Consultation
+                </button>
 
-              {/* Trust footer */}
-              <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-4 text-[11px] text-gray-600">
-                <span className="flex items-center gap-1.5">
-                  <Shield className="w-3.5 h-3.5 text-nova-cyan" />
-                  Secure payment powered by Stripe
-                </span>
-                <span className="hidden sm:block text-gray-700">•</span>
-                <span className="flex items-center gap-1.5">
-                  <Lock className="w-3.5 h-3.5 text-nova-cyan" />
-                  256-bit SSL encryption
-                </span>
+                {/* Trust footer */}
+                <div className="mt-3 flex items-center justify-center gap-4 text-[10px] sm:text-[11px] text-gray-600 pb-2">
+                  <span className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-nova-cyan" />
+                    Secure payment via Stripe
+                  </span>
+                  <span className="text-gray-700">•</span>
+                  <span className="flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-nova-cyan" />
+                    256-bit SSL
+                  </span>
+                </div>
               </div>
             </motion.div>
           </motion.div>
