@@ -45,7 +45,7 @@ export default function Navbar() {
               alt="NOVA Digital Tech"
               width={234}
               height={234}
-              className="w-[234px] h-[234px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -mr-28"
+              className="w-[234px] h-[234px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] ml-16 -mr-44"
             />
           </a>
 
