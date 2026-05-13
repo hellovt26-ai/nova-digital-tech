@@ -354,8 +354,8 @@ export default function Portfolio() {
                     <div className="h-8 rounded-lg bg-gradient-to-r from-purple-500/30 via-pink-500/20 to-purple-500/10 relative overflow-hidden">
                       <div className="absolute inset-y-0 left-0 w-2/3 bg-gradient-to-r from-purple-500/20 to-transparent" />
                       <div className="absolute inset-0 flex items-center justify-center gap-[2px]">
-                        {Array.from({ length: 30 }).map((_, i) => (
-                          <div key={i} className="w-[2px] bg-purple-400/60 rounded-full" style={{ height: `${Math.random() * 80 + 20}%` }} />
+                        {[65,42,88,35,72,50,95,28,60,78,40,85,55,30,92,48,70,38,82,58,25,75,45,90,33,68,52,80,44,62].map((h, i) => (
+                          <div key={i} className="w-[2px] bg-purple-400/60 rounded-full" style={{ height: `${h}%` }} />
                         ))}
                       </div>
                     </div>
@@ -367,8 +367,8 @@ export default function Portfolio() {
                     </div>
                     <div className="h-8 rounded-lg bg-gradient-to-r from-cyan-500/20 via-blue-500/10 to-cyan-500/5 relative overflow-hidden">
                       <div className="absolute inset-0 flex items-center justify-center gap-[2px]">
-                        {Array.from({ length: 30 }).map((_, i) => (
-                          <div key={i} className="w-[2px] bg-cyan-400/50 rounded-full" style={{ height: `${Math.random() * 70 + 15}%` }} />
+                        {[50,72,35,85,42,68,28,78,55,90,38,62,48,75,30,82,58,40,70,25,88,45,65,32,80,52,74,36,60,46].map((h, i) => (
+                          <div key={i} className="w-[2px] bg-cyan-400/50 rounded-full" style={{ height: `${h}%` }} />
                         ))}
                       </div>
                     </div>
