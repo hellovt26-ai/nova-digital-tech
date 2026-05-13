@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Zap } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick, playNav } from "@/lib/sounds";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -39,14 +38,10 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <a href="#" className="flex items-center gap-2.5 group" onClick={playClick}>
-            <Image
-              src="/nova-digital-tech/logo.svg"
-              alt="NOVA Digital Tech"
-              width={36}
-              height={36}
-              className="w-9 h-9 drop-shadow-[0_0_8px_rgba(0,136,255,0.4)] group-hover:drop-shadow-[0_0_12px_rgba(0,136,255,0.6)] transition-all"
-            />
+          <a href="#" className="flex items-center gap-2 group" onClick={playClick}>
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-nova-cyan to-nova-blue flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
             <div>
               <span className="text-lg font-bold tracking-tight text-white">
                 NOVA<span className="text-nova-cyan">.</span>
