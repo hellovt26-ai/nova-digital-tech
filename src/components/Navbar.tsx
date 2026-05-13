@@ -43,9 +43,9 @@ export default function Navbar() {
             <img
               src="/nova-digital-tech/logo.png"
               alt="NOVA Digital Tech"
-              width={312}
-              height={312}
-              className="w-[312px] h-[312px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -mr-20"
+              width={234}
+              height={234}
+              className="w-[234px] h-[234px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -mr-28"
             />
           </a>
 
