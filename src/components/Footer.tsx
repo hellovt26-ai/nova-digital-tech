@@ -43,23 +43,18 @@ export default function Footer() {
     <footer className="relative border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col items-center md:items-start gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/nova-digital-tech/logo.png"
               alt="NOVA Digital Tech"
-              width={36}
-              height={36}
-              className="w-9 h-9 object-contain drop-shadow-[0_0_6px_rgba(0,136,255,0.3)]"
+              width={140}
+              height={50}
+              className="h-12 w-auto object-contain drop-shadow-[0_0_8px_rgba(0,136,255,0.3)]"
             />
-            <div>
-              <span className="text-base font-bold text-white">
-                NOVA DIGITAL TECH
-              </span>
-              <p className="text-[11px] text-gray-500 tracking-wider">
-                {t("footer.tagline")}
-              </p>
-            </div>
+            <p className="text-[11px] text-gray-500 tracking-wider">
+              {t("footer.tagline")}
+            </p>
           </div>
 
           <nav className="flex flex-wrap justify-center gap-6">
