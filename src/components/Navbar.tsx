@@ -45,9 +45,8 @@ export default function Navbar() {
               alt="NOVA Digital Tech"
               width={156}
               height={156}
-              className="w-[156px] h-[156px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -mr-6"
+              className="w-[156px] h-[156px] object-contain drop-shadow-[0_0_15px_rgba(0,136,255,0.5)] -mr-10"
             />
-            <span className="text-3xl font-bold text-nova-cyan drop-shadow-[0_0_8px_rgba(0,136,255,0.6)]">.</span>
           </a>
 
           <div className="hidden lg:flex items-center gap-1">
