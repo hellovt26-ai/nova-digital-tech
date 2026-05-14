@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hellovt26-ai.github.io/nova-digital-tech/sitemap.xml
+Sitemap: /sitemap.xml

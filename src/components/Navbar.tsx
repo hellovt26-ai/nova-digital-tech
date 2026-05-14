@@ -41,7 +41,7 @@ export default function Navbar() {
           <a href="#" className="flex items-center group flex-shrink-0" onClick={playClick}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/nova-digital-tech/logo.png"
+              src="/logo.png"
               alt="NOVA Digital Tech"
               width={280}
               height={280}
