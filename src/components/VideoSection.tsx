@@ -10,13 +10,19 @@ function VideoCard({
   title,
   label,
   delay = 0,
+  isShort = false,
 }: {
   videoId: string;
   title: string;
   label: string;
   delay?: number;
+  isShort?: boolean;
 }) {
   const [playing, setPlaying] = useState(false);
+
+  const embedUrl = isShort
+    ? `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&loop=1&playlist=${videoId}`
+    : `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
 
   return (
     <motion.div
@@ -39,13 +45,18 @@ function VideoCard({
       ) : null}
 
       {playing ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
-          title={title}
-          className="absolute inset-0 w-full h-full"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-        />
+        <div className="absolute inset-0">
+          <iframe
+            src={embedUrl}
+            title={title}
+            className={isShort
+              ? "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300%] h-full border-0"
+              : "absolute inset-0 w-full h-full border-0"
+            }
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+          />
+        </div>
       ) : (
         <img
           src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
@@ -84,12 +95,14 @@ export default function VideoSection() {
             videoId="_qvnFgRrFqU"
             title="NOVA DIGITAL TECH Promo"
             label="Watch Our Story"
+            isShort
           />
           <VideoCard
             videoId="m3Iud33T6Dc"
             title="NOVA DIGITAL TECH"
             label="Watch Now"
             delay={0.15}
+            isShort
           />
         </div>
       </div>
