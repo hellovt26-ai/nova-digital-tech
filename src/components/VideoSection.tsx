@@ -100,7 +100,6 @@ export default function VideoSection() {
             title="NOVA DIGITAL TECH"
             label="Watch Now"
             delay={0.15}
-            isShort
           />
         </div>
       </div>
