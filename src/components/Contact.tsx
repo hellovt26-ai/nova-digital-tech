@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -115,10 +116,19 @@ type FlowStep = "form" | "modal" | "processing" | "success" | "cancelled";
 
 const STORAGE_KEY = "nova_consultation_data";
 
-export default function Contact() {
+export default function Contact({ onModalChange, onHideFloatingButtons }: { onModalChange?: (open: boolean) => void; onHideFloatingButtons?: (hide: boolean) => void }) {
   const { t } = useI18n();
   const [step, setStep] = useState<FlowStep>("form");
   const [selectedConsultation, setSelectedConsultation] = useState<string | null>(null);
+  const [portalReady, setPortalReady] = useState(false);
+  const portalRef = useRef<HTMLElement | null>(null);
+  const modalCardRef = useRef<HTMLDivElement | null>(null);
+
+  // Create portal container on mount
+  useEffect(() => {
+    portalRef.current = document.body;
+    setPortalReady(true);
+  }, []);
   const [formData, setFormData] = useState({
     name: "",
     business: "",
@@ -130,15 +140,50 @@ export default function Contact() {
     message: "",
   });
 
-  // Hide sticky CTA and scroll-to-top when modal is open
+  // Reset modal scroll when opened
   useEffect(() => {
     if (step === "modal") {
+      setTimeout(() => modalCardRef.current?.scrollTo({ top: 0 }), 60);
+    }
+  }, [step]);
+
+  // Hide sticky CTA and scroll-to-top when modal is open
+  useEffect(() => {
+    const isModal = step === "modal";
+    if (isModal) {
       document.body.style.overflow = "hidden";
+      document.body.classList.add("modal-open");
     } else {
       document.body.style.overflow = "";
+      document.body.classList.remove("modal-open");
     }
-    return () => { document.body.style.overflow = ""; };
-  }, [step]);
+    onModalChange?.(isModal);
+    return () => {
+      document.body.style.overflow = "";
+      document.body.classList.remove("modal-open");
+      onModalChange?.(false);
+    };
+  }, [step, onModalChange]);
+
+  // Hide sticky CTA when form inputs are focused (keyboard open)
+  useEffect(() => {
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest("#contact") && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT")) {
+        document.body.classList.add("form-focused");
+      }
+    };
+    const handleFocusOut = () => {
+      document.body.classList.remove("form-focused");
+    };
+    document.addEventListener("focusin", handleFocusIn);
+    document.addEventListener("focusout", handleFocusOut);
+    return () => {
+      document.removeEventListener("focusin", handleFocusIn);
+      document.removeEventListener("focusout", handleFocusOut);
+      document.body.classList.remove("form-focused");
+    };
+  }, []);
 
   // Check URL params on mount for Stripe return
   useEffect(() => {
@@ -201,7 +246,20 @@ export default function Contact() {
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
     playClick();
-    setStep("modal");
+
+    // 1. Hide all floating buttons immediately
+    onHideFloatingButtons?.(true);
+
+    // 2. Scroll to top instantly
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+
+    // 3. Wait 100ms, then open modal and reset its scroll
+    setTimeout(() => {
+      setStep("modal");
+      requestAnimationFrame(() => {
+        modalCardRef.current?.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      });
+    }, 100);
   };
 
   const handleSecureConsultation = () => {
@@ -230,6 +288,7 @@ export default function Contact() {
     playClick();
     setStep("form");
     setSelectedConsultation(null);
+    onHideFloatingButtons?.(false);
   };
 
   // ─── PROCESSING / REDIRECTING STATE ───
@@ -339,6 +398,7 @@ export default function Contact() {
 
   // ─── MAIN FORM + MODAL ───
   return (
+    <>
     <section id="contact" className="relative py-24 lg:py-32">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-nova-cyan/20 to-transparent" />
 
@@ -592,121 +652,129 @@ export default function Contact() {
         </div>
       </div>
 
-      {/* ─── CONSULTATION OPTIONS MODAL ─── */}
-      <AnimatePresence>
-        {step === "modal" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center sm:p-4"
-          >
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-              onClick={handleBackToForm}
-            />
-
-            {/* Modal — slide-up sheet on mobile, centered card on desktop */}
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative w-full sm:max-w-3xl max-h-[100dvh] sm:max-h-[90vh] overflow-y-auto bg-[#0c0c14] sm:rounded-3xl sm:glass-strong border-t sm:border border-white/10 shadow-2xl shadow-black/40"
-            >
-              {/* Fixed top bar with close — always visible */}
-              <div className="sticky top-0 z-20 bg-[#0c0c14] sm:bg-transparent px-4 pt-4 pb-2 flex items-center justify-between border-b border-white/5 sm:border-none">
-                <h3 className="text-base sm:text-2xl font-bold text-white">
-                  Choose Your <span className="text-gradient">Consultation</span>
-                </h3>
-                <button
-                  onClick={handleBackToForm}
-                  className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/10 flex-shrink-0"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="px-4 sm:px-8 pb-4 sm:pb-8">
-                {/* Subtitle */}
-                <p className="mt-3 text-xs sm:text-sm text-gray-400 max-w-md mx-auto text-center mb-5 sm:mb-6">
-                  This fee reserves your review time and may be applied toward your project.
-                </p>
-
-                {/* Consultation Cards — stacked on mobile, 3 cols on desktop */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                  {consultationOptions.map((option) => (
-                    <button
-                      key={option.id}
-                      type="button"
-                      onClick={() => { setSelectedConsultation(option.id); playClick(); }}
-                      className={`relative rounded-xl sm:rounded-2xl border p-3 sm:p-5 text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
-                        selectedConsultation === option.id ? option.activeColor : option.borderColor
-                      }`}
-                    >
-                      {option.popular && (
-                        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-full whitespace-nowrap">
-                          Most Popular
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-3 sm:block">
-                        <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br ${option.color} bg-opacity-20 flex items-center justify-center sm:mb-3 flex-shrink-0`}>
-                          <option.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${option.iconColor}`} />
-                        </div>
-                        <div className="flex-1 flex items-center justify-between sm:block">
-                          <div>
-                            <h4 className="text-sm font-semibold text-white">{option.title}</h4>
-                            <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight sm:leading-relaxed sm:mb-3 sm:mt-1">{option.description}</p>
-                          </div>
-                          <div className="text-right sm:text-left flex-shrink-0 ml-3 sm:ml-0">
-                            <div className="text-lg sm:text-2xl font-bold text-white">{option.displayAmount}</div>
-                          </div>
-                        </div>
-                      </div>
-
-                      {selectedConsultation === option.id && (
-                        <div className="absolute top-2 right-2 sm:top-3 sm:right-3 w-5 h-5 rounded-full bg-nova-cyan flex items-center justify-center">
-                          <Check className="w-3 h-3 text-black" strokeWidth={3} />
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Reassurance text */}
-                <p className="text-center text-[10px] sm:text-[11px] text-gray-500 mb-4">
-                  No full project payment required today.
-                </p>
-
-                {/* Secure button */}
-                <button
-                  onClick={handleSecureConsultation}
-                  disabled={!selectedConsultation}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  <Lock className="w-4 h-4" />
-                  Secure My Consultation
-                </button>
-
-                {/* Trust footer */}
-                <div className="mt-3 flex items-center justify-center gap-3 text-[10px] text-gray-600">
-                  <span className="flex items-center gap-1">
-                    <Shield className="w-3 h-3 text-nova-cyan" />
-                    Stripe secured
-                  </span>
-                  <span className="text-gray-700">•</span>
-                  <span className="flex items-center gap-1">
-                    <Lock className="w-3 h-3 text-nova-cyan" />
-                    256-bit SSL
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
+
+      {/* ─── CONSULTATION OPTIONS MODAL (portaled to body) ─── */}
+      {portalReady && portalRef.current && createPortal(
+        <AnimatePresence>
+          {step === "modal" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ position: "fixed", inset: 0, zIndex: 99999, display: "flex", alignItems: "flex-start", justifyContent: "center", width: "100vw", height: "100dvh", paddingTop: "calc(12px + env(safe-area-inset-top, 0px))", paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))", paddingLeft: 12, paddingRight: 12, overflow: "hidden" }}
+              className="sm:!items-center"
+            >
+              {/* Backdrop */}
+              <div
+                style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.88)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)" }}
+                onClick={handleBackToForm}
+              />
+
+              {/* Modal card — centered, constrained */}
+              <motion.div
+                ref={modalCardRef}
+                initial={{ opacity: 0, y: 24, scale: 0.97 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 24, scale: 0.97 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                style={{ position: "relative", width: "min(94vw, 520px)", maxHeight: "calc(100dvh - 24px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, background: "#0c0c14", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 25px 60px rgba(0,0,0,0.6)", marginTop: 0 }}
+                className="sm:!w-full sm:!max-w-3xl sm:!rounded-3xl"
+              >
+                {/* Sticky header with close X */}
+                <div style={{ position: "sticky", top: 0, zIndex: 20, background: "rgba(12,12,20,0.96)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", padding: "16px 16px 8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(255,255,255,0.05)", borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                  <h3 className="text-base sm:text-2xl font-bold text-white truncate pr-2">
+                    Choose Your <span className="text-gradient">Consultation</span>
+                  </h3>
+                  <button
+                    onClick={handleBackToForm}
+                    style={{ padding: 8, marginRight: -4, flexShrink: 0, borderRadius: 8, color: "#9ca3af", cursor: "pointer", background: "transparent", border: "none" }}
+                    className="hover:text-white hover:bg-white/10 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Modal body */}
+                <div className="px-4 sm:px-8">
+                  <p className="mt-3 text-xs sm:text-sm text-gray-400 text-center mb-5 sm:mb-6">
+                    This fee reserves your review time and may be applied toward your project.
+                  </p>
+
+                  {/* Consultation Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-4 sm:mb-6 pt-4">
+                    {consultationOptions.map((option) => (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => { setSelectedConsultation(option.id); playClick(); }}
+                        className={`relative rounded-xl sm:rounded-2xl border p-3 sm:p-5 text-left transition-all duration-300 cursor-pointer active:scale-[0.98] ${
+                          selectedConsultation === option.id ? option.activeColor : option.borderColor
+                        }`}
+                      >
+                        {option.popular && (
+                          <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-full whitespace-nowrap">
+                            Most Popular
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-3 sm:block min-w-0">
+                          <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-br ${option.color} bg-opacity-20 flex items-center justify-center sm:mb-3 flex-shrink-0`}>
+                            <option.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${option.iconColor}`} />
+                          </div>
+                          <div className="flex-1 min-w-0 flex items-center justify-between sm:block gap-2">
+                            <div className="min-w-0 flex-1">
+                              <h4 className="text-sm font-semibold text-white">{option.title}</h4>
+                              <p className="text-[10px] sm:text-[11px] text-gray-500 leading-tight sm:leading-relaxed sm:mb-3 sm:mt-1 line-clamp-2">{option.description}</p>
+                            </div>
+                            <div className="text-right sm:text-left flex-shrink-0">
+                              <div className="text-lg sm:text-2xl font-bold text-white">{option.displayAmount}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {selectedConsultation === option.id && (
+                          <div className="absolute top-2 right-2 sm:top-3 sm:right-3 w-5 h-5 rounded-full bg-nova-cyan flex items-center justify-center">
+                            <Check className="w-3 h-3 text-black" strokeWidth={3} />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="text-center text-[10px] sm:text-[11px] text-gray-500 mb-3">
+                    No full project payment required today.
+                  </p>
+                </div>
+
+                {/* Sticky button footer inside modal */}
+                <div style={{ position: "sticky", bottom: 0, zIndex: 20, background: "rgba(12,12,20,0.96)", padding: "12px 16px", paddingBottom: "calc(14px + env(safe-area-inset-bottom, 0px))", borderTop: "1px solid rgba(255,255,255,0.05)" }} className="sm:px-8">
+                  <button
+                    onClick={handleSecureConsultation}
+                    disabled={!selectedConsultation}
+                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 text-sm font-semibold text-black bg-gradient-to-r from-nova-cyan to-nova-blue rounded-xl hover:shadow-lg hover:shadow-nova-cyan/25 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    <Lock className="w-4 h-4" />
+                    Secure My Consultation
+                  </button>
+                  <div className="mt-2 flex items-center justify-center gap-3 text-[10px] text-gray-600">
+                    <span className="flex items-center gap-1">
+                      <Shield className="w-3 h-3 text-nova-cyan" />
+                      Stripe secured
+                    </span>
+                    <span className="text-gray-700">•</span>
+                    <span className="flex items-center gap-1">
+                      <Lock className="w-3 h-3 text-nova-cyan" />
+                      256-bit SSL
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        portalRef.current
+      )}
+    </>
   );
 }

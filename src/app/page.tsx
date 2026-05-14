@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import VideoSection from "@/components/VideoSection";
@@ -24,6 +27,11 @@ import ScrollToTop from "@/components/ScrollToTop";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 
 export default function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [hideFloatingButtons, setHideFloatingButtons] = useState(false);
+
+  const showFloating = !modalOpen && !hideFloatingButtons;
+
   return (
     <>
       <Particles />
@@ -46,12 +54,15 @@ export default function Home() {
         <Process />
         <Packages />
         <CTA />
-        <Contact />
+        <Contact
+          onModalChange={setModalOpen}
+          onHideFloatingButtons={setHideFloatingButtons}
+        />
         <ProjectDeposit />
       </main>
       <Footer />
-      <ScrollToTop />
-      <StickyMobileCTA />
+      {showFloating && <ScrollToTop />}
+      {showFloating && <StickyMobileCTA />}
     </>
   );
 }
