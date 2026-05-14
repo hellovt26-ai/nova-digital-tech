@@ -30,7 +30,9 @@ function VideoCard({
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay }}
-      className="relative w-full max-w-sm mx-auto aspect-[9/16] rounded-2xl overflow-hidden glass-strong glow-cyan"
+      className={`relative w-full mx-auto rounded-2xl overflow-hidden glass-strong glow-cyan ${
+        isShort ? "max-w-sm aspect-[9/16]" : "max-w-xl aspect-video self-center"
+      }`}
     >
       {!playing ? (
         <button
@@ -102,7 +104,6 @@ export default function VideoSection() {
             title="NOVA DIGITAL TECH"
             label="Watch Now"
             delay={0.15}
-            isShort
           />
         </div>
       </div>
