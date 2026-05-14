@@ -11,14 +11,19 @@ export default function Particles() {
     const c = cvs.getContext("2d");
     if (!c) return;
 
-    // Assign to const so TypeScript knows they're non-null in closures
     const canvas = cvs;
     const ctx = c;
     const isMobile = window.innerWidth < 768;
 
     let animId: number;
     let time = 0;
-    const count = isMobile ? 12 : 45;
+    let frameCount = 0;
+
+    // Fewer particles, skip frames on mobile
+    const count = isMobile ? 8 : 35;
+    const skipFrames = isMobile ? 2 : 0; // Only render every 3rd frame on mobile
+    const connectionDist = isMobile ? 100 : 140;
+
     const particles: {
       x: number; y: number; vx: number; vy: number;
       size: number; opacity: number; pulse: number;
@@ -44,7 +49,6 @@ export default function Particles() {
       });
     }
 
-    // Draw hexagon
     function drawHexagon(cx: number, cy: number, r: number, opacity: number) {
       ctx.beginPath();
       for (let j = 0; j < 6; j++) {
@@ -59,9 +63,8 @@ export default function Particles() {
       ctx.stroke();
     }
 
-    // Draw hexagonal grid
     function drawHexGrid() {
-      const hexSize = 60;
+      const hexSize = isMobile ? 80 : 60; // Larger = fewer hexagons on mobile
       const hexH = hexSize * Math.sqrt(3);
       const scrollY = window.scrollY;
 
@@ -70,11 +73,9 @@ export default function Particles() {
           const cx = col * hexSize * 1.5;
           const cy = row * hexH + (col % 2 ? hexH / 2 : 0);
 
-          // Only draw hexagons near viewport for performance
           const screenY = cy - scrollY;
           if (screenY < -100 || screenY > window.innerHeight + 100) continue;
 
-          // Subtle distance-based opacity with scroll parallax
           const distFromCenter = Math.hypot(
             cx - canvas.width / 2,
             cy - scrollY - window.innerHeight / 2
@@ -90,12 +91,10 @@ export default function Particles() {
       }
     }
 
-    // Draw glowing arcs
     function drawArcs() {
       const scrollY = window.scrollY;
       const vh = window.innerHeight;
 
-      // Left arc
       ctx.beginPath();
       ctx.arc(-canvas.width * 0.3, scrollY + vh * 0.5, canvas.width * 0.7, -0.4, 0.4);
       const leftGrad = ctx.createLinearGradient(0, scrollY, 0, scrollY + vh);
@@ -106,7 +105,6 @@ export default function Particles() {
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Right arc
       ctx.beginPath();
       ctx.arc(canvas.width * 1.3, scrollY + vh * 0.5, canvas.width * 0.7, Math.PI - 0.4, Math.PI + 0.4);
       const rightGrad = ctx.createLinearGradient(0, scrollY, 0, scrollY + vh);
@@ -118,7 +116,6 @@ export default function Particles() {
       ctx.stroke();
     }
 
-    // Draw particles
     function drawParticles() {
       const scrollY = window.scrollY;
       const vh = window.innerHeight;
@@ -135,48 +132,64 @@ export default function Particles() {
         const pulseSize = p.size + Math.sin(p.pulse) * 0.5;
         const pulseOpacity = p.opacity + Math.sin(p.pulse * 1.5) * 0.1;
 
-        // Sparkle glow
-        const glowR = pulseSize * 3;
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
-        grad.addColorStop(0, `rgba(0, 229, 255, ${pulseOpacity * 0.6})`);
-        grad.addColorStop(0.5, `rgba(0, 180, 255, ${pulseOpacity * 0.15})`);
-        grad.addColorStop(1, "rgba(0, 150, 255, 0)");
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
+        // Simplified glow on mobile — skip radial gradient
+        if (isMobile) {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, pulseSize * 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 229, 255, ${pulseOpacity * 0.4})`;
+          ctx.fill();
+        } else {
+          const glowR = pulseSize * 3;
+          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+          grad.addColorStop(0, `rgba(0, 229, 255, ${pulseOpacity * 0.6})`);
+          grad.addColorStop(0.5, `rgba(0, 180, 255, ${pulseOpacity * 0.15})`);
+          grad.addColorStop(1, "rgba(0, 150, 255, 0)");
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
 
-        // Core sparkle
         ctx.beginPath();
         ctx.arc(p.x, p.y, pulseSize, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(0, 229, 255, ${pulseOpacity})`;
         ctx.fill();
       });
 
-      // Connection lines
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 140) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 200, 255, ${0.08 * (1 - dist / 140)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
+      // Connection lines — skip on mobile
+      if (!isMobile) {
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < connectionDist) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(0, 200, 255, ${0.08 * (1 - dist / connectionDist)})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
           }
         }
       }
     }
 
     const animate = () => {
+      frameCount++;
+      // Skip frames on mobile for better performance
+      if (skipFrames > 0 && frameCount % (skipFrames + 1) !== 0) {
+        // Still update time for smooth animations when we do render
+        time += 0.016;
+        animId = requestAnimationFrame(animate);
+        return;
+      }
+
       time += 0.016;
       const scrollY = window.scrollY;
       const vh = window.innerHeight;
 
-      // Only clear visible area + buffer
       ctx.clearRect(0, scrollY - 50, canvas.width, vh + 100);
 
       drawHexGrid();
@@ -186,7 +199,6 @@ export default function Particles() {
       animId = requestAnimationFrame(animate);
     };
 
-    // Re-size canvas on scroll to cover full page
     const onScroll = () => {
       const newHeight = document.documentElement.scrollHeight;
       if (canvas.height !== newHeight) {

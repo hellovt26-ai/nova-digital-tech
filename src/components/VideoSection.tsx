@@ -48,8 +48,10 @@ function VideoCard({
         />
       ) : (
         <img
-          src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
+          src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
           alt={title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover"
         />
       )}

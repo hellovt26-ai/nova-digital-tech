@@ -140,6 +140,20 @@ export default function Contact({ onModalChange, onHideFloatingButtons }: { onMo
     message: "",
   });
 
+  // Prefetch Stripe checkout page when user selects a consultation
+  useEffect(() => {
+    if (!selectedConsultation) return;
+    const option = consultationOptions.find((o) => o.id === selectedConsultation);
+    if (!option) return;
+    // Create a prefetch link so the browser starts loading Stripe in the background
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.href = option.stripeLink;
+    link.as = "document";
+    document.head.appendChild(link);
+    return () => { document.head.removeChild(link); };
+  }, [selectedConsultation]);
+
   // Reset modal scroll when opened
   useEffect(() => {
     if (step === "modal") {
@@ -277,11 +291,9 @@ export default function Contact({ onModalChange, onHideFloatingButtons }: { onMo
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
 
-    // Close modal first, then redirect
+    // Redirect immediately — no delay needed
     setStep("processing");
-    setTimeout(() => {
-      window.location.href = option.stripeLink;
-    }, 300);
+    window.location.href = option.stripeLink;
   };
 
   const handleBackToForm = () => {

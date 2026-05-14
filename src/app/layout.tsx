@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "NOVA DIGITAL TECH — Web, App Development & Automation",
@@ -69,21 +78,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className={`scroll-smooth ${inter.variable}`}>
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-R73YNG7X22" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'G-R73YNG7X22');
-            `,
-          }}
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://buy.stripe.com" />
+        <link rel="dns-prefetch" href="https://buy.stripe.com" />
         <link rel="alternate" hrefLang="en" href="/" />
         <link rel="alternate" hrefLang="fr" href="/" />
         <link rel="alternate" hrefLang="ht" href="/" />
@@ -91,6 +89,19 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <I18nProvider>{children}</I18nProvider>
+        {/* Google Analytics — loaded after page is interactive */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-R73YNG7X22"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-R73YNG7X22');
+          `}
+        </Script>
       </body>
     </html>
   );
