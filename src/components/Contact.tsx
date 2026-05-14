@@ -251,9 +251,21 @@ export default function Contact({ onModalChange, onHideFloatingButtons }: { onMo
     }
   }, []);
 
+  const formatPhone = (value: string): string => {
+    const digits = value.replace(/\D/g, "").slice(0, 10);
+    if (digits.length === 0) return "";
+    if (digits.length <= 3) return `(${digits}`;
+    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
+    if (e.target.name === "phone") {
+      setFormData({ ...formData, phone: formatPhone(e.target.value) });
+      return;
+    }
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -499,7 +511,8 @@ export default function Contact({ onModalChange, onHideFloatingButtons }: { onMo
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder={t("contact.form.phonePlaceholder")}
+                  maxLength={14}
+                  placeholder="(555) 555-5555"
                   className="w-full px-4 py-3.5 rounded-xl glass text-sm text-white placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-nova-cyan/30 transition-all bg-transparent"
                 />
               </div>

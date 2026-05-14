@@ -81,7 +81,7 @@ export default function VideoSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 justify-items-center">
           <VideoCard
-            videoId="4spGyXWFoG0"
+            videoId="_qvnFgRrFqU"
             title="NOVA DIGITAL TECH Promo"
             label="Watch Our Story"
           />
