@@ -26,6 +26,7 @@ import Particles from "@/components/Particles";
 import ScrollToTop from "@/components/ScrollToTop";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import ChatBot from "@/components/ChatBot";
+import ActivityFeed from "@/components/ActivityFeed";
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,6 +66,7 @@ export default function Home() {
       {showFloating && <ScrollToTop />}
       {showFloating && <StickyMobileCTA />}
       <ChatBot />
+      <ActivityFeed />
     </>
   );
 }
