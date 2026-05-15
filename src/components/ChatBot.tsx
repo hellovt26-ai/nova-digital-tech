@@ -85,13 +85,41 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
   return lead;
 }
 
-/* ─── Smart client-side responder (instant) ─── */
+/* ─── Pick a random response from variations ─── */
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* ─── Detect the context of the LAST assistant question ─── */
+function getLastTopic(history: Message[]): string {
+  const lastAssistant = [...history].reverse().find((m) => m.role === "assistant");
+  if (!lastAssistant) return "";
+  const t = lastAssistant.content.toLowerCase();
+  if (/industry are you in/.test(t)) return "industry";
+  if (/what are you currently tracking/.test(t)) return "tracking";
+  if (/what tasks are slowing/.test(t)) return "automation_tasks";
+  if (/kind of app/.test(t)) return "app_type";
+  if (/how many clients/.test(t)) return "client_count";
+  if (/launch|timeline|hoping to/.test(t)) return "timeline";
+  if (/what's your name/.test(t)) return "ask_name";
+  if (/email/.test(t)) return "ask_email";
+  if (/phone number/.test(t)) return "ask_phone";
+  if (/domain name/.test(t)) return "ask_domain";
+  if (/online payments/.test(t)) return "ask_payments";
+  if (/manage|where is your business/.test(t)) return "ask_location";
+  if (/creole-speaking/.test(t)) return "ask_creole";
+  if (/invoices manually/.test(t)) return "ask_invoicing";
+  return "";
+}
+
+/* ─── Smart client-side responder (instant, context-aware) ─── */
 function getSmartResponse(
   message: string,
   history: Message[]
 ): { text: string; options?: string[] } {
   const lower = message.toLowerCase().trim();
   const userMessages = history.filter((m) => m.role === "user").length;
+  const lastTopic = getLastTopic(history);
 
   const SERVICE_OPTIONS = [
     "🌐 Website",
@@ -104,41 +132,164 @@ function getSmartResponse(
   const YES_NO = ["✅ Yes", "❌ No", "🤔 Tell me more"];
   const CONSULT_OPTIONS = ["📞 Book consultation", "💬 Ask another question"];
 
+  /* ── Handle "Other" contextually based on last topic ── */
+  if (/^(other|something else|else|different)/i.test(lower) || /🏢 Other|📋 Other/i.test(message)) {
+    if (lastTopic === "industry") {
+      return {
+        text: pick([
+          "Cool! What industry are you in? Feel free to type it out — I'm curious! 💼",
+          "Got it! Tell me about your business — what do you do?",
+          "Sure thing! Describe your business in your own words. What field are you in?",
+        ]),
+      };
+    }
+    if (lastTopic === "tracking") {
+      return {
+        text: pick([
+          "Got it! Tell me what you're tracking — I want to make sure we build the right thing for you.",
+          "Sounds like something specific! What kind of data are you trying to keep tabs on?",
+        ]),
+      };
+    }
+    if (lastTopic === "automation_tasks") {
+      return {
+        text: "Tell me about it! What's the most annoying repetitive task in your day? 😅",
+      };
+    }
+    if (lastTopic === "app_type") {
+      return {
+        text: "Interesting! Tell me more about your app idea — what problem would it solve for your users?",
+      };
+    }
+    return {
+      text: pick([
+        "Tell me more — what specifically did you have in mind?",
+        "Sure! Describe it in your own words and I'll see how we can help.",
+        "Got it! Type out what you're thinking and I'll do my best to help.",
+      ]),
+      options: SERVICE_OPTIONS,
+    };
+  }
+
+  /* ── Industry-specific responses (when asked about industry) ── */
+  if (lastTopic === "industry") {
+    if (/restaurant|food|cafe|bakery|catering|🍽/i.test(lower)) {
+      return {
+        text: "Restaurants love what we build! 🍽 We do online menus, table reservations, online ordering, and loyalty systems. Want a full setup or just one piece?",
+        options: ["🍽 Online menu", "📅 Reservations", "🛍 Online ordering", "🎁 Loyalty system"],
+      };
+    }
+    if (/salon|beauty|spa|barber|hair|nail|💇/i.test(lower)) {
+      return {
+        text: "Beauty businesses are a perfect fit for our booking systems! 💇 Online appointments, deposits, automated reminders. What matters most to you?",
+        options: ["📅 Online booking", "💳 Take deposits", "📲 Auto reminders", "📸 Showcase work"],
+      };
+    }
+    if (/clean|janitor|housekeep|🧹/i.test(lower)) {
+      return {
+        text: "Cleaning businesses crush it with the right system! 🧹 Online quote requests, scheduling, customer portal. What's your biggest headache right now?",
+        options: ["📝 Getting quotes", "📅 Scheduling jobs", "💰 Getting paid", "👥 New customers"],
+      };
+    }
+    if (/retail|store|shop|ecommerce|sell/i.test(lower)) {
+      return {
+        text: "Retail and e-commerce are exciting! 🛍 We build online stores, inventory dashboards, and customer loyalty programs. What stage are you at?",
+        options: ["🚀 Just starting", "📈 Already selling", "🔄 Need a redesign"],
+      };
+    }
+    if (/real estate|realtor|property/i.test(lower)) {
+      return {
+        text: "Real estate websites are one of our favorites! 🏠 Listings, lead capture, property dashboards. Are you solo or with a team?",
+        options: ["👤 Solo agent", "👥 Team/Agency"],
+      };
+    }
+    return {
+      text: `Cool, "${message.trim()}" — sounds interesting! 💡 What's the main thing you're trying to solve right now in your business?`,
+      options: SERVICE_OPTIONS,
+    };
+  }
+
   // Greetings
   if (/^(hi|hello|hey|sup|yo|good (morning|afternoon|evening)|hola|bonjour)/i.test(lower)) {
     return {
-      text: "Hey! 👋 Great to have you here. I'm NOVA, the digital assistant for NOVA DIGITAL TECH. What's bringing you by today?",
+      text: pick([
+        "Hey! 👋 Great to have you here. What's bringing you by today?",
+        "Hi there! 😊 Welcome to NOVA. What can I help you with?",
+        "Hey! 🚀 Glad you stopped by. What are you working on?",
+      ]),
       options: SERVICE_OPTIONS,
+    };
+  }
+
+  // How are you / small talk
+  if (/how are you|how's it going|how are things|whats up|what's up/i.test(lower)) {
+    return {
+      text: pick([
+        "Doing great, thanks for asking! 😊 Ready to help you grow your business. What are you working on?",
+        "Better now that you're here! 🎯 What can I help with today?",
+        "All systems go! ⚡ What brings you to NOVA today?",
+      ]),
+      options: SERVICE_OPTIONS,
+    };
+  }
+
+  // Who are you / what are you
+  if (/who are you|what are you|are you (a )?bot|are you (a )?ai|are you human/i.test(lower)) {
+    return {
+      text: "I'm NOVA, the AI assistant for NOVA DIGITAL TECH! 🤖 I help answer questions and connect you with our team. Want me to tell you what we do?",
+      options: ["🛠 Tell me about services", "💰 Pricing info", "📞 Talk to a human"],
     };
   }
 
   // Thanks
   if (/(thank|thanks|thx|appreciate)/i.test(lower)) {
     return {
-      text: "You're welcome! Is there anything else you'd like to know?",
+      text: pick([
+        "You're welcome! 😊 Anything else I can help with?",
+        "Happy to help! 🙌 Got any other questions?",
+        "Anytime! Need to know anything else?",
+      ]),
       options: ["📞 Book consultation", "🛠 See more services", "✅ I'm good"],
     };
   }
 
-  // Goodbye
-  if (/^(bye|goodbye|see you|later|cya|thanks bye|im good|i'm good)/i.test(lower)) {
+  // Goodbye / I'm good
+  if (/^(bye|goodbye|see you|later|cya|thanks bye|im good|i'm good|im ok|i'm ok|no thanks)/i.test(lower)) {
     return {
-      text: "Thanks for stopping by! Feel free to come back anytime, or book a free consultation through our contact form. Have a great day! 🚀",
+      text: pick([
+        "Thanks for stopping by! 🚀 Come back anytime, or book a free consultation through our contact form. Have a great day!",
+        "Take care! 👋 We're here whenever you're ready to take your business to the next level.",
+        "Sounds good! 🙌 Feel free to reach out whenever — we're not going anywhere.",
+      ]),
+    };
+  }
+
+  // Help / what can you do
+  if (/help|what can you do|capabilities/i.test(lower)) {
+    return {
+      text: "Lots of things! I can:\n\n💬 Answer questions about our services\n💰 Explain pricing options\n📅 Help you book a free consultation\n📞 Connect you with our team\n\nWhat would you like to do?",
+      options: SERVICE_OPTIONS,
     };
   }
 
   // Website-related
   if (/website|web site|landing page|web page|web design|🌐/i.test(lower)) {
     return {
-      text: "Great choice! We build premium, mobile-friendly websites that convert visitors into customers. 🌐\n\nDo you already own a domain name?",
+      text: pick([
+        "Awesome choice! 🌐 We build premium, mobile-friendly websites that actually convert visitors into customers.\n\nDo you already own a domain name?",
+        "Nice! Websites are our specialty. ✨ Premium design, mobile-first, fast loading.\n\nQuick question — do you have a domain yet?",
+      ]),
       options: YES_NO,
     };
   }
 
   // Booking system
-  if (/booking|appointment|schedule|reservation|calendar|📅/i.test(lower)) {
+  if (/booking|appointment|schedule|reservation|calendar|📅 booking|📅 reservations|📅 online booking/i.test(lower)) {
     return {
-      text: "Booking systems are one of our specialties! 📅\n\nCustomers book online, you accept payments, and get automatic reminders.\n\nDo you also need to accept online payments?",
+      text: pick([
+        "Booking systems = our bread and butter! 📅 Customers book online, you accept payments, and get auto reminders.\n\nDo you need to accept online payments too?",
+        "Smart move! 📅 Online booking saves you hours and never misses a customer.\n\nWill clients pay when they book?",
+      ]),
       options: YES_NO,
     };
   }
@@ -146,7 +297,7 @@ function getSmartResponse(
   // Dashboard
   if (/dashboard|analytics|track|report|stats|📊/i.test(lower)) {
     return {
-      text: "Digital dashboards help you see everything that matters at a glance — sales, customers, inventory. 📊\n\nWhat are you currently tracking manually?",
+      text: "Dashboards give you that 'CEO view' of your business at a glance. 📊\n\nWhat are you tracking manually right now?",
       options: ["💰 Sales/Revenue", "👥 Customers", "📦 Inventory", "📋 Other"],
     };
   }
@@ -154,7 +305,7 @@ function getSmartResponse(
   // Automation
   if (/automat|workflow|automatic|integrat|⚡/i.test(lower)) {
     return {
-      text: "Automation is a game-changer! ⚡\n\nWe automate emails, invoices, reminders, follow-ups, and more — saving you hours every week.\n\nWhat tasks are slowing you down?",
+      text: "Automation = working smarter, not harder! ⚡ We can automate emails, invoices, reminders, follow-ups, and more.\n\nWhat's eating up your time right now?",
       options: ["📧 Email follow-ups", "💳 Invoicing", "📅 Reminders", "💼 Lead management"],
     };
   }
@@ -162,23 +313,23 @@ function getSmartResponse(
   // App development
   if (/app|application|mobile app|📱/i.test(lower)) {
     return {
-      text: "We build custom mobile apps for iOS and Android! 📱 What kind of app are you envisioning?",
+      text: "Custom mobile apps for iOS and Android — we got you! 📱 What kind of app are you envisioning?",
       options: ["🛍 E-commerce", "📅 Service booking", "💎 Loyalty/Rewards", "🏢 Internal tools"],
     };
   }
 
   // Payment / Invoice
-  if (/payment|invoice|billing|stripe|paypal|💳/i.test(lower)) {
+  if (/payment|invoice|billing|stripe|paypal|💳 invoicing|💳/i.test(lower)) {
     return {
-      text: "We set up payment & invoice systems that make getting paid effortless. 💳\n\nDo you currently send invoices manually?",
+      text: "Getting paid should be effortless. 💳 We set up systems where clients pay online and invoices auto-send.\n\nDo you currently send invoices manually?",
       options: YES_NO,
     };
   }
 
   // CRM / Client management
-  if (/crm|client management|customer manage|database|👥/i.test(lower)) {
+  if (/crm|client management|customer manage|database|👥 customers|💼 lead management/i.test(lower)) {
     return {
-      text: "Client management systems keep all your customers, leads, and communications organized. 👥\n\nHow many clients do you typically manage?",
+      text: "Keeping clients organized = more sales, less stress. 👥 How many clients are you managing?",
       options: ["Under 50", "50-200", "200-1000", "1000+"],
     };
   }
@@ -186,15 +337,24 @@ function getSmartResponse(
   // Pricing
   if (/price|cost|how much|pricing|expensive|cheap|afford|budget|rate|💰/i.test(lower)) {
     return {
-      text: "Our pricing depends on what you need — every business is different. 💰\n\nThe best way to get an accurate quote is through a **free consultation**.",
+      text: pick([
+        "Pricing depends on what you need — no two projects are the same. 💰 The best way to get an accurate quote is through a **free consultation**.",
+        "Every business is different, so we price each project based on what you need. 💰 Want to grab a free consultation to discuss?",
+      ]),
       options: CONSULT_OPTIONS,
     };
   }
 
   // Timeline
-  if (/how long|timeline|when|how fast|delivery|turnaround|deadline/i.test(lower)) {
+  if (/how long|timeline|when|how fast|delivery|turnaround|deadline|🔥 asap|📅 1-2|🗓 3\+|🤔 flexible/i.test(lower)) {
+    if (/asap|🔥/i.test(lower)) {
+      return {
+        text: "Got it — fast turnaround! 🔥 We've delivered projects in as little as 1-2 weeks for urgent needs. Let's chat about your specific scope.",
+        options: CONSULT_OPTIONS,
+      };
+    }
     return {
-      text: "Most projects take 2-6 weeks depending on complexity. ⏱️\n\nWhen are you hoping to launch?",
+      text: "Most projects take 2-6 weeks depending on complexity. ⏱️ When are you hoping to launch?",
       options: ["🔥 ASAP", "📅 1-2 months", "🗓 3+ months", "🤔 Flexible"],
     };
   }
@@ -202,7 +362,7 @@ function getSmartResponse(
   // Services general
   if (/service|offer|what do you|what can you|help with|do you do|🛠/i.test(lower)) {
     return {
-      text: "We help small businesses go digital with:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one catches your interest?",
+      text: "Here's what we do best:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one fits your needs?",
       options: SERVICE_OPTIONS,
     };
   }
@@ -210,48 +370,87 @@ function getSmartResponse(
   // Bilingual
   if (/creole|french|bilingual|haitian|kreyol|languages/i.test(lower)) {
     return {
-      text: "Yes! We offer full **bilingual English/Creole support** 🇭🇹 — your website, content, and our communication can be in both languages.\n\nIs your business serving a Creole-speaking community?",
+      text: "Yes! 🇭🇹 We offer full **bilingual English/Creole support** — your website, content, even our chats with you.\n\nIs your business serving a Creole-speaking community?",
       options: YES_NO,
     };
   }
 
   // Contact / talk to human
-  if (/contact|talk to|reach|speak to|call|human|person|owner|📞/i.test(lower)) {
+  if (/contact|talk to|reach|speak to|call|human|person|owner|📞 talk/i.test(lower)) {
     return {
-      text: "Of course! 👋 The fastest way is to share your contact info, and our team will reach out within 24 hours.\n\nWhat's your name?",
+      text: "Of course! 👋 Share your contact info and our team will reach out within 24 hours.\n\nWhat's your name?",
     };
   }
 
-  // Yes/No follow-ups
-  if (/^(yes|yeah|yep|sure|ok|okay|✅)/i.test(lower)) {
+  /* ── Yes/No follow-ups (context-aware) ── */
+  if (/^(yes|yeah|yep|sure|ok|okay|✅|of course|definitely|absolutely)/i.test(lower)) {
+    if (lastTopic === "ask_domain") {
+      return {
+        text: "Perfect — that saves us time! 🎯 What's the website mainly for? (e.g., showcase your services, sell products, book appointments)",
+        options: ["💼 Showcase services", "🛒 Sell products", "📅 Book appointments"],
+      };
+    }
+    if (lastTopic === "ask_payments") {
+      return {
+        text: "Smart! 💳 Online payments boost conversions a lot. Let's get you a free consultation to map it out.",
+        options: CONSULT_OPTIONS,
+      };
+    }
+    if (lastTopic === "ask_creole") {
+      return {
+        text: "Excellent! 🇭🇹 Bilingual support is huge for connecting with Creole-speaking customers. Want to chat with our team about your project?",
+        options: CONSULT_OPTIONS,
+      };
+    }
+    if (lastTopic === "ask_invoicing") {
+      return {
+        text: "We'll save you hours! 💸 Auto-invoicing is one of our favorite things to set up. Want to grab a quick consultation?",
+        options: CONSULT_OPTIONS,
+      };
+    }
     return {
-      text: "Perfect! 🎯 Let's get you connected with our team. What's your name and email?",
+      text: "Perfect! 🎯 Let's get you connected with our team. What's your name?",
     };
   }
-  if (/^(no|nope|nah|❌)/i.test(lower)) {
+  if (/^(no|nope|nah|❌|not really|i don't)/i.test(lower)) {
+    if (lastTopic === "ask_domain") {
+      return {
+        text: "No worries — we'll help you pick the perfect domain too! 🌐 What kind of business is the site for?",
+        options: ["🍽 Restaurant", "💇 Salon", "🏪 Retail", "🏢 Other"],
+      };
+    }
+    if (lastTopic === "ask_payments") {
+      return {
+        text: "No problem! 👌 We can always add payments later if you need them. What's most important to you about the booking system?",
+        options: ["📅 Easy scheduling", "📲 Reminders", "👥 Customer profiles"],
+      };
+    }
     return {
-      text: "No problem! Is there something else you'd like to know more about?",
+      text: pick([
+        "No worries! Anything else you want to explore?",
+        "All good! What else can I help with?",
+      ]),
       options: SERVICE_OPTIONS,
     };
   }
   if (/tell me more|🤔/i.test(lower)) {
     return {
-      text: "Of course! What specifically would you like to know more about?",
+      text: "Sure! What specifically caught your eye? 👀",
       options: SERVICE_OPTIONS,
     };
   }
 
   // Location
-  if (/location|where|based|country|address|haiti|usa/i.test(lower)) {
+  if (/location|where|based|country|address|haiti|usa|usa|america/i.test(lower)) {
     return {
-      text: "We're a fully digital agency — we work with clients worldwide! 🌍 All meetings happen online, everything delivered digitally.\n\nWhere is your business based?",
+      text: "We're a fully digital agency — clients worldwide! 🌍 All meetings happen online, delivery is 100% digital.\n\nWhere's your business based?",
     };
   }
 
   // Trust / portfolio / experience
-  if (/portfolio|example|past work|previous|experience|reviews|testimonial|trust|legit/i.test(lower)) {
+  if (/portfolio|example|past work|previous|experience|reviews|testimonial|trust|legit|real/i.test(lower)) {
     return {
-      text: "Great question! Scroll down on this page — you'll find our portfolio, client transformations, and testimonials. We've helped restaurants, salons, startups, cleaning services, and more. 💼",
+      text: "Great question! 💼 Scroll down on this page — you'll see our portfolio, client transformations, and testimonials. We've helped restaurants, salons, cleaning services, startups, and more.",
       options: CONSULT_OPTIONS,
     };
   }
@@ -259,29 +458,86 @@ function getSmartResponse(
   // Email detection (lead capture)
   if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(message)) {
     return {
-      text: "Thanks! 📧 Got your email. Can you share your phone number too so we can reach out faster?",
+      text: "Got your email! 📧 Can you also share your phone number? It helps our team reach you faster.",
     };
   }
 
   // Phone detection
   if (/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(message)) {
     return {
-      text: "Got your number! 📱 NOVA DIGITAL TECH will reach out to you shortly. Which service are you most interested in?",
+      text: "Got your number! 📱 NOVA DIGITAL TECH will reach out shortly. What service are you most interested in?",
       options: SERVICE_OPTIONS,
     };
+  }
+
+  /* ── Name detection (when asked for name) ── */
+  if (lastTopic === "ask_name" && /^[a-zA-Z]+([\s'-][a-zA-Z]+)*$/.test(message.trim()) && message.trim().length < 40) {
+    return {
+      text: `Nice to meet you, ${message.trim().split(/\s+/)[0]}! 👋 What's the best email to reach you?`,
+    };
+  }
+
+  // Industry-specific top-level mentions
+  if (/restaurant|food|cafe|bakery|catering/i.test(lower)) {
+    return {
+      text: "Restaurants thrive with the right digital setup! 🍽 Online menu, reservations, ordering, loyalty — what's most important?",
+      options: ["🍽 Online menu", "📅 Reservations", "🛍 Online ordering", "🎁 Loyalty"],
+    };
+  }
+  if (/salon|barber|spa|beauty/i.test(lower)) {
+    return {
+      text: "Beauty businesses + our booking systems = magic! 💇 Online appointments, reminders, deposits.",
+      options: ["📅 Online booking", "💳 Deposits", "📲 Reminders"],
+    };
+  }
+  if (/clean|janitor|housekeep/i.test(lower)) {
+    return {
+      text: "Cleaning businesses scale fast with the right tools! 🧹 Quote requests, scheduling, customer portal.",
+      options: ["📝 Quote requests", "📅 Scheduling", "💰 Payments"],
+    };
+  }
+
+  // Tracking-specific (when asked what they track)
+  if (lastTopic === "tracking") {
+    if (/sales|revenue|money|💰/i.test(lower)) {
+      return {
+        text: "Sales dashboards are powerful! 💰 You'd see daily/weekly/monthly revenue, top products, trends — all in one place.",
+        options: CONSULT_OPTIONS,
+      };
+    }
+    if (/customer|client|👥/i.test(lower)) {
+      return {
+        text: "A customer dashboard helps you spot top spenders, repeat clients, and growth trends. 👥 Want to chat about it?",
+        options: CONSULT_OPTIONS,
+      };
+    }
+    if (/inventory|stock|📦/i.test(lower)) {
+      return {
+        text: "Inventory dashboards prevent stockouts and overstock. 📦 Real-time levels, alerts, sales-to-stock ratios.",
+        options: CONSULT_OPTIONS,
+      };
+    }
   }
 
   // Default — push toward consultation
   if (userMessages > 4) {
     return {
-      text: "I'd love to help you get answers tailored to your business. The best next step is a **free 15-min consultation**.",
+      text: pick([
+        "I think your project deserves a real conversation. 🎯 A free 15-min consultation with our team is the best next step.",
+        "Sounds like we'd be a great fit! ✨ Want to grab a free consultation so we can dive deep into your goals?",
+      ]),
       options: CONSULT_OPTIONS,
     };
   }
 
+  // Final generic fallback (more varied + tries to engage)
   return {
-    text: "That's a great question! Could you tell me a bit more — what industry are you in?",
-    options: ["🍽 Restaurant/Food", "💇 Salon/Beauty", "🧹 Cleaning", "🏢 Other"],
+    text: pick([
+      `"${message.trim()}" — got it! 💡 Tell me a bit more about your business, what industry are you in?`,
+      "Interesting! Can you tell me what kind of business you have, and what's the main thing you're trying to solve?",
+      "Let me help! What's your business about, and what would you love to fix or improve?",
+    ]),
+    options: ["🍽 Restaurant/Food", "💇 Salon/Beauty", "🧹 Cleaning", "🏪 Retail", "🏠 Real Estate", "🏢 Other"],
   };
 }
 
