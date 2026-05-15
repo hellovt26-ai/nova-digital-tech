@@ -155,15 +155,18 @@ function getLastTopic(history: Message[]): string {
   const lastAssistant = [...history].reverse().find((m) => m.role === "assistant");
   if (!lastAssistant) return "";
   const t = lastAssistant.content.toLowerCase();
+  // Lead collection flow (high priority)
+  if (/what'?s your name|what is your name|first.*name/.test(t)) return "ask_name";
+  if (/best email|your email|what'?s your email|email to reach/.test(t)) return "ask_email";
+  if (/phone number|your phone|phone.*reach|format.*555/.test(t)) return "ask_phone";
+  if (/which service|what service.*interested|service.*most interested|last question.*service/.test(t)) return "ask_service";
+  // Other contexts
   if (/industry are you in/.test(t)) return "industry";
   if (/what are you currently tracking/.test(t)) return "tracking";
   if (/what tasks are slowing/.test(t)) return "automation_tasks";
   if (/kind of app/.test(t)) return "app_type";
   if (/how many clients/.test(t)) return "client_count";
   if (/launch|timeline|hoping to/.test(t)) return "timeline";
-  if (/what's your name/.test(t)) return "ask_name";
-  if (/email/.test(t)) return "ask_email";
-  if (/phone number/.test(t)) return "ask_phone";
   if (/domain name/.test(t)) return "ask_domain";
   if (/online payments/.test(t)) return "ask_payments";
   if (/manage|where is your business/.test(t)) return "ask_location";
@@ -234,7 +237,7 @@ function getSmartResponse(
   }
 
   /* ── BOOK CONSULTATION — Start lead collection flow ── */
-  if (/book consultation|free consultation|📞 free|📞 consultation|consultation/i.test(lower)) {
+  if (/book consultation|free consultation|📞 free|📞 consultation|^consultation/i.test(lower)) {
     if (!currentLead.name) {
       return {
         text: "Awesome! Let's get you set up with a free consultation. 🚀\n\nFirst — what's your name?",
@@ -258,30 +261,42 @@ function getSmartResponse(
     }
     // All collected — submit!
     return {
-      text: `🎉 You're all set, ${currentLead.name.split(" ")[0]}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours to schedule your free consultation.\n\nIn the meantime, feel free to explore our portfolio below! 💼`,
+      text: `🎉 You're all set, ${currentLead.name.split(" ")[0]}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours.\n\nThanks for choosing us! 💙`,
       submitLead: true,
       options: ["💬 Ask another question", "✅ Done"],
     };
   }
 
-  /* ── If we're in active lead collection — keep advancing ── */
-  if (lastTopic === "ask_name" && currentLead.name && !currentLead.email) {
+  /* ── Active lead collection: respond based on what we just asked ── */
+  if (lastTopic === "ask_name") {
+    // User just provided their name — capture it and ask for email
     return {
-      text: `Nice to meet you, ${currentLead.name.split(" ")[0]}! 👋 What's the best email to reach you at?`,
+      text: `Nice to meet you${currentLead.name ? ", " + currentLead.name.split(" ")[0] : ""}! 👋 What's the best email to reach you at?`,
     };
   }
-  if (lastTopic === "ask_email" && currentLead.email && !currentLead.phone) {
+  if (lastTopic === "ask_email") {
+    if (currentLead.email) {
+      return {
+        text: "Perfect! 📱 And your phone number? (Format: 555-555-5555)",
+      };
+    }
     return {
-      text: "Perfect! 📱 And your phone number? (Format: 555-555-5555)",
+      text: "Hmm, that doesn't look like an email. Could you share your email address? (Example: yourname@gmail.com)",
     };
   }
-  if (lastTopic === "ask_phone" && currentLead.phone) {
-    if (!currentLead.service) {
+  if (lastTopic === "ask_phone") {
+    if (currentLead.phone) {
       return {
         text: "Awesome! 🎯 Last question — what service are you most interested in?",
         options: SERVICE_OPTIONS,
       };
     }
+    return {
+      text: "Hmm, I couldn't read that phone number. Could you share it like this? (Example: 555-555-5555)",
+    };
+  }
+  if (lastTopic === "ask_service") {
+    // User just selected a service — submit the lead and confirm!
     return {
       text: `🎉 You're all set${currentLead.name ? ", " + currentLead.name.split(" ")[0] : ""}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours.\n\nThanks for choosing us! 💙`,
       submitLead: true,
@@ -732,27 +747,56 @@ export default function ChatBot() {
     async (allMessages: Message[]) => {
       if (leadSubmitted) return;
       const lead = extractLeadFromMessages(allMessages);
+      console.log("[NOVA Chatbot] Submitting lead:", lead);
       try {
         const conversationLog = allMessages
           .filter((m) => m.id !== "greeting")
           .map((m) => `${m.role === "user" ? "Visitor" : "NOVA Bot"}: ${m.content}`)
           .join("\n\n");
 
-        await fetch("/api/leads", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: lead.name || "Chat Visitor",
-            businessName: lead.businessName || "",
-            businessType: lead.businessType || "",
-            email: lead.email || "",
-            phone: lead.phone || "",
-            service: lead.service || "",
-            budget: lead.budget || "",
-            timeline: lead.timeline || "",
-            message: `Full conversation transcript:\n\n${conversationLog}`,
-          }),
-        });
+        // Submit directly to Formsubmit (faster + bypasses serverless cold start)
+        const formData = new FormData();
+        formData.append("name", lead.name || "Chat Visitor");
+        formData.append("email", lead.email || "noreply@chat.local");
+        formData.append("phone", lead.phone || "N/A");
+        formData.append(
+          "_subject",
+          `🔥 NEW Chat Lead: ${lead.name || "Visitor"} — ${lead.service || "General"}`
+        );
+        formData.append(
+          "message",
+          [
+            `🎯 NEW LEAD FROM AI CHATBOT`,
+            ``,
+            `👤 Name: ${lead.name || "Chat Visitor"}`,
+            `🏢 Business: ${lead.businessName || "N/A"}`,
+            `🏷  Type: ${lead.businessType || "N/A"}`,
+            `📧 Email: ${lead.email || "N/A"}`,
+            `📱 Phone: ${lead.phone || "N/A"}`,
+            `🛠  Service: ${lead.service || "N/A"}`,
+            `💰 Budget: ${lead.budget || "N/A"}`,
+            `⏱  Timeline: ${lead.timeline || "N/A"}`,
+            ``,
+            `📅 Date: ${new Date().toLocaleString()}`,
+            ``,
+            `─── FULL CONVERSATION ───`,
+            ``,
+            conversationLog,
+          ].join("\n")
+        );
+        formData.append("_captcha", "false");
+        formData.append("_template", "box");
+
+        const res = await fetch(
+          "https://formsubmit.co/ajax/hellovt26@gmail.com",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        const result = await res.json();
+        console.log("[NOVA Chatbot] Formsubmit response:", result);
 
         // Save to localStorage for admin dashboard
         const stored = localStorage.getItem("nova-leads");
@@ -767,8 +811,8 @@ export default function ChatBot() {
         localStorage.setItem("nova-leads", JSON.stringify(existing));
 
         setLeadSubmitted(true);
-      } catch {
-        // Silent fail
+      } catch (err) {
+        console.error("[NOVA Chatbot] Lead submission failed:", err);
       }
     },
     [leadSubmitted]
