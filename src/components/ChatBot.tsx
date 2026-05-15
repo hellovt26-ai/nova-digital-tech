@@ -200,6 +200,38 @@ function getSmartResponse(
   const YES_NO = ["✅ Yes", "❌ No", "🤔 Tell me more"];
   const CONSULT_OPTIONS = ["📞 Book consultation", "💬 Ask another question"];
 
+  /* ── Ask another question — reset to service menu ── */
+  if (/ask another|💬 ask|another question/i.test(lower)) {
+    return {
+      text: pick([
+        "Of course! 😊 What would you like to know?",
+        "Sure thing! What's on your mind?",
+        "Go ahead! I'm all ears.",
+        "Happy to help! What's your next question?",
+      ]),
+      options: SERVICE_OPTIONS,
+    };
+  }
+
+  /* ── Done / I'm good — final goodbye ── */
+  if (/^(✅ done|done|all good|thats it|that's it|nothing else|no more)/i.test(lower)) {
+    return {
+      text: pick([
+        "Awesome! 🚀 Have a great day, and we'll be in touch soon!",
+        "Perfect! 💙 Thanks for chatting with NOVA. Talk soon!",
+        "Sounds good! 👋 We'll reach out shortly. Cheers!",
+      ]),
+    };
+  }
+
+  /* ── See more services — show services list ── */
+  if (/see more services|🛠 see more/i.test(lower)) {
+    return {
+      text: "Here's everything we offer:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one would you like to learn more about?",
+      options: SERVICE_OPTIONS,
+    };
+  }
+
   /* ── BOOK CONSULTATION — Start lead collection flow ── */
   if (/book consultation|📞 book consultation|📞 talk to/i.test(lower)) {
     if (!currentLead.name) {
