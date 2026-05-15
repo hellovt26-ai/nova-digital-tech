@@ -9,6 +9,7 @@ interface Message {
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
+  options?: string[];
 }
 
 interface LeadData {
@@ -48,14 +49,6 @@ const MinimizeIcon = () => (
   </svg>
 );
 
-/* ─── Quick Replies ─── */
-const QUICK_REPLIES = [
-  { label: "What services do you offer?", icon: "🛠" },
-  { label: "I need a website", icon: "🌐" },
-  { label: "How much does it cost?", icon: "💰" },
-  { label: "Book a consultation", icon: "📅" },
-];
-
 /* ─── Greeting ─── */
 const GREETING: Message = {
   id: "greeting",
@@ -63,6 +56,14 @@ const GREETING: Message = {
   content:
     "Hey! 👋 I'm NOVA, your digital assistant. I help businesses like yours get online and grow faster. What can I help you with today?",
   timestamp: new Date(),
+  options: [
+    "🌐 I need a website",
+    "📅 Booking system",
+    "📊 Dashboard / Analytics",
+    "⚡ Business automation",
+    "💰 What does it cost?",
+    "📞 Talk to someone",
+  ],
 };
 
 /* ─── Helper: extract lead info from conversation ─── */
@@ -85,114 +86,203 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
 }
 
 /* ─── Smart client-side responder (instant) ─── */
-function getSmartResponse(message: string, history: Message[]): string {
+function getSmartResponse(
+  message: string,
+  history: Message[]
+): { text: string; options?: string[] } {
   const lower = message.toLowerCase().trim();
   const userMessages = history.filter((m) => m.role === "user").length;
 
+  const SERVICE_OPTIONS = [
+    "🌐 Website",
+    "📅 Booking System",
+    "📊 Dashboard",
+    "⚡ Automation",
+    "💰 Pricing info",
+  ];
+
+  const YES_NO = ["✅ Yes", "❌ No", "🤔 Tell me more"];
+  const CONSULT_OPTIONS = ["📞 Book consultation", "💬 Ask another question"];
+
   // Greetings
   if (/^(hi|hello|hey|sup|yo|good (morning|afternoon|evening)|hola|bonjour)/i.test(lower)) {
-    return "Hey! 👋 Great to have you here. I'm NOVA, the digital assistant for NOVA DIGITAL TECH. What's bringing you by today — are you looking to build something new for your business?";
+    return {
+      text: "Hey! 👋 Great to have you here. I'm NOVA, the digital assistant for NOVA DIGITAL TECH. What's bringing you by today?",
+      options: SERVICE_OPTIONS,
+    };
   }
 
   // Thanks
   if (/(thank|thanks|thx|appreciate)/i.test(lower)) {
-    return "You're welcome! Is there anything else you'd like to know? Or if you're ready, we can schedule your free consultation.";
+    return {
+      text: "You're welcome! Is there anything else you'd like to know?",
+      options: ["📞 Book consultation", "🛠 See more services", "✅ I'm good"],
+    };
   }
 
   // Goodbye
-  if (/^(bye|goodbye|see you|later|cya|thanks bye)/i.test(lower)) {
-    return "Thanks for stopping by! Feel free to come back anytime, or book a free consultation through our contact form. Have a great day! 🚀";
+  if (/^(bye|goodbye|see you|later|cya|thanks bye|im good|i'm good)/i.test(lower)) {
+    return {
+      text: "Thanks for stopping by! Feel free to come back anytime, or book a free consultation through our contact form. Have a great day! 🚀",
+    };
   }
 
   // Website-related
-  if (/website|web site|landing page|web page|web design/i.test(lower)) {
-    if (userMessages <= 2) {
-      return "Great choice! We build premium, mobile-friendly websites that actually convert visitors into customers. 🌐\n\nQuick question — do you already own a domain name, or do you need help setting that up too?";
-    }
-    return "We design websites that load fast, look stunning, and work perfectly on all devices. Are you starting fresh, or do you have an existing site that needs an upgrade?";
+  if (/website|web site|landing page|web page|web design|🌐/i.test(lower)) {
+    return {
+      text: "Great choice! We build premium, mobile-friendly websites that convert visitors into customers. 🌐\n\nDo you already own a domain name?",
+      options: YES_NO,
+    };
   }
 
   // Booking system
-  if (/booking|appointment|schedule|reservation|calendar/i.test(lower)) {
-    return "Booking systems are one of our specialties! 📅\n\nWe can build you a system where customers book appointments online, you accept payments, and get automatic reminders.\n\nQuick question — do you also need to accept online payments through the booking system?";
+  if (/booking|appointment|schedule|reservation|calendar|📅/i.test(lower)) {
+    return {
+      text: "Booking systems are one of our specialties! 📅\n\nCustomers book online, you accept payments, and get automatic reminders.\n\nDo you also need to accept online payments?",
+      options: YES_NO,
+    };
   }
 
   // Dashboard
-  if (/dashboard|analytics|track|report|stats/i.test(lower)) {
-    return "Digital dashboards help you see everything that matters at a glance — sales, customers, inventory, anything you need. 📊\n\nWhat are you currently tracking manually that you'd love to automate?";
+  if (/dashboard|analytics|track|report|stats|📊/i.test(lower)) {
+    return {
+      text: "Digital dashboards help you see everything that matters at a glance — sales, customers, inventory. 📊\n\nWhat are you currently tracking manually?",
+      options: ["💰 Sales/Revenue", "👥 Customers", "📦 Inventory", "📋 Other"],
+    };
   }
 
   // Automation
-  if (/automat|workflow|automatic|integrat/i.test(lower)) {
-    return "Automation is a game-changer for small businesses! ⚡\n\nWe can automate emails, invoices, reminders, customer follow-ups, and more — saving you hours every week.\n\nWhat repetitive tasks are slowing your business down right now?";
+  if (/automat|workflow|automatic|integrat|⚡/i.test(lower)) {
+    return {
+      text: "Automation is a game-changer! ⚡\n\nWe automate emails, invoices, reminders, follow-ups, and more — saving you hours every week.\n\nWhat tasks are slowing you down?",
+      options: ["📧 Email follow-ups", "💳 Invoicing", "📅 Reminders", "💼 Lead management"],
+    };
   }
 
   // App development
-  if (/app|application|mobile app/i.test(lower)) {
-    return "We build custom mobile apps for iOS and Android! 📱 Tell me a bit more — what kind of app are you envisioning? (e.g., service booking, e-commerce, loyalty, internal tools)";
+  if (/app|application|mobile app|📱/i.test(lower)) {
+    return {
+      text: "We build custom mobile apps for iOS and Android! 📱 What kind of app are you envisioning?",
+      options: ["🛍 E-commerce", "📅 Service booking", "💎 Loyalty/Rewards", "🏢 Internal tools"],
+    };
   }
 
   // Payment / Invoice
-  if (/payment|invoice|billing|stripe|paypal/i.test(lower)) {
-    return "We set up payment & invoice systems that make getting paid effortless. 💳\n\nClients can pay online, you track everything in one place, and invoices send automatically.\n\nDo you currently send invoices manually?";
+  if (/payment|invoice|billing|stripe|paypal|💳/i.test(lower)) {
+    return {
+      text: "We set up payment & invoice systems that make getting paid effortless. 💳\n\nDo you currently send invoices manually?",
+      options: YES_NO,
+    };
   }
 
   // CRM / Client management
-  if (/crm|client management|customer manage|database/i.test(lower)) {
-    return "Client management systems keep all your customers, leads, and communications organized in one place. 👥\n\nHow many clients/customers do you typically manage?";
+  if (/crm|client management|customer manage|database|👥/i.test(lower)) {
+    return {
+      text: "Client management systems keep all your customers, leads, and communications organized. 👥\n\nHow many clients do you typically manage?",
+      options: ["Under 50", "50-200", "200-1000", "1000+"],
+    };
   }
 
   // Pricing
-  if (/price|cost|how much|pricing|expensive|cheap|afford|budget|rate/i.test(lower)) {
-    return "Our pricing depends on what you need — every business is different. 💰\n\nTo give you an accurate quote, I'd love to set up a quick **free consultation** where we discuss your specific project.\n\nWant me to grab your email so we can reach out? Or you can book directly through the contact form below.";
+  if (/price|cost|how much|pricing|expensive|cheap|afford|budget|rate|💰/i.test(lower)) {
+    return {
+      text: "Our pricing depends on what you need — every business is different. 💰\n\nThe best way to get an accurate quote is through a **free consultation**.",
+      options: CONSULT_OPTIONS,
+    };
   }
 
   // Timeline
   if (/how long|timeline|when|how fast|delivery|turnaround|deadline/i.test(lower)) {
-    return "Most projects take 2-6 weeks depending on complexity. ⏱️\n\nWhen are you hoping to launch?";
+    return {
+      text: "Most projects take 2-6 weeks depending on complexity. ⏱️\n\nWhen are you hoping to launch?",
+      options: ["🔥 ASAP", "📅 1-2 months", "🗓 3+ months", "🤔 Flexible"],
+    };
   }
 
   // Services general
-  if (/service|offer|what do you|what can you|help with|do you do/i.test(lower)) {
-    return "We help small businesses go digital with:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one catches your interest?";
+  if (/service|offer|what do you|what can you|help with|do you do|🛠/i.test(lower)) {
+    return {
+      text: "We help small businesses go digital with:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one catches your interest?",
+      options: SERVICE_OPTIONS,
+    };
   }
 
   // Bilingual
   if (/creole|french|bilingual|haitian|kreyol|languages/i.test(lower)) {
-    return "Yes! We offer full **bilingual English/Creole support** — your website, content, and even our communication with you can be in both languages. 🇭🇹 Is your business serving a Creole-speaking community?";
+    return {
+      text: "Yes! We offer full **bilingual English/Creole support** 🇭🇹 — your website, content, and our communication can be in both languages.\n\nIs your business serving a Creole-speaking community?",
+      options: YES_NO,
+    };
   }
 
   // Contact / talk to human
-  if (/contact|talk to|reach|speak to|call|human|person|owner/i.test(lower)) {
-    return "Of course! 👋 The fastest way is to fill out the contact form on this page, or I can save your details right now.\n\nWhat's your name and best email to reach you?";
+  if (/contact|talk to|reach|speak to|call|human|person|owner|📞/i.test(lower)) {
+    return {
+      text: "Of course! 👋 The fastest way is to share your contact info, and our team will reach out within 24 hours.\n\nWhat's your name?",
+    };
+  }
+
+  // Yes/No follow-ups
+  if (/^(yes|yeah|yep|sure|ok|okay|✅)/i.test(lower)) {
+    return {
+      text: "Perfect! 🎯 Let's get you connected with our team. What's your name and email?",
+    };
+  }
+  if (/^(no|nope|nah|❌)/i.test(lower)) {
+    return {
+      text: "No problem! Is there something else you'd like to know more about?",
+      options: SERVICE_OPTIONS,
+    };
+  }
+  if (/tell me more|🤔/i.test(lower)) {
+    return {
+      text: "Of course! What specifically would you like to know more about?",
+      options: SERVICE_OPTIONS,
+    };
   }
 
   // Location
   if (/location|where|based|country|address|haiti|usa/i.test(lower)) {
-    return "We're a fully digital agency — we work with clients worldwide! 🌍 All meetings happen online, and we deliver everything digitally. Where is your business based?";
+    return {
+      text: "We're a fully digital agency — we work with clients worldwide! 🌍 All meetings happen online, everything delivered digitally.\n\nWhere is your business based?",
+    };
   }
 
   // Trust / portfolio / experience
   if (/portfolio|example|past work|previous|experience|reviews|testimonial|trust|legit/i.test(lower)) {
-    return "Great question! Scroll down on this page — you'll find our portfolio, client transformations, and testimonials. We've helped restaurants, salons, startups, cleaning services, and more get online and grow. 💼";
+    return {
+      text: "Great question! Scroll down on this page — you'll find our portfolio, client transformations, and testimonials. We've helped restaurants, salons, startups, cleaning services, and more. 💼",
+      options: CONSULT_OPTIONS,
+    };
   }
 
   // Email detection (lead capture)
   if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(message)) {
-    return "Thanks! 📧 Got your email. To finalize your free consultation request, can you share your phone number and what service you're interested in?";
+    return {
+      text: "Thanks! 📧 Got your email. Can you share your phone number too so we can reach out faster?",
+    };
   }
 
   // Phone detection
   if (/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(message)) {
-    return "Got your number! 📱 NOVA DIGITAL TECH will reach out to you shortly. In the meantime, is there anything specific about your project you'd like us to know?";
+    return {
+      text: "Got your number! 📱 NOVA DIGITAL TECH will reach out to you shortly. Which service are you most interested in?",
+      options: SERVICE_OPTIONS,
+    };
   }
 
   // Default — push toward consultation
   if (userMessages > 4) {
-    return "I'd love to help you get exact answers tailored to your business. The best next step is a **free 15-min consultation** with our team — they'll walk you through everything.\n\nCan I grab your name and email to set that up?";
+    return {
+      text: "I'd love to help you get answers tailored to your business. The best next step is a **free 15-min consultation**.",
+      options: CONSULT_OPTIONS,
+    };
   }
 
-  return "That's a great question! Could you tell me a bit more about your business — what industry are you in, and what's the main goal you're trying to achieve?";
+  return {
+    text: "That's a great question! Could you tell me a bit more — what industry are you in?",
+    options: ["🍽 Restaurant/Food", "💇 Salon/Beauty", "🧹 Cleaning", "🏢 Other"],
+  };
 }
 
 /* ─── Main Component ─── */
@@ -202,7 +292,6 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([GREETING]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [leadSubmitted, setLeadSubmitted] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
@@ -265,21 +354,21 @@ export default function ChatBot() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
-    setShowQuickReplies(false);
     setIsTyping(true);
 
     // Instant client-side response — no server roundtrip
-    const responseText = getSmartResponse(content.trim(), updatedMessages);
+    const response = getSmartResponse(content.trim(), updatedMessages);
 
     // Small natural typing delay (feels human, not robotic)
-    const typingDelay = Math.min(400 + responseText.length * 8, 1200);
+    const typingDelay = Math.min(400 + response.text.length * 6, 1100);
 
     setTimeout(() => {
       const botMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: responseText,
+        content: response.text,
         timestamp: new Date(),
+        options: response.options,
       };
 
       const finalMessages = [...updatedMessages, botMessage];
@@ -297,6 +386,14 @@ export default function ChatBot() {
   };
 
   const handleQuickReply = (reply: string) => {
+    // Special action: scroll to contact section
+    if (/book consultation|📞 book/i.test(reply)) {
+      setIsOpen(false);
+      setTimeout(() => {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+      return;
+    }
     sendMessage(reply);
   };
 
@@ -394,41 +491,60 @@ export default function ChatBot() {
                   scrollbarColor: "rgba(0,229,255,0.2) transparent",
                 }}
               >
-                {messages.map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex gap-2.5 ${
-                      msg.role === "user" ? "flex-row-reverse" : "flex-row"
-                    }`}
-                  >
-                    {/* Avatar */}
-                    {msg.role === "assistant" && (
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-nova-cyan/20 to-nova-blue/20 border border-white/10 flex items-center justify-center text-nova-cyan flex-shrink-0 mt-0.5">
-                        <BotIcon />
-                      </div>
-                    )}
-
-                    {/* Bubble */}
-                    <div
-                      className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
-                        msg.role === "user"
-                          ? "bg-gradient-to-r from-nova-cyan/20 to-nova-blue/20 text-white border border-nova-cyan/20 rounded-br-md"
-                          : "bg-white/[0.04] text-gray-200 border border-white/[0.06] rounded-bl-md"
-                      }`}
-                    >
-                      <p className="whitespace-pre-wrap">{msg.content}</p>
-                      <p
-                        className={`text-[9px] mt-1.5 ${
-                          msg.role === "user"
-                            ? "text-nova-cyan/40 text-right"
-                            : "text-gray-600"
+                {messages.map((msg, idx) => {
+                  const isLast = idx === messages.length - 1;
+                  return (
+                    <div key={msg.id}>
+                      <div
+                        className={`flex gap-2.5 ${
+                          msg.role === "user" ? "flex-row-reverse" : "flex-row"
                         }`}
                       >
-                        {formatTime(msg.timestamp)}
-                      </p>
+                        {/* Avatar */}
+                        {msg.role === "assistant" && (
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-nova-cyan/20 to-nova-blue/20 border border-white/10 flex items-center justify-center text-nova-cyan flex-shrink-0 mt-0.5">
+                            <BotIcon />
+                          </div>
+                        )}
+
+                        {/* Bubble */}
+                        <div
+                          className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-[13px] leading-relaxed ${
+                            msg.role === "user"
+                              ? "bg-gradient-to-r from-nova-cyan/20 to-nova-blue/20 text-white border border-nova-cyan/20 rounded-br-md"
+                              : "bg-white/[0.04] text-gray-200 border border-white/[0.06] rounded-bl-md"
+                          }`}
+                        >
+                          <p className="whitespace-pre-wrap">{msg.content}</p>
+                          <p
+                            className={`text-[9px] mt-1.5 ${
+                              msg.role === "user"
+                                ? "text-nova-cyan/40 text-right"
+                                : "text-gray-600"
+                            }`}
+                          >
+                            {formatTime(msg.timestamp)}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Option chips below assistant message (only on last) */}
+                      {msg.role === "assistant" && isLast && msg.options && !isTyping && (
+                        <div className="flex flex-wrap gap-2 mt-3 ml-9 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                          {msg.options.map((opt) => (
+                            <button
+                              key={opt}
+                              onClick={() => handleQuickReply(opt)}
+                              className="text-[12px] px-3 py-1.5 rounded-full bg-nova-cyan/[0.06] border border-nova-cyan/25 text-nova-cyan/90 hover:bg-nova-cyan/15 hover:text-white hover:border-nova-cyan/50 transition-all active:scale-95"
+                            >
+                              {opt}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
 
                 {/* Typing Indicator */}
                 {isTyping && (
@@ -448,21 +564,6 @@ export default function ChatBot() {
 
                 <div ref={messagesEndRef} />
               </div>
-
-              {/* ── Quick Replies ── */}
-              {showQuickReplies && messages.length <= 1 && (
-                <div className="px-4 pb-2 flex flex-wrap gap-2">
-                  {QUICK_REPLIES.map((qr) => (
-                    <button
-                      key={qr.label}
-                      onClick={() => handleQuickReply(qr.label)}
-                      className="text-[11px] px-3 py-1.5 rounded-full border border-nova-cyan/20 text-nova-cyan/80 hover:bg-nova-cyan/10 hover:text-nova-cyan transition-all active:scale-95"
-                    >
-                      {qr.icon} {qr.label}
-                    </button>
-                  ))}
-                </div>
-              )}
 
               {/* ── Input ── */}
               <form
