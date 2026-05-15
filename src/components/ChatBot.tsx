@@ -82,7 +82,66 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
   const phoneMatch = allText.match(/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
   if (phoneMatch) lead.phone = phoneMatch[0];
 
+  // Detect name (when bot asked "what's your name?")
+  for (let i = 0; i < messages.length - 1; i++) {
+    const assistantMsg = messages[i];
+    const userMsg = messages[i + 1];
+    if (
+      assistantMsg.role === "assistant" &&
+      userMsg?.role === "user" &&
+      /what'?s your name/i.test(assistantMsg.content)
+    ) {
+      const nameText = userMsg.content.trim();
+      // Simple validation: looks like a name (letters, 1-4 words)
+      if (/^[a-zA-Z]+([\s'-][a-zA-Z]+){0,3}$/.test(nameText) && nameText.length < 50) {
+        lead.name = nameText;
+      }
+    }
+    // Business name detection
+    if (
+      assistantMsg.role === "assistant" &&
+      userMsg?.role === "user" &&
+      /business name|company name|what'?s the name of your business/i.test(assistantMsg.content)
+    ) {
+      lead.businessName = userMsg.content.trim();
+    }
+  }
+
+  // Service detection (based on entire conversation)
+  if (/website|web site|web design|🌐/i.test(allText)) lead.service = "Website Development";
+  if (/booking|appointment|reservation|📅/i.test(allText)) lead.service = "Booking System";
+  if (/dashboard|analytics|📊/i.test(allText)) lead.service = "Digital Dashboard";
+  if (/automat|workflow|⚡/i.test(allText)) lead.service = "Business Automation";
+  if (/app|mobile app|📱/i.test(allText)) lead.service = "Mobile App";
+  if (/invoice|payment system|💳/i.test(allText)) lead.service = "Payment/Invoice System";
+  if (/crm|client management|👥/i.test(allText)) lead.service = "CRM";
+
+  // Business type / industry detection
+  if (/restaurant|food|cafe|bakery|🍽/i.test(allText)) lead.businessType = "Restaurant/Food";
+  else if (/salon|barber|spa|beauty|💇/i.test(allText)) lead.businessType = "Beauty/Salon";
+  else if (/clean|janitor|🧹/i.test(allText)) lead.businessType = "Cleaning";
+  else if (/retail|store|shop|ecommerce|🛍/i.test(allText)) lead.businessType = "Retail/E-commerce";
+  else if (/real estate|realtor|property/i.test(allText)) lead.businessType = "Real Estate";
+
+  // Budget detection
+  if (/under\s*\$?5|less than\s*\$?5|\$?[0-4],?\d{3}\b/i.test(allText)) lead.budget = "Under $5,000";
+  else if (/\$?5[,.]?000|\$?5k|5-10|5-15/i.test(allText)) lead.budget = "$5K-$15K";
+  else if (/\$?15[,.]?000|\$?15k|15-30/i.test(allText)) lead.budget = "$15K-$30K";
+  else if (/\$?30[,.]?000|\$?30k|30\+/i.test(allText)) lead.budget = "$30K+";
+
+  // Timeline detection
+  if (/asap|urgent|🔥/i.test(allText)) lead.timeline = "ASAP";
+  else if (/1-2 month|next month/i.test(allText)) lead.timeline = "1-2 months";
+  else if (/3\+ month|3 month|few month/i.test(allText)) lead.timeline = "3+ months";
+  else if (/flexible|no rush|🤔 flexible/i.test(allText)) lead.timeline = "Flexible";
+
   return lead;
+}
+
+/* ─── Check if lead data is "complete enough" to submit ─── */
+function isLeadComplete(lead: Partial<LeadData>): boolean {
+  // Need at least: name, email, and either phone OR service
+  return !!(lead.name && lead.email && (lead.phone || lead.service));
 }
 
 /* ─── Pick a random response from variations ─── */
@@ -116,10 +175,19 @@ function getLastTopic(history: Message[]): string {
 function getSmartResponse(
   message: string,
   history: Message[]
-): { text: string; options?: string[] } {
+): { text: string; options?: string[]; submitLead?: boolean } {
   const lower = message.toLowerCase().trim();
   const userMessages = history.filter((m) => m.role === "user").length;
   const lastTopic = getLastTopic(history);
+  const currentLead = extractLeadFromMessages([
+    ...history,
+    {
+      id: "temp",
+      role: "user",
+      content: message,
+      timestamp: new Date(),
+    },
+  ]);
 
   const SERVICE_OPTIONS = [
     "🌐 Website",
@@ -131,6 +199,62 @@ function getSmartResponse(
 
   const YES_NO = ["✅ Yes", "❌ No", "🤔 Tell me more"];
   const CONSULT_OPTIONS = ["📞 Book consultation", "💬 Ask another question"];
+
+  /* ── BOOK CONSULTATION — Start lead collection flow ── */
+  if (/book consultation|📞 book consultation|📞 talk to/i.test(lower)) {
+    if (!currentLead.name) {
+      return {
+        text: "Awesome! Let's get you set up with a free consultation. 🚀\n\nFirst — what's your name?",
+      };
+    }
+    if (!currentLead.email) {
+      return {
+        text: `Great, ${currentLead.name.split(" ")[0]}! 📧 What's the best email to reach you at?`,
+      };
+    }
+    if (!currentLead.phone) {
+      return {
+        text: "And your phone number? 📱 (Format: 555-555-5555)",
+      };
+    }
+    if (!currentLead.service) {
+      return {
+        text: "Which service are you most interested in?",
+        options: SERVICE_OPTIONS,
+      };
+    }
+    // All collected — submit!
+    return {
+      text: `🎉 You're all set, ${currentLead.name.split(" ")[0]}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours to schedule your free consultation.\n\nIn the meantime, feel free to explore our portfolio below! 💼`,
+      submitLead: true,
+      options: ["💬 Ask another question", "✅ Done"],
+    };
+  }
+
+  /* ── If we're in active lead collection — keep advancing ── */
+  if (lastTopic === "ask_name" && currentLead.name && !currentLead.email) {
+    return {
+      text: `Nice to meet you, ${currentLead.name.split(" ")[0]}! 👋 What's the best email to reach you at?`,
+    };
+  }
+  if (lastTopic === "ask_email" && currentLead.email && !currentLead.phone) {
+    return {
+      text: "Perfect! 📱 And your phone number? (Format: 555-555-5555)",
+    };
+  }
+  if (lastTopic === "ask_phone" && currentLead.phone) {
+    if (!currentLead.service) {
+      return {
+        text: "Awesome! 🎯 Last question — what service are you most interested in?",
+        options: SERVICE_OPTIONS,
+      };
+    }
+    return {
+      text: `🎉 You're all set${currentLead.name ? ", " + currentLead.name.split(" ")[0] : ""}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours.\n\nThanks for choosing us! 💙`,
+      submitLead: true,
+      options: ["💬 Ask another question", "✅ Done"],
+    };
+  }
 
   /* ── Handle "Other" contextually based on last topic ── */
   if (/^(other|something else|else|different)/i.test(lower) || /🏢 Other|📋 Other/i.test(message)) {
@@ -570,28 +694,48 @@ export default function ChatBot() {
     }
   }, [isOpen, isMinimized]);
 
-  // Check if lead info has been collected
-  const checkAndSubmitLead = useCallback(
+  // Submit lead to server (called explicitly by submitLead flag or auto when complete)
+  const submitLead = useCallback(
     async (allMessages: Message[]) => {
       if (leadSubmitted) return;
       const lead = extractLeadFromMessages(allMessages);
-      if (lead.email && lead.phone) {
-        try {
-          await fetch("/api/leads", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...lead,
-              name: lead.name || "Chat Visitor",
-              message: allMessages
-                .map((m) => `${m.role}: ${m.content}`)
-                .join("\n"),
-            }),
-          });
-          setLeadSubmitted(true);
-        } catch {
-          // Silent fail
-        }
+      try {
+        const conversationLog = allMessages
+          .filter((m) => m.id !== "greeting")
+          .map((m) => `${m.role === "user" ? "Visitor" : "NOVA Bot"}: ${m.content}`)
+          .join("\n\n");
+
+        await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: lead.name || "Chat Visitor",
+            businessName: lead.businessName || "",
+            businessType: lead.businessType || "",
+            email: lead.email || "",
+            phone: lead.phone || "",
+            service: lead.service || "",
+            budget: lead.budget || "",
+            timeline: lead.timeline || "",
+            message: `Full conversation transcript:\n\n${conversationLog}`,
+          }),
+        });
+
+        // Save to localStorage for admin dashboard
+        const stored = localStorage.getItem("nova-leads");
+        const existing = stored ? JSON.parse(stored) : [];
+        existing.push({
+          id: crypto.randomUUID(),
+          ...lead,
+          name: lead.name || "Chat Visitor",
+          message: conversationLog,
+          date: new Date().toISOString(),
+        });
+        localStorage.setItem("nova-leads", JSON.stringify(existing));
+
+        setLeadSubmitted(true);
+      } catch {
+        // Silent fail
       }
     },
     [leadSubmitted]
@@ -631,8 +775,11 @@ export default function ChatBot() {
       setMessages(finalMessages);
       setIsTyping(false);
 
-      // Submit lead in background if we have enough info
-      checkAndSubmitLead(finalMessages);
+      // Submit lead when bot signals it's complete, OR when we have full info
+      const lead = extractLeadFromMessages(finalMessages);
+      if (response.submitLead || isLeadComplete(lead)) {
+        submitLead(finalMessages);
+      }
     }, typingDelay);
   };
 
@@ -642,14 +789,6 @@ export default function ChatBot() {
   };
 
   const handleQuickReply = (reply: string) => {
-    // Special action: scroll to contact section
-    if (/book consultation|📞 book/i.test(reply)) {
-      setIsOpen(false);
-      setTimeout(() => {
-        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-      }, 300);
-      return;
-    }
     sendMessage(reply);
   };
 
