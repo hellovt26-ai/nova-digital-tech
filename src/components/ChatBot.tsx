@@ -754,41 +754,24 @@ export default function ChatBot() {
           .map((m) => `${m.role === "user" ? "Visitor" : "NOVA Bot"}: ${m.content}`)
           .join("\n\n");
 
-        // Submit directly to Formsubmit using JSON ajax endpoint
-        const payload = {
-          name: lead.name || "Chat Visitor",
-          email: lead.email || "noreply@chat.local",
-          phone: lead.phone || "N/A",
-          _subject: `🔥 NEW Chat Lead: ${lead.name || "Visitor"} — ${lead.service || "General"}`,
-          _captcha: "false",
-          _template: "table",
-          business_name: lead.businessName || "N/A",
-          business_type: lead.businessType || "N/A",
-          service: lead.service || "N/A",
-          budget: lead.budget || "N/A",
-          timeline: lead.timeline || "N/A",
-          submitted_at: new Date().toLocaleString(),
-          conversation: conversationLog,
-        };
-
-        const res = await fetch(
-          "https://formsubmit.co/ajax/hellovt26@gmail.com",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
+        // Send to our own API route (server-side proxy, no CORS issues)
+        const res = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: lead.name || "Chat Visitor",
+            businessName: lead.businessName || "",
+            businessType: lead.businessType || "",
+            email: lead.email || "",
+            phone: lead.phone || "",
+            service: lead.service || "",
+            budget: lead.budget || "",
+            timeline: lead.timeline || "",
+            message: `=== CHATBOT CONSULTATION ===\n\n${conversationLog}`,
+          }),
+        });
         const result = await res.json();
-        console.log("[NOVA Chatbot] Formsubmit response:", result);
-
-        if (!result.success) {
-          console.warn("[NOVA Chatbot] Formsubmit returned non-success:", result);
-        }
+        console.log("[NOVA Chatbot] API response:", result);
 
         // Save to localStorage for admin dashboard
         const stored = localStorage.getItem("nova-leads");
