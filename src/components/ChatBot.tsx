@@ -84,6 +84,117 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
   return lead;
 }
 
+/* ─── Smart client-side responder (instant) ─── */
+function getSmartResponse(message: string, history: Message[]): string {
+  const lower = message.toLowerCase().trim();
+  const userMessages = history.filter((m) => m.role === "user").length;
+
+  // Greetings
+  if (/^(hi|hello|hey|sup|yo|good (morning|afternoon|evening)|hola|bonjour)/i.test(lower)) {
+    return "Hey! 👋 Great to have you here. I'm NOVA, the digital assistant for NOVA DIGITAL TECH. What's bringing you by today — are you looking to build something new for your business?";
+  }
+
+  // Thanks
+  if (/(thank|thanks|thx|appreciate)/i.test(lower)) {
+    return "You're welcome! Is there anything else you'd like to know? Or if you're ready, we can schedule your free consultation.";
+  }
+
+  // Goodbye
+  if (/^(bye|goodbye|see you|later|cya|thanks bye)/i.test(lower)) {
+    return "Thanks for stopping by! Feel free to come back anytime, or book a free consultation through our contact form. Have a great day! 🚀";
+  }
+
+  // Website-related
+  if (/website|web site|landing page|web page|web design/i.test(lower)) {
+    if (userMessages <= 2) {
+      return "Great choice! We build premium, mobile-friendly websites that actually convert visitors into customers. 🌐\n\nQuick question — do you already own a domain name, or do you need help setting that up too?";
+    }
+    return "We design websites that load fast, look stunning, and work perfectly on all devices. Are you starting fresh, or do you have an existing site that needs an upgrade?";
+  }
+
+  // Booking system
+  if (/booking|appointment|schedule|reservation|calendar/i.test(lower)) {
+    return "Booking systems are one of our specialties! 📅\n\nWe can build you a system where customers book appointments online, you accept payments, and get automatic reminders.\n\nQuick question — do you also need to accept online payments through the booking system?";
+  }
+
+  // Dashboard
+  if (/dashboard|analytics|track|report|stats/i.test(lower)) {
+    return "Digital dashboards help you see everything that matters at a glance — sales, customers, inventory, anything you need. 📊\n\nWhat are you currently tracking manually that you'd love to automate?";
+  }
+
+  // Automation
+  if (/automat|workflow|automatic|integrat/i.test(lower)) {
+    return "Automation is a game-changer for small businesses! ⚡\n\nWe can automate emails, invoices, reminders, customer follow-ups, and more — saving you hours every week.\n\nWhat repetitive tasks are slowing your business down right now?";
+  }
+
+  // App development
+  if (/app|application|mobile app/i.test(lower)) {
+    return "We build custom mobile apps for iOS and Android! 📱 Tell me a bit more — what kind of app are you envisioning? (e.g., service booking, e-commerce, loyalty, internal tools)";
+  }
+
+  // Payment / Invoice
+  if (/payment|invoice|billing|stripe|paypal/i.test(lower)) {
+    return "We set up payment & invoice systems that make getting paid effortless. 💳\n\nClients can pay online, you track everything in one place, and invoices send automatically.\n\nDo you currently send invoices manually?";
+  }
+
+  // CRM / Client management
+  if (/crm|client management|customer manage|database/i.test(lower)) {
+    return "Client management systems keep all your customers, leads, and communications organized in one place. 👥\n\nHow many clients/customers do you typically manage?";
+  }
+
+  // Pricing
+  if (/price|cost|how much|pricing|expensive|cheap|afford|budget|rate/i.test(lower)) {
+    return "Our pricing depends on what you need — every business is different. 💰\n\nTo give you an accurate quote, I'd love to set up a quick **free consultation** where we discuss your specific project.\n\nWant me to grab your email so we can reach out? Or you can book directly through the contact form below.";
+  }
+
+  // Timeline
+  if (/how long|timeline|when|how fast|delivery|turnaround|deadline/i.test(lower)) {
+    return "Most projects take 2-6 weeks depending on complexity. ⏱️\n\nWhen are you hoping to launch?";
+  }
+
+  // Services general
+  if (/service|offer|what do you|what can you|help with|do you do/i.test(lower)) {
+    return "We help small businesses go digital with:\n\n🌐 Custom Websites\n📅 Booking Systems\n📊 Digital Dashboards\n⚡ Business Automation\n💳 Payment & Invoice Systems\n👥 Client Management (CRM)\n📱 Custom Mobile Apps\n\nWhich one catches your interest?";
+  }
+
+  // Bilingual
+  if (/creole|french|bilingual|haitian|kreyol|languages/i.test(lower)) {
+    return "Yes! We offer full **bilingual English/Creole support** — your website, content, and even our communication with you can be in both languages. 🇭🇹 Is your business serving a Creole-speaking community?";
+  }
+
+  // Contact / talk to human
+  if (/contact|talk to|reach|speak to|call|human|person|owner/i.test(lower)) {
+    return "Of course! 👋 The fastest way is to fill out the contact form on this page, or I can save your details right now.\n\nWhat's your name and best email to reach you?";
+  }
+
+  // Location
+  if (/location|where|based|country|address|haiti|usa/i.test(lower)) {
+    return "We're a fully digital agency — we work with clients worldwide! 🌍 All meetings happen online, and we deliver everything digitally. Where is your business based?";
+  }
+
+  // Trust / portfolio / experience
+  if (/portfolio|example|past work|previous|experience|reviews|testimonial|trust|legit/i.test(lower)) {
+    return "Great question! Scroll down on this page — you'll find our portfolio, client transformations, and testimonials. We've helped restaurants, salons, startups, cleaning services, and more get online and grow. 💼";
+  }
+
+  // Email detection (lead capture)
+  if (/[\w.+-]+@[\w-]+\.[\w.]+/.test(message)) {
+    return "Thanks! 📧 Got your email. To finalize your free consultation request, can you share your phone number and what service you're interested in?";
+  }
+
+  // Phone detection
+  if (/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/.test(message)) {
+    return "Got your number! 📱 NOVA DIGITAL TECH will reach out to you shortly. In the meantime, is there anything specific about your project you'd like us to know?";
+  }
+
+  // Default — push toward consultation
+  if (userMessages > 4) {
+    return "I'd love to help you get exact answers tailored to your business. The best next step is a **free 15-min consultation** with our team — they'll walk you through everything.\n\nCan I grab your name and email to set that up?";
+  }
+
+  return "That's a great question! Could you tell me a bit more about your business — what industry are you in, and what's the main goal you're trying to achieve?";
+}
+
 /* ─── Main Component ─── */
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -157,46 +268,27 @@ export default function ChatBot() {
     setShowQuickReplies(false);
     setIsTyping(true);
 
-    try {
-      const res = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: updatedMessages.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
-        }),
-      });
+    // Instant client-side response — no server roundtrip
+    const responseText = getSmartResponse(content.trim(), updatedMessages);
 
-      const data = await res.json();
+    // Small natural typing delay (feels human, not robotic)
+    const typingDelay = Math.min(400 + responseText.length * 8, 1200);
 
+    setTimeout(() => {
       const botMessage: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: data.response,
+        content: responseText,
         timestamp: new Date(),
       };
 
       const finalMessages = [...updatedMessages, botMessage];
       setMessages(finalMessages);
-
-      // Check if we should submit lead
-      await checkAndSubmitLead(finalMessages);
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content:
-            "I apologize for the hiccup! You can reach us directly through the contact form below, or I can try again. What would you prefer?",
-          timestamp: new Date(),
-        },
-      ]);
-    } finally {
       setIsTyping(false);
-    }
+
+      // Submit lead in background if we have enough info
+      checkAndSubmitLead(finalMessages);
+    }, typingDelay);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
