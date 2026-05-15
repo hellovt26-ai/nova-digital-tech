@@ -62,7 +62,8 @@ const GREETING: Message = {
     "📊 Dashboard / Analytics",
     "⚡ Business automation",
     "💰 What does it cost?",
-    "📞 Talk to someone",
+    "📞 Free Consultation",
+    "💬 Talk to someone",
   ],
 };
 
@@ -233,7 +234,7 @@ function getSmartResponse(
   }
 
   /* ── BOOK CONSULTATION — Start lead collection flow ── */
-  if (/book consultation|📞 book consultation|📞 talk to/i.test(lower)) {
+  if (/book consultation|free consultation|📞 free|📞 consultation|consultation/i.test(lower)) {
     if (!currentLead.name) {
       return {
         text: "Awesome! Let's get you set up with a free consultation. 🚀\n\nFirst — what's your name?",
