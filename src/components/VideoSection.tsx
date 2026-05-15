@@ -28,7 +28,9 @@ function VideoCard({
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.6, delay }}
-      className="relative w-full max-w-sm mx-auto aspect-[9/16] rounded-2xl overflow-hidden glass-strong glow-cyan"
+      className={`relative w-full mx-auto rounded-2xl overflow-hidden glass-strong glow-cyan ${
+        isShort ? "max-w-sm aspect-[9/16]" : "max-w-2xl aspect-video self-center"
+      }`}
     >
       {!playing ? (
         <button
@@ -88,7 +90,7 @@ export default function VideoSection() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 justify-items-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 justify-items-center items-center">
           <VideoCard
             videoId="_qvnFgRrFqU"
             title="NOVA DIGITAL TECH Promo"

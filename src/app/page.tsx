@@ -25,6 +25,7 @@ import Footer from "@/components/Footer";
 import Particles from "@/components/Particles";
 import ScrollToTop from "@/components/ScrollToTop";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import ChatBot from "@/components/ChatBot";
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,6 +64,7 @@ export default function Home() {
       <Footer />
       {showFloating && <ScrollToTop />}
       {showFloating && <StickyMobileCTA />}
+      <ChatBot />
     </>
   );
 }
