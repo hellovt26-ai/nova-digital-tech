@@ -29,6 +29,7 @@ import ChatBot from "@/components/ChatBot";
 import ActivityFeed from "@/components/ActivityFeed";
 import ROICalculator from "@/components/ROICalculator";
 import HolographicCards from "@/components/HolographicCards";
+import MagneticCursor from "@/components/MagneticCursor";
 
 export default function Home() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -71,6 +72,7 @@ export default function Home() {
       {showFloating && <StickyMobileCTA />}
       <ChatBot />
       <ActivityFeed />
+      <MagneticCursor />
     </>
   );
 }
