@@ -94,16 +94,16 @@ export default function ActivityFeed() {
       setActivity(getRandomActivity());
       setVisible(true);
 
-      // Hide after 5 seconds
+      // Hide after 6 seconds
       hideTimer = setTimeout(() => {
         setVisible(false);
-        // Schedule next show in 12-20 seconds
-        cycleTimer = setTimeout(cycle, 12000 + Math.random() * 8000);
-      }, 5000);
+        // Schedule next show in 8-14 seconds
+        cycleTimer = setTimeout(cycle, 8000 + Math.random() * 6000);
+      }, 6000);
     };
 
-    // First show after 8 seconds (let page load + chatbot tooltip pass)
-    showTimer = setTimeout(cycle, 8000);
+    // First show after 3 seconds
+    showTimer = setTimeout(cycle, 3000);
 
     return () => {
       clearTimeout(showTimer);
