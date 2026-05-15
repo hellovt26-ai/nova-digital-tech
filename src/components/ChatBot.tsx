@@ -19,8 +19,10 @@ interface LeadData {
   email: string;
   phone: string;
   service: string;
+  language: string;
   budget: string;
   timeline: string;
+  details: string;
   message: string;
 }
 
@@ -83,28 +85,31 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
   const phoneMatch = allText.match(/\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}/);
   if (phoneMatch) lead.phone = phoneMatch[0];
 
-  // Detect name (when bot asked "what's your name?")
+  // Detect captured fields based on bot's preceding question
   for (let i = 0; i < messages.length - 1; i++) {
     const assistantMsg = messages[i];
     const userMsg = messages[i + 1];
     if (
-      assistantMsg.role === "assistant" &&
-      userMsg?.role === "user" &&
-      /what'?s your name/i.test(assistantMsg.content)
-    ) {
-      const nameText = userMsg.content.trim();
-      // Simple validation: looks like a name (letters, 1-4 words)
-      if (/^[a-zA-Z]+([\s'-][a-zA-Z]+){0,3}$/.test(nameText) && nameText.length < 50) {
-        lead.name = nameText;
+      assistantMsg.role !== "assistant" ||
+      userMsg?.role !== "user"
+    )
+      continue;
+    const q = assistantMsg.content.toLowerCase();
+    const ans = userMsg.content.trim();
+
+    // Name
+    if (/what'?s your name|first.*name/.test(q)) {
+      if (/^[a-zA-Z]+([\s'-][a-zA-Z]+){0,3}$/.test(ans) && ans.length < 50) {
+        lead.name = ans;
       }
     }
-    // Business name detection
-    if (
-      assistantMsg.role === "assistant" &&
-      userMsg?.role === "user" &&
-      /business name|company name|what'?s the name of your business/i.test(assistantMsg.content)
-    ) {
-      lead.businessName = userMsg.content.trim();
+    // Business name
+    if (/business name|company name|what'?s the name of your business|what.*business.*called/.test(q)) {
+      lead.businessName = ans;
+    }
+    // Project details / message
+    if (/tell me.*about your project|describe.*project|what.*looking for|specific.*needs|specific.*goals/.test(q)) {
+      lead.details = ans;
     }
   }
 
@@ -124,17 +129,37 @@ function extractLeadFromMessages(messages: Message[]): Partial<LeadData> {
   else if (/retail|store|shop|ecommerce|🛍/i.test(allText)) lead.businessType = "Retail/E-commerce";
   else if (/real estate|realtor|property/i.test(allText)) lead.businessType = "Real Estate";
 
-  // Budget detection
-  if (/under\s*\$?5|less than\s*\$?5|\$?[0-4],?\d{3}\b/i.test(allText)) lead.budget = "Under $5,000";
-  else if (/\$?5[,.]?000|\$?5k|5-10|5-15/i.test(allText)) lead.budget = "$5K-$15K";
-  else if (/\$?15[,.]?000|\$?15k|15-30/i.test(allText)) lead.budget = "$15K-$30K";
-  else if (/\$?30[,.]?000|\$?30k|30\+/i.test(allText)) lead.budget = "$30K+";
-
   // Timeline detection
   if (/asap|urgent|🔥/i.test(allText)) lead.timeline = "ASAP";
   else if (/1-2 month|next month/i.test(allText)) lead.timeline = "1-2 months";
   else if (/3\+ month|3 month|few month/i.test(allText)) lead.timeline = "3+ months";
   else if (/flexible|no rush|🤔 flexible/i.test(allText)) lead.timeline = "Flexible";
+
+  // Language detection (only from explicit answers — check messages after language question)
+  for (let i = 0; i < messages.length - 1; i++) {
+    const a = messages[i];
+    const u = messages[i + 1];
+    if (a.role === "assistant" && u?.role === "user" && /preferred language|what language/i.test(a.content)) {
+      const ans = u.content.toLowerCase();
+      if (/creole|kreyòl|kreyol|🇭🇹/i.test(ans)) lead.language = "Haitian Creole";
+      else if (/français|french|🇫🇷/i.test(ans)) lead.language = "French";
+      else if (/english|🇺🇸/i.test(ans)) lead.language = "English";
+    }
+  }
+
+  // Budget detection from explicit answer (replaces older regex)
+  for (let i = 0; i < messages.length - 1; i++) {
+    const a = messages[i];
+    const u = messages[i + 1];
+    if (a.role === "assistant" && u?.role === "user" && /budget/i.test(a.content)) {
+      const ans = u.content;
+      if (/under \$?500\b/i.test(ans)) lead.budget = "Under $500";
+      else if (/\$?500.*\$?1[,.]?000|500 - 1/i.test(ans)) lead.budget = "$500 – $1,000";
+      else if (/\$?1[,.]?000.*\$?2[,.]?500|1.*2[,.]?5/i.test(ans)) lead.budget = "$1,000 – $2,500";
+      else if (/\$?2[,.]?500.*\$?5[,.]?000|2[,.]?5.*5/i.test(ans)) lead.budget = "$2,500 – $5,000";
+      else if (/\$?5[,.]?000\+|5[,.]?000\+|5k\+/i.test(ans)) lead.budget = "$5,000+";
+    }
+  }
 
   return lead;
 }
@@ -157,9 +182,13 @@ function getLastTopic(history: Message[]): string {
   const t = lastAssistant.content.toLowerCase();
   // Lead collection flow (high priority)
   if (/what'?s your name|what is your name|first.*name/.test(t)) return "ask_name";
+  if (/business name|company name|what.*business.*called|what'?s the name of your business/.test(t)) return "ask_business_name";
   if (/best email|your email|what'?s your email|email to reach/.test(t)) return "ask_email";
   if (/phone number|your phone|phone.*reach|format.*555/.test(t)) return "ask_phone";
-  if (/which service|what service.*interested|service.*most interested|last question.*service/.test(t)) return "ask_service";
+  if (/which service|what service.*interested|service.*most interested|service.*are you most/.test(t)) return "ask_service";
+  if (/preferred language|what language|prefer.*language|which language/.test(t)) return "ask_language";
+  if (/budget|budget range|how much.*invest|what.*budget/.test(t)) return "ask_budget";
+  if (/tell me.*about your project|describe.*project|specific.*needs|specific.*goals|last thing/.test(t)) return "ask_details";
   // Other contexts
   if (/industry are you in/.test(t)) return "industry";
   if (/what are you currently tracking/.test(t)) return "tracking";
@@ -236,7 +265,99 @@ function getSmartResponse(
     };
   }
 
-  // (Consultation requests handled by handleQuickReply — scrolls to contact form)
+  /* ─── CONSULTATION LEAD COLLECTION FLOW ─── */
+  // Trigger: user clicked "Free Consultation" or said something equivalent
+  if (
+    /book consultation|free consultation|📞 free|📞 consultation|^consultation/i.test(lower) &&
+    lastTopic !== "ask_name" &&
+    lastTopic !== "ask_business_name" &&
+    lastTopic !== "ask_email" &&
+    lastTopic !== "ask_phone" &&
+    lastTopic !== "ask_service" &&
+    lastTopic !== "ask_language" &&
+    lastTopic !== "ask_budget" &&
+    lastTopic !== "ask_details"
+  ) {
+    return {
+      text: "Awesome! 🚀 Let's get your consultation set up. I'll collect a few details and pre-fill the form for you, so all you'll have to do is hit 'Continue To Consultation Options'!\n\nFirst — what's your full name?",
+    };
+  }
+
+  // Step 1: Got name → ask business name
+  if (lastTopic === "ask_name" && currentLead.name) {
+    return {
+      text: `Nice to meet you, ${currentLead.name.split(" ")[0]}! 👋\n\nWhat's the name of your business? (If you don't have one yet, just type "N/A")`,
+    };
+  }
+  if (lastTopic === "ask_name" && !currentLead.name) {
+    return {
+      text: "Could you share your full name? Just first and last is fine. 😊",
+    };
+  }
+
+  // Step 2: Got business name → ask email
+  if (lastTopic === "ask_business_name") {
+    return {
+      text: `Great! 📧 What's the best email to reach you at?`,
+    };
+  }
+
+  // Step 3: Got email → ask phone
+  if (lastTopic === "ask_email") {
+    if (currentLead.email) {
+      return {
+        text: "Perfect! 📱 And your phone number? (Format: 555-555-5555)",
+      };
+    }
+    return {
+      text: "Hmm, that doesn't look like an email. Could you share your email? (Example: yourname@gmail.com)",
+    };
+  }
+
+  // Step 4: Got phone → ask service
+  if (lastTopic === "ask_phone") {
+    if (currentLead.phone) {
+      return {
+        text: "Awesome! 🛠 What service are you most interested in?",
+        options: ["🌐 Website", "📅 Booking System", "📱 Mobile App", "⚡ AI / Automation", "🎨 Branding", "🤷 Not Sure Yet"],
+      };
+    }
+    return {
+      text: "Hmm, I couldn't read that phone number. Could you share it like this? (Example: 555-555-5555)",
+    };
+  }
+
+  // Step 5: Got service → ask language
+  if (lastTopic === "ask_service") {
+    return {
+      text: "Got it! 🌍 What's your preferred language for communication?",
+      options: ["🇺🇸 English", "🇫🇷 Français", "🇭🇹 Kreyòl Ayisyen"],
+    };
+  }
+
+  // Step 6: Got language → ask budget
+  if (lastTopic === "ask_language") {
+    return {
+      text: "Perfect! 💰 What's your budget range for this project?",
+      options: ["Under $500", "$500 – $1,000", "$1,000 – $2,500", "$2,500 – $5,000", "$5,000+"],
+    };
+  }
+
+  // Step 7: Got budget → ask project details
+  if (lastTopic === "ask_budget") {
+    return {
+      text: "Almost done! 📝 One last thing — tell me about your project. What are your specific needs and goals? The more detail you share, the better we can help!",
+    };
+  }
+
+  // Step 8: Got details → SHOW summary + redirect to form
+  if (lastTopic === "ask_details") {
+    return {
+      text: `🎉 Awesome, ${currentLead.name ? currentLead.name.split(" ")[0] : ""}! I've got everything I need.\n\nI'm taking you to the consultation form now — **everything will be pre-filled** so all you have to do is click "Continue To Consultation Options" to choose your payment plan and finalize.\n\nLet's go! 🚀`,
+      options: ["📞 Free Consultation"],
+    };
+  }
+
 
   /* ── Handle "Other" contextually based on last topic ── */
   if (/^(other|something else|else|different)/i.test(lower) || /🏢 Other|📋 Other/i.test(message)) {
@@ -779,61 +900,61 @@ export default function ChatBot() {
   };
 
   const handleQuickReply = (reply: string) => {
-    // Special: scroll to contact form and pre-fill it with collected info
-    if (/consultation|talk to someone|book/i.test(reply)) {
+    // "Free Consultation" pressed AFTER all info collected → redirect to form
+    if (/free consultation/i.test(reply)) {
       const lead = extractLeadFromMessages(messages);
+      const hasMinimumInfo = lead.name && lead.email && lead.phone;
 
-      // Map chatbot service names to contact form's exact option values
-      const serviceMap: Record<string, string> = {
-        "Website Development": "Website",
-        "Booking System": "Booking System",
-        "Mobile App": "Mobile App",
-        "Business Automation": "AI / Automation",
-        "Digital Dashboard": "AI / Automation",
-        "Payment/Invoice System": "AI / Automation",
-        "CRM": "AI / Automation",
-      };
-      const mappedService = lead.service ? serviceMap[lead.service] || "Not Sure Yet" : "";
+      if (hasMinimumInfo) {
+        // Map service to contact form's exact option values
+        const serviceMap: Record<string, string> = {
+          "Website Development": "Website",
+          "Booking System": "Booking System",
+          "Mobile App": "Mobile App",
+          "Business Automation": "AI / Automation",
+          "Digital Dashboard": "AI / Automation",
+          "Payment/Invoice System": "AI / Automation",
+          "CRM": "AI / Automation",
+        };
+        let mappedService = lead.service ? serviceMap[lead.service] : "";
+        // Also accept direct matches like "Website", "Booking System", etc.
+        if (!mappedService && lead.service) {
+          const direct = ["Website", "Mobile App", "Booking System", "Branding", "AI / Automation", "Not Sure Yet"];
+          mappedService = direct.find((s) => lead.service?.toLowerCase().includes(s.toLowerCase())) || "Not Sure Yet";
+        }
 
-      // Map chatbot budget to contact form's exact option values
-      const budgetMap: Record<string, string> = {
-        "Under $5,000": "$2,500 – $5,000",
-        "$5K-$15K": "$5,000+",
-        "$15K-$30K": "$5,000+",
-        "$30K+": "$5,000+",
-      };
-      const mappedBudget = lead.budget ? budgetMap[lead.budget] || "" : "";
+        const prefillData = {
+          name: lead.name || "",
+          business: lead.businessName || "",
+          email: lead.email || "",
+          phone: lead.phone || "",
+          service: mappedService || "",
+          language: lead.language || "",
+          budget: lead.budget || "",
+          message: [
+            lead.details ? `Project details:\n${lead.details}` : "",
+            lead.businessType ? `Business type: ${lead.businessType}` : "",
+            lead.timeline ? `Timeline: ${lead.timeline}` : "",
+            "",
+            "(Details collected via NOVA AI Chatbot)",
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        };
 
-      // Build a helpful message summary
-      const summaryParts: string[] = [];
-      if (lead.businessType) summaryParts.push(`Business type: ${lead.businessType}`);
-      if (lead.timeline) summaryParts.push(`Timeline: ${lead.timeline}`);
-      if (lead.service && !serviceMap[lead.service])
-        summaryParts.push(`Interested in: ${lead.service}`);
-      summaryParts.push("(Details collected via NOVA AI Chatbot)");
+        sessionStorage.setItem("nova-chat-prefill", JSON.stringify(prefillData));
+        window.dispatchEvent(
+          new CustomEvent("nova-chat-prefill", { detail: prefillData })
+        );
 
-      const prefillData = {
-        name: lead.name || "",
-        business: lead.businessName || "",
-        email: lead.email || "",
-        phone: lead.phone || "",
-        service: mappedService,
-        budget: mappedBudget,
-        message: summaryParts.join("\n"),
-      };
-
-      // Save to sessionStorage for Contact.tsx to pick up
-      sessionStorage.setItem("nova-chat-prefill", JSON.stringify(prefillData));
-
-      // Notify Contact.tsx via custom event
-      window.dispatchEvent(
-        new CustomEvent("nova-chat-prefill", { detail: prefillData })
-      );
-
-      setIsOpen(false);
-      setTimeout(() => {
-        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-      }, 300);
+        setIsOpen(false);
+        setTimeout(() => {
+          document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+        return;
+      }
+      // Otherwise — start the consultation flow
+      sendMessage(reply);
       return;
     }
     sendMessage(reply);
