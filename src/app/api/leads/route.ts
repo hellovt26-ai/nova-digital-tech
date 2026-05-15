@@ -16,7 +16,7 @@ export interface Lead {
 
 // In production, replace with a database (e.g., Supabase, Firebase, MongoDB)
 // For now, leads are sent via email through Formsubmit
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "novadigitaltechinfo@gmail.com";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "hellovt26@gmail.com";
 
 export async function POST(req: NextRequest) {
   try {
