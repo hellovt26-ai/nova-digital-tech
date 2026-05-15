@@ -754,49 +754,41 @@ export default function ChatBot() {
           .map((m) => `${m.role === "user" ? "Visitor" : "NOVA Bot"}: ${m.content}`)
           .join("\n\n");
 
-        // Submit directly to Formsubmit (faster + bypasses serverless cold start)
-        const formData = new FormData();
-        formData.append("name", lead.name || "Chat Visitor");
-        formData.append("email", lead.email || "noreply@chat.local");
-        formData.append("phone", lead.phone || "N/A");
-        formData.append(
-          "_subject",
-          `🔥 NEW Chat Lead: ${lead.name || "Visitor"} — ${lead.service || "General"}`
-        );
-        formData.append(
-          "message",
-          [
-            `🎯 NEW LEAD FROM AI CHATBOT`,
-            ``,
-            `👤 Name: ${lead.name || "Chat Visitor"}`,
-            `🏢 Business: ${lead.businessName || "N/A"}`,
-            `🏷  Type: ${lead.businessType || "N/A"}`,
-            `📧 Email: ${lead.email || "N/A"}`,
-            `📱 Phone: ${lead.phone || "N/A"}`,
-            `🛠  Service: ${lead.service || "N/A"}`,
-            `💰 Budget: ${lead.budget || "N/A"}`,
-            `⏱  Timeline: ${lead.timeline || "N/A"}`,
-            ``,
-            `📅 Date: ${new Date().toLocaleString()}`,
-            ``,
-            `─── FULL CONVERSATION ───`,
-            ``,
-            conversationLog,
-          ].join("\n")
-        );
-        formData.append("_captcha", "false");
-        formData.append("_template", "box");
+        // Submit directly to Formsubmit using JSON ajax endpoint
+        const payload = {
+          name: lead.name || "Chat Visitor",
+          email: lead.email || "noreply@chat.local",
+          phone: lead.phone || "N/A",
+          _subject: `🔥 NEW Chat Lead: ${lead.name || "Visitor"} — ${lead.service || "General"}`,
+          _captcha: "false",
+          _template: "table",
+          business_name: lead.businessName || "N/A",
+          business_type: lead.businessType || "N/A",
+          service: lead.service || "N/A",
+          budget: lead.budget || "N/A",
+          timeline: lead.timeline || "N/A",
+          submitted_at: new Date().toLocaleString(),
+          conversation: conversationLog,
+        };
 
         const res = await fetch(
           "https://formsubmit.co/ajax/hellovt26@gmail.com",
           {
             method: "POST",
-            body: formData,
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(payload),
           }
         );
 
         const result = await res.json();
         console.log("[NOVA Chatbot] Formsubmit response:", result);
+
+        if (!result.success) {
+          console.warn("[NOVA Chatbot] Formsubmit returned non-success:", result);
+        }
 
         // Save to localStorage for admin dashboard
         const stored = localStorage.getItem("nova-leads");
@@ -851,6 +843,9 @@ export default function ChatBot() {
       const finalMessages = [...updatedMessages, botMessage];
       setMessages(finalMessages);
       setIsTyping(false);
+
+      // Keep cursor in the input box after each message
+      setTimeout(() => inputRef.current?.focus(), 50);
 
       // Submit lead when bot signals it's complete, OR when we have full info
       const lead = extractLeadFromMessages(finalMessages);
