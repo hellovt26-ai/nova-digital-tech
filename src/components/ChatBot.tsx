@@ -202,7 +202,7 @@ function getSmartResponse(
   ];
 
   const YES_NO = ["✅ Yes", "❌ No", "🤔 Tell me more"];
-  const CONSULT_OPTIONS = ["📞 Book consultation", "💬 Ask another question"];
+  const CONSULT_OPTIONS = ["📞 Free Consultation", "💬 Ask another question"];
 
   /* ── Ask another question — reset to service menu ── */
   if (/ask another|💬 ask|another question/i.test(lower)) {
@@ -236,73 +236,7 @@ function getSmartResponse(
     };
   }
 
-  /* ── BOOK CONSULTATION — Start lead collection flow ── */
-  if (/book consultation|free consultation|📞 free|📞 consultation|^consultation/i.test(lower)) {
-    if (!currentLead.name) {
-      return {
-        text: "Awesome! Let's get you set up with a free consultation. 🚀\n\nFirst — what's your name?",
-      };
-    }
-    if (!currentLead.email) {
-      return {
-        text: `Great, ${currentLead.name.split(" ")[0]}! 📧 What's the best email to reach you at?`,
-      };
-    }
-    if (!currentLead.phone) {
-      return {
-        text: "And your phone number? 📱 (Format: 555-555-5555)",
-      };
-    }
-    if (!currentLead.service) {
-      return {
-        text: "Which service are you most interested in?",
-        options: SERVICE_OPTIONS,
-      };
-    }
-    // All collected — submit!
-    return {
-      text: `🎉 You're all set, ${currentLead.name.split(" ")[0]}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours.\n\nThanks for choosing us! 💙`,
-      submitLead: true,
-      options: ["💬 Ask another question", "✅ Done"],
-    };
-  }
-
-  /* ── Active lead collection: respond based on what we just asked ── */
-  if (lastTopic === "ask_name") {
-    // User just provided their name — capture it and ask for email
-    return {
-      text: `Nice to meet you${currentLead.name ? ", " + currentLead.name.split(" ")[0] : ""}! 👋 What's the best email to reach you at?`,
-    };
-  }
-  if (lastTopic === "ask_email") {
-    if (currentLead.email) {
-      return {
-        text: "Perfect! 📱 And your phone number? (Format: 555-555-5555)",
-      };
-    }
-    return {
-      text: "Hmm, that doesn't look like an email. Could you share your email address? (Example: yourname@gmail.com)",
-    };
-  }
-  if (lastTopic === "ask_phone") {
-    if (currentLead.phone) {
-      return {
-        text: "Awesome! 🎯 Last question — what service are you most interested in?",
-        options: SERVICE_OPTIONS,
-      };
-    }
-    return {
-      text: "Hmm, I couldn't read that phone number. Could you share it like this? (Example: 555-555-5555)",
-    };
-  }
-  if (lastTopic === "ask_service") {
-    // User just selected a service — submit the lead and confirm!
-    return {
-      text: `🎉 You're all set${currentLead.name ? ", " + currentLead.name.split(" ")[0] : ""}!\n\nNOVA DIGITAL TECH will review your info and reach out within 24 hours.\n\nThanks for choosing us! 💙`,
-      submitLead: true,
-      options: ["💬 Ask another question", "✅ Done"],
-    };
-  }
+  // (Consultation requests handled by handleQuickReply — scrolls to contact form)
 
   /* ── Handle "Other" contextually based on last topic ── */
   if (/^(other|something else|else|different)/i.test(lower) || /🏢 Other|📋 Other/i.test(message)) {
@@ -547,10 +481,11 @@ function getSmartResponse(
     };
   }
 
-  // Contact / talk to human
-  if (/contact|talk to|reach|speak to|call|human|person|owner|📞 talk/i.test(lower)) {
+  // Contact / talk to human — redirect to form
+  if (/contact|talk to|reach|speak to|call|human|person|owner|💬 talk/i.test(lower)) {
     return {
-      text: "Of course! 👋 Share your contact info and our team will reach out within 24 hours.\n\nWhat's your name?",
+      text: "Of course! 👋 Click the button below and our contact form will pop up. Fill it out and our team will reach you within 24 hours.",
+      options: ["📞 Free Consultation"],
     };
   }
 
@@ -844,6 +779,14 @@ export default function ChatBot() {
   };
 
   const handleQuickReply = (reply: string) => {
+    // Special: scroll to contact form for consultation requests
+    if (/consultation|talk to someone|book/i.test(reply)) {
+      setIsOpen(false);
+      setTimeout(() => {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+      return;
+    }
     sendMessage(reply);
   };
 
