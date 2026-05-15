@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 /* ─── Types ─── */
 interface Activity {
@@ -41,18 +42,6 @@ const ACTIONS: { text: string; emoji: string }[] = [
   { text: "completed their consultation", emoji: "✅" },
 ];
 
-const NotifyIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-  </svg>
-);
-
-const CloseIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2.5}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-  </svg>
-);
-
 function getRandomActivity(): Activity {
   const name = FIRST_NAMES[Math.floor(Math.random() * FIRST_NAMES.length)];
   const location = LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)];
@@ -75,113 +64,7 @@ function timeAgo(min: number): string {
   return h === 1 ? "1 hour ago" : `${h} hours ago`;
 }
 
-export default function ActivityFeed() {
-  const [activity, setActivity] = useState<Activity | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    if (dismissed) return;
-
-    let showTimer: ReturnType<typeof setTimeout>;
-    let hideTimer: ReturnType<typeof setTimeout>;
-    let cycleTimer: ReturnType<typeof setTimeout>;
-
-    const cycle = () => {
-      if (paused || dismissed) return;
-      // Show new activity
-      setActivity(getRandomActivity());
-      setVisible(true);
-
-      // Hide after 6 seconds
-      hideTimer = setTimeout(() => {
-        setVisible(false);
-        // Schedule next show in 8-14 seconds
-        cycleTimer = setTimeout(cycle, 8000 + Math.random() * 6000);
-      }, 6000);
-    };
-
-    // First show after 3 seconds
-    showTimer = setTimeout(cycle, 3000);
-
-    return () => {
-      clearTimeout(showTimer);
-      clearTimeout(hideTimer);
-      clearTimeout(cycleTimer);
-    };
-  }, [paused, dismissed]);
-
-  if (dismissed || !activity) return null;
-
-  return (
-    <div
-      className={`fixed bottom-4 left-3 sm:bottom-6 sm:left-6 z-[99995] max-w-[320px] transition-all duration-500 ease-out ${
-        visible
-          ? "opacity-100 translate-y-0 translate-x-0"
-          : "opacity-0 -translate-x-4 pointer-events-none"
-      }`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div
-        className="relative flex items-center gap-3 pl-3 pr-8 py-2.5 rounded-xl border border-white/10 shadow-2xl shadow-black/40 backdrop-blur-xl"
-        style={{
-          background: "linear-gradient(135deg, rgba(17,17,25,0.95) 0%, rgba(13,13,20,0.95) 100%)",
-        }}
-      >
-        {/* Avatar */}
-        <div className="relative flex-shrink-0">
-          <div
-            className="w-9 h-9 rounded-full flex items-center justify-center text-base font-bold text-white"
-            style={{
-              background: `linear-gradient(135deg, ${getColorForName(activity.name)})`,
-            }}
-          >
-            {activity.name[0]}
-          </div>
-          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-gradient-to-br from-nova-cyan to-nova-blue flex items-center justify-center text-[8px] border-2 border-[#111119]">
-            {activity.emoji}
-          </div>
-        </div>
-
-        {/* Text */}
-        <div className="flex-1 min-w-0">
-          <p className="text-[12px] text-white leading-tight">
-            <span className="font-semibold">{activity.name}</span>
-            <span className="text-gray-500"> from </span>
-            <span className="text-gray-300">{activity.location}</span>
-          </p>
-          <p className="text-[11px] text-gray-400 leading-tight mt-0.5 truncate">
-            {activity.action}
-          </p>
-          <div className="flex items-center gap-1.5 mt-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <p className="text-[9px] text-gray-600">{timeAgo(activity.minutesAgo)}</p>
-            <span className="text-gray-700">·</span>
-            <p className="text-[9px] text-nova-cyan/80 flex items-center gap-1">
-              <NotifyIcon />
-              <span>Verified</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Dismiss */}
-        <button
-          onClick={() => setDismissed(true)}
-          className="absolute top-1.5 right-1.5 w-5 h-5 rounded-md flex items-center justify-center text-gray-600 hover:text-white hover:bg-white/5 transition-colors"
-          aria-label="Dismiss"
-        >
-          <CloseIcon />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Helpers ─── */
 function getColorForName(name: string): string {
-  // Generate consistent gradient based on name
   const palettes = [
     "#00e5ff, #2979ff",
     "#a855f7, #ec4899",
@@ -193,4 +76,191 @@ function getColorForName(name: string): string {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
   return palettes[Math.abs(hash) % palettes.length];
+}
+
+export default function ActivityFeed() {
+  const [mounted, setMounted] = useState(false);
+  const [activity, setActivity] = useState<Activity | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    console.log("[ActivityFeed] Mounted");
+  }, []);
+
+  useEffect(() => {
+    if (!mounted || dismissed) return;
+
+    let hideTimer: ReturnType<typeof setTimeout>;
+    let cycleTimer: ReturnType<typeof setTimeout>;
+    let active = true;
+
+    const cycle = () => {
+      if (!active || dismissed) return;
+      const next = getRandomActivity();
+      console.log("[ActivityFeed] Showing:", next);
+      setActivity(next);
+      setVisible(true);
+      hideTimer = setTimeout(() => {
+        if (!active) return;
+        setVisible(false);
+        cycleTimer = setTimeout(cycle, 8000 + Math.random() * 6000);
+      }, 6000);
+    };
+
+    // First show after 3 seconds
+    const startTimer = setTimeout(cycle, 3000);
+
+    return () => {
+      active = false;
+      clearTimeout(startTimer);
+      clearTimeout(hideTimer);
+      clearTimeout(cycleTimer);
+    };
+  }, [mounted, dismissed]);
+
+  if (!mounted || dismissed) return null;
+
+  return createPortal(
+    <div
+      style={{
+        position: "fixed",
+        bottom: "16px",
+        left: "12px",
+        zIndex: 99995,
+        maxWidth: "320px",
+        opacity: visible && activity ? 1 : 0,
+        transform: visible ? "translateX(0)" : "translateX(-20px)",
+        transition: "opacity 0.5s ease, transform 0.5s ease",
+        pointerEvents: visible && activity ? "auto" : "none",
+      }}
+    >
+      {activity && (
+        <div
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            padding: "10px 32px 10px 12px",
+            borderRadius: "12px",
+            border: "1px solid rgba(255,255,255,0.1)",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.5)",
+            backdropFilter: "blur(20px)",
+            background:
+              "linear-gradient(135deg, rgba(17,17,25,0.95) 0%, rgba(13,13,20,0.95) 100%)",
+            color: "#fff",
+          }}
+        >
+          {/* Avatar */}
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <div
+              style={{
+                width: "36px",
+                height: "36px",
+                borderRadius: "999px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px",
+                fontWeight: 700,
+                color: "#fff",
+                background: `linear-gradient(135deg, ${getColorForName(activity.name)})`,
+              }}
+            >
+              {activity.name[0]}
+            </div>
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-2px",
+                right: "-2px",
+                width: "16px",
+                height: "16px",
+                borderRadius: "999px",
+                background: "linear-gradient(135deg, #00e5ff, #2979ff)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "8px",
+                border: "2px solid #111119",
+              }}
+            >
+              {activity.emoji}
+            </div>
+          </div>
+
+          {/* Text */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <p style={{ fontSize: "12px", margin: 0, lineHeight: "1.3" }}>
+              <span style={{ fontWeight: 600 }}>{activity.name}</span>
+              <span style={{ color: "#6b7280" }}> from </span>
+              <span style={{ color: "#d1d5db" }}>{activity.location}</span>
+            </p>
+            <p
+              style={{
+                fontSize: "11px",
+                color: "#9ca3af",
+                margin: "2px 0 0 0",
+                lineHeight: "1.3",
+              }}
+            >
+              {activity.action}
+            </p>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                marginTop: "4px",
+              }}
+            >
+              <span
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "999px",
+                  background: "#10b981",
+                }}
+                className="animate-pulse"
+              />
+              <p style={{ fontSize: "9px", color: "#6b7280", margin: 0 }}>
+                {timeAgo(activity.minutesAgo)}
+              </p>
+              <span style={{ color: "#4b5563" }}>·</span>
+              <p style={{ fontSize: "9px", color: "rgba(0,229,255,0.8)", margin: 0 }}>
+                ✓ Verified
+              </p>
+            </div>
+          </div>
+
+          {/* Dismiss */}
+          <button
+            onClick={() => setDismissed(true)}
+            style={{
+              position: "absolute",
+              top: "6px",
+              right: "6px",
+              width: "20px",
+              height: "20px",
+              borderRadius: "6px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#6b7280",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              fontSize: "12px",
+            }}
+            aria-label="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+    </div>,
+    document.body
+  );
 }
