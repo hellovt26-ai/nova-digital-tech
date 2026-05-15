@@ -199,6 +199,42 @@ export default function Contact({ onModalChange, onHideFloatingButtons }: { onMo
     };
   }, []);
 
+  // Listen for chatbot prefill events + check sessionStorage on mount
+  useEffect(() => {
+    const applyPrefill = (data: Partial<typeof formData>) => {
+      if (!data) return;
+      setFormData((prev) => ({
+        name: data.name || prev.name,
+        business: data.business || prev.business,
+        email: data.email || prev.email,
+        phone: data.phone || prev.phone,
+        service: data.service || prev.service,
+        language: data.language || prev.language,
+        budget: data.budget || prev.budget,
+        message: data.message || prev.message,
+      }));
+    };
+
+    // Check sessionStorage on mount (in case chat closed before this mounted)
+    const saved = sessionStorage.getItem("nova-chat-prefill");
+    if (saved) {
+      try {
+        applyPrefill(JSON.parse(saved));
+        sessionStorage.removeItem("nova-chat-prefill");
+      } catch {
+        // Ignore parse errors
+      }
+    }
+
+    // Listen for live prefill events from chatbot
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      applyPrefill(detail);
+    };
+    window.addEventListener("nova-chat-prefill", handler);
+    return () => window.removeEventListener("nova-chat-prefill", handler);
+  }, []);
+
   // Check URL params on mount for Stripe return
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

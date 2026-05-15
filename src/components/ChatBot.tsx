@@ -779,8 +779,57 @@ export default function ChatBot() {
   };
 
   const handleQuickReply = (reply: string) => {
-    // Special: scroll to contact form for consultation requests
+    // Special: scroll to contact form and pre-fill it with collected info
     if (/consultation|talk to someone|book/i.test(reply)) {
+      const lead = extractLeadFromMessages(messages);
+
+      // Map chatbot service names to contact form's exact option values
+      const serviceMap: Record<string, string> = {
+        "Website Development": "Website",
+        "Booking System": "Booking System",
+        "Mobile App": "Mobile App",
+        "Business Automation": "AI / Automation",
+        "Digital Dashboard": "AI / Automation",
+        "Payment/Invoice System": "AI / Automation",
+        "CRM": "AI / Automation",
+      };
+      const mappedService = lead.service ? serviceMap[lead.service] || "Not Sure Yet" : "";
+
+      // Map chatbot budget to contact form's exact option values
+      const budgetMap: Record<string, string> = {
+        "Under $5,000": "$2,500 – $5,000",
+        "$5K-$15K": "$5,000+",
+        "$15K-$30K": "$5,000+",
+        "$30K+": "$5,000+",
+      };
+      const mappedBudget = lead.budget ? budgetMap[lead.budget] || "" : "";
+
+      // Build a helpful message summary
+      const summaryParts: string[] = [];
+      if (lead.businessType) summaryParts.push(`Business type: ${lead.businessType}`);
+      if (lead.timeline) summaryParts.push(`Timeline: ${lead.timeline}`);
+      if (lead.service && !serviceMap[lead.service])
+        summaryParts.push(`Interested in: ${lead.service}`);
+      summaryParts.push("(Details collected via NOVA AI Chatbot)");
+
+      const prefillData = {
+        name: lead.name || "",
+        business: lead.businessName || "",
+        email: lead.email || "",
+        phone: lead.phone || "",
+        service: mappedService,
+        budget: mappedBudget,
+        message: summaryParts.join("\n"),
+      };
+
+      // Save to sessionStorage for Contact.tsx to pick up
+      sessionStorage.setItem("nova-chat-prefill", JSON.stringify(prefillData));
+
+      // Notify Contact.tsx via custom event
+      window.dispatchEvent(
+        new CustomEvent("nova-chat-prefill", { detail: prefillData })
+      );
+
       setIsOpen(false);
       setTimeout(() => {
         document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
