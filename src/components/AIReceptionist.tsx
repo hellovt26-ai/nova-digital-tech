@@ -310,31 +310,175 @@ function ChatSimulation({
 }
 
 /* ─────────────────────────────────────────────
-   VOICE BUTTON
+   VOICE BUTTON — real Web Speech API
 ───────────────────────────────────────────── */
+interface ISpeechRecognition {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  maxAlternatives: number;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+  onresult: ((e: SpeechRecognitionEventLike) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+}
+interface SpeechRecognitionEventLike {
+  results: ArrayLike<ArrayLike<{ transcript: string }>>;
+}
+type SpeechRecognitionCtor = new () => ISpeechRecognition;
+type VoiceState =
+  | "idle"
+  | "listening"
+  | "processing"
+  | "responding"
+  | "error"
+  | "unsupported";
+
 function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
-  const { t } = useI18n();
-  const [state, setState] = useState<"idle" | "listening" | "responding">("idle");
+  const { t, locale } = useI18n();
+  const [state, setState] = useState<VoiceState>("idle");
+  const [transcript, setTranscript] = useState("");
+  const [reply, setReply] = useState("");
+  const recRef = useRef<ISpeechRecognition | null>(null);
+
+  // Browser STT doesn't support Haitian Creole — fall back to French
+  const recLang =
+    locale === "fr" ? "fr-FR" : locale === "ht" ? "fr-FR" : "en-US";
+
+  const generateReply = (text: string): string => {
+    const l = text.toLowerCase();
+    if (/book|appoint|schedul|reserv|rendez|randevou|rezev|rezève/.test(l))
+      return t("aiReceptionist.voiceReplyBooking");
+    if (/hour|open|clos|\btime\b|heure|ouvert|\blè\b|louvri/.test(l))
+      return t("aiReceptionist.voiceReplyHours");
+    if (/price|cost|how much|pricing|prix|co[uû]t|combien|\bpri\b|konbyen/.test(l))
+      return t("aiReceptionist.voiceReplyPricing");
+    return t("aiReceptionist.voiceReplyDefault");
+  };
+
+  const speak = (text: string) => {
+    try {
+      if (typeof window === "undefined" || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = recLang;
+      u.rate = 1;
+      window.speechSynthesis.speak(u);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const startListening = () => {
+    const w = window as unknown as {
+      SpeechRecognition?: SpeechRecognitionCtor;
+      webkitSpeechRecognition?: SpeechRecognitionCtor;
+    };
+    const SR = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!SR) {
+      setState("unsupported");
+      return;
+    }
+    const rec = new SR();
+    recRef.current = rec;
+    rec.lang = recLang;
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.maxAlternatives = 1;
+
+    setTranscript("");
+    setReply("");
+    setState("listening");
+
+    let finalText = "";
+
+    rec.onresult = (e) => {
+      let txt = "";
+      for (let i = 0; i < e.results.length; i++) {
+        txt += e.results[i][0].transcript;
+      }
+      finalText = txt;
+      setTranscript(txt);
+    };
+
+    rec.onerror = () => setState("error");
+
+    rec.onend = () => {
+      if (!finalText.trim()) {
+        setState((s) => (s === "listening" ? "error" : s));
+        return;
+      }
+      setState("processing");
+      const r = generateReply(finalText);
+      setTimeout(() => {
+        setReply(r);
+        setState("responding");
+        speak(r);
+        setTimeout(() => {
+          setState("idle");
+          setTranscript("");
+          setReply("");
+        }, Math.min(3500 + r.length * 30, 9000));
+      }, 650);
+    };
+
+    try {
+      rec.start();
+    } catch {
+      setState("error");
+    }
+  };
+
+  const handleClick = () => {
+    if (state === "listening") {
+      try {
+        recRef.current?.stop();
+      } catch {
+        /* ignore */
+      }
+      return;
+    }
+    if (state === "idle" || state === "error" || state === "unsupported") {
+      startListening();
+    }
+  };
 
   useEffect(() => {
-    if (state === "listening") {
-      const t = setTimeout(() => setState("responding"), 2600);
-      return () => clearTimeout(t);
-    }
-    if (state === "responding") {
-      const t = setTimeout(() => setState("idle"), 3200);
-      return () => clearTimeout(t);
-    }
-  }, [state]);
+    return () => {
+      try {
+        recRef.current?.abort();
+        window.speechSynthesis?.cancel();
+      } catch {
+        /* ignore */
+      }
+    };
+  }, []);
+
+  const active =
+    state === "listening" || state === "processing" || state === "responding";
+
+  const statusText =
+    state === "idle"
+      ? t("aiReceptionist.voiceIdle")
+      : state === "listening"
+        ? t("aiReceptionist.voiceListening")
+        : state === "processing"
+          ? t("aiReceptionist.voiceProcessing")
+          : state === "responding"
+            ? t("aiReceptionist.voiceResponding")
+            : state === "unsupported"
+              ? t("aiReceptionist.voiceUnsupported")
+              : t("aiReceptionist.voiceError");
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-3 w-full">
       <button
-        onClick={() => state === "idle" && setState("listening")}
+        onClick={handleClick}
         className="relative group"
-        aria-label="Try voice AI demo"
+        aria-label="Voice AI assistant"
       >
-        {/* Pulse rings */}
         {state === "listening" && (
           <>
             <span
@@ -350,19 +494,16 @@ function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
         <span
           className="relative flex items-center justify-center w-16 h-16 rounded-full transition-all duration-300 group-active:scale-90"
           style={{
-            background:
-              state === "idle"
-                ? "rgba(255,255,255,0.05)"
-                : `linear-gradient(135deg, ${accent}, ${accent2})`,
-            border: `1.5px solid ${state === "idle" ? "rgba(255,255,255,0.12)" : accent}`,
-            boxShadow:
-              state === "idle"
-                ? "none"
-                : `0 0 30px ${accent}66, 0 0 60px ${accent}33`,
+            background: active
+              ? `linear-gradient(135deg, ${accent}, ${accent2})`
+              : "rgba(255,255,255,0.05)",
+            border: `1.5px solid ${active ? accent : "rgba(255,255,255,0.12)"}`,
+            boxShadow: active
+              ? `0 0 30px ${accent}66, 0 0 60px ${accent}33`
+              : "none",
           }}
         >
           {state === "listening" ? (
-            /* Waveform */
             <span className="flex items-end gap-1 h-7">
               {[0.4, 0.9, 0.55, 1, 0.65, 0.85, 0.45].map((h, i) => (
                 <span
@@ -380,7 +521,7 @@ function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
               className="w-7 h-7"
               viewBox="0 0 24 24"
               fill="none"
-              stroke={state === "idle" ? "#9ca3af" : "#fff"}
+              stroke={active ? "#fff" : "#9ca3af"}
               strokeWidth={1.8}
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z" />
@@ -388,14 +529,45 @@ function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
           )}
         </span>
       </button>
+
       <p
-        className="text-xs font-medium transition-colors"
-        style={{ color: state === "idle" ? "#9ca3af" : accent }}
+        className="text-xs font-medium transition-colors text-center max-w-[260px]"
+        style={{
+          color:
+            state === "unsupported" || state === "error"
+              ? "#f87171"
+              : active
+                ? accent
+                : "#9ca3af",
+        }}
       >
-        {state === "idle" && t("aiReceptionist.voiceIdle")}
-        {state === "listening" && t("aiReceptionist.voiceListening")}
-        {state === "responding" && t("aiReceptionist.voiceResponding")}
+        {statusText}
       </p>
+
+      {/* Live transcript */}
+      {transcript && (state === "listening" || state === "processing") && (
+        <div className="w-full max-w-xs text-center">
+          <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">
+            {t("aiReceptionist.voiceYouSaid")}
+          </p>
+          <p className="text-sm text-white italic">
+            &ldquo;{transcript}&rdquo;
+          </p>
+        </div>
+      )}
+
+      {/* AI spoken reply */}
+      {reply && state === "responding" && (
+        <div
+          className="w-full max-w-sm rounded-xl p-3.5 text-center animate-in fade-in slide-in-from-bottom-2 duration-400"
+          style={{
+            background: `${accent}14`,
+            border: `1px solid ${accent}30`,
+          }}
+        >
+          <p className="text-sm text-gray-200 leading-relaxed">{reply}</p>
+        </div>
+      )}
     </div>
   );
 }
