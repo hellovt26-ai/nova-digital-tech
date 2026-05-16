@@ -2,9 +2,12 @@
 
 import { useState, useEffect, useRef, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useI18n } from "@/lib/i18n";
 
 /* ─────────────────────────────────────────────
    INDUSTRY DEMO DATA
+   Static = brand names, colors, icons, customers (proper nouns / design)
+   Translatable = service, time, messages (pulled from i18n)
 ───────────────────────────────────────────── */
 interface ChatMsg {
   role: "user" | "ai" | "confirm";
@@ -22,92 +25,15 @@ interface Industry {
   messages: ChatMsg[];
 }
 
-const INDUSTRIES: Industry[] = [
-  {
-    id: "barber",
-    business: "FadeMaster Barbers",
-    icon: "💈",
-    accent: "#00e5ff",
-    accent2: "#2979ff",
-    service: "Haircut & Beard Trim",
-    customer: "Marcus J.",
-    time: "Fri · 4:30 PM",
-    messages: [
-      { role: "user", text: "Hi, do you have openings this Friday?" },
-      { role: "ai", text: "Yes! We have appointments at 2:00 PM and 4:30 PM. Which time works best for you?" },
-      { role: "user", text: "4:30 PM please." },
-      { role: "ai", text: "Perfect — your appointment has been reserved. Would you like a confirmation text message?" },
-      { role: "confirm", text: "Appointment Confirmed" },
-    ],
-  },
-  {
-    id: "restaurant",
-    business: "Bella Cucina",
-    icon: "🍝",
-    accent: "#f59e0b",
-    accent2: "#ef4444",
-    service: "Table for 4 · Dinner",
-    customer: "Sophia R.",
-    time: "Sat · 7:00 PM",
-    messages: [
-      { role: "user", text: "Do you have a table for 4 on Saturday night?" },
-      { role: "ai", text: "We do! 6:30 PM and 7:00 PM are open for a party of 4. Which would you prefer?" },
-      { role: "user", text: "7:00 PM works great." },
-      { role: "ai", text: "Wonderful — your table is booked for Saturday at 7:00 PM. We'll text you a reminder!" },
-      { role: "confirm", text: "Reservation Confirmed" },
-    ],
-  },
-  {
-    id: "cleaning",
-    business: "FreshFlow Cleaning",
-    icon: "🧼",
-    accent: "#10b981",
-    accent2: "#06b6d4",
-    service: "Deep Home Cleaning",
-    customer: "Daniela P.",
-    time: "Mon · 10:00 AM",
-    messages: [
-      { role: "user", text: "Can I get a deep cleaning next Monday morning?" },
-      { role: "ai", text: "Absolutely! We have 9:00 AM and 10:00 AM slots open Monday. Which works for you?" },
-      { role: "user", text: "10:00 AM is perfect." },
-      { role: "ai", text: "Great — your deep cleaning is scheduled for Monday at 10:00 AM. A confirmation is on its way!" },
-      { role: "confirm", text: "Booking Confirmed" },
-    ],
-  },
-  {
-    id: "dental",
-    business: "BrightSmile Dental",
-    icon: "🦷",
-    accent: "#8b5cf6",
-    accent2: "#6366f1",
-    service: "Cleaning & Checkup",
-    customer: "Anthony W.",
-    time: "Wed · 1:15 PM",
-    messages: [
-      { role: "user", text: "I need to book a cleaning this week." },
-      { role: "ai", text: "Of course! We have Wednesday at 1:15 PM or Thursday at 9:00 AM available. Which suits you?" },
-      { role: "user", text: "Wednesday 1:15 PM." },
-      { role: "ai", text: "Perfect — you're booked for Wednesday at 1:15 PM. We'll send a reminder the day before!" },
-      { role: "confirm", text: "Appointment Confirmed" },
-    ],
-  },
-  {
-    id: "salon",
-    business: "Bella Beauty Studio",
-    icon: "💅",
-    accent: "#ec4899",
-    accent2: "#a855f7",
-    service: "Full Color & Style",
-    customer: "Jasmine L.",
-    time: "Fri · 11:00 AM",
-    messages: [
-      { role: "user", text: "Hi! Any color appointments open Friday?" },
-      { role: "ai", text: "Yes! We have 11:00 AM and 3:00 PM open for a full color & style. Which would you like?" },
-      { role: "user", text: "11:00 AM please 💕" },
-      { role: "ai", text: "You're all set for Friday at 11:00 AM! A confirmation text is on the way." },
-      { role: "confirm", text: "Appointment Confirmed" },
-    ],
-  },
+// Fixed message roles (same order across all languages)
+const MESSAGE_ROLES: ChatMsg["role"][] = ["user", "ai", "user", "ai", "confirm"];
+
+const INDUSTRY_META = [
+  { id: "barber", business: "FadeMaster Barbers", icon: "💈", accent: "#00e5ff", accent2: "#2979ff", customer: "Marcus J." },
+  { id: "restaurant", business: "Bella Cucina", icon: "🍝", accent: "#f59e0b", accent2: "#ef4444", customer: "Sophia R." },
+  { id: "cleaning", business: "FreshFlow Cleaning", icon: "🧼", accent: "#10b981", accent2: "#06b6d4", customer: "Daniela P." },
+  { id: "dental", business: "BrightSmile Dental", icon: "🦷", accent: "#8b5cf6", accent2: "#6366f1", customer: "Anthony W." },
+  { id: "salon", business: "Bella Beauty Studio", icon: "💅", accent: "#ec4899", accent2: "#a855f7", customer: "Jasmine L." },
 ];
 
 /* ─────────────────────────────────────────────
@@ -170,6 +96,7 @@ function ChatSimulation({
   industry: Industry;
   onCycleComplete: () => void;
 }) {
+  const { t } = useI18n();
   const [visibleCount, setVisibleCount] = useState(0);
   const [typing, setTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -266,11 +193,11 @@ function ChatSimulation({
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-white truncate">
-            NOVA AI Receptionist
+            {t("aiReceptionist.headerName")}
           </p>
           <p className="text-[11px] flex items-center gap-1.5 text-emerald-400">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Online • Responds instantly
+            {t("aiReceptionist.status")}
           </p>
         </div>
         <div
@@ -363,7 +290,7 @@ function ChatSimulation({
                 border: `1px solid ${industry.accent}30`,
               }}
             >
-              <span className="text-[10px] text-gray-400 mr-1">AI is typing</span>
+              <span className="text-[10px] text-gray-400 mr-1">{t("aiReceptionist.typing")}</span>
               {[0, 1, 2].map((d) => (
                 <span
                   key={d}
@@ -386,6 +313,7 @@ function ChatSimulation({
    VOICE BUTTON
 ───────────────────────────────────────────── */
 function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
+  const { t } = useI18n();
   const [state, setState] = useState<"idle" | "listening" | "responding">("idle");
 
   useEffect(() => {
@@ -464,9 +392,9 @@ function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
         className="text-xs font-medium transition-colors"
         style={{ color: state === "idle" ? "#9ca3af" : accent }}
       >
-        {state === "idle" && "Tap to talk to your AI"}
-        {state === "listening" && "Listening…"}
-        {state === "responding" && "✨ Booking your appointment…"}
+        {state === "idle" && t("aiReceptionist.voiceIdle")}
+        {state === "listening" && t("aiReceptionist.voiceListening")}
+        {state === "responding" && t("aiReceptionist.voiceResponding")}
       </p>
     </div>
   );
@@ -475,54 +403,48 @@ function VoiceButton({ accent, accent2 }: { accent: string; accent2: string }) {
 /* ─────────────────────────────────────────────
    MAIN SECTION
 ───────────────────────────────────────────── */
-const FEATURES = [
-  {
-    title: "Books Appointments Automatically",
-    desc: "Confirms, reschedules, and syncs your calendar — hands-free.",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6 2 2 4-4" />
-    ),
-  },
-  {
-    title: "Answers Customer Questions 24/7",
-    desc: "Pricing, hours, services — instant accurate replies, any hour.",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
-    ),
-  },
-  {
-    title: "Works While You Sleep",
-    desc: "Your business never closes. Leads captured at 3 AM, too.",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-    ),
-  },
-  {
-    title: "Never Miss Another Lead",
-    desc: "Every inquiry is captured, qualified, and followed up instantly.",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-    ),
-  },
-  {
-    title: "Supports Multiple Languages",
-    desc: "Greets every customer in English, French, or Creole.",
-    icon: (
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 12 21Zm3-11.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-    ),
-  },
+// Static SVG icon paths (one per feature, order matches i18n features array)
+const FEATURE_ICONS = [
+  <path key="0" strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6 2 2 4-4" />,
+  <path key="1" strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />,
+  <path key="2" strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />,
+  <path key="3" strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />,
+  <path key="4" strokeLinecap="round" strokeLinejoin="round" d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0 0a8.949 8.949 0 0 0 4.951-1.488A3.987 3.987 0 0 0 13 16h-2a3.987 3.987 0 0 0-3.951 3.512A8.949 8.949 0 0 0 12 21Zm3-11.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />,
 ];
 
-const STATS = [
-  { label: "Faster Responses", value: 63, prefix: "+", suffix: "%" },
-  { label: "Availability", value: 24, suffix: "/7" },
-  { label: "More Bookings", value: 40, prefix: "+", suffix: "%" },
-  { label: "Missed Calls", value: 0, prefix: "", suffix: "", isZero: true },
+const STAT_VALUES = [
+  { key: "faster", value: 63, prefix: "+", suffix: "%" },
+  { key: "availability", value: 24, suffix: "/7" },
+  { key: "bookings", value: 40, prefix: "+", suffix: "%" },
+  { key: "missed", value: 0, isZero: true },
 ];
 
 export default function AIReceptionist() {
+  const { t, tArray } = useI18n();
   const [idx, setIdx] = useState(0);
-  const industry = useMemo(() => INDUSTRIES[idx], [idx]);
+
+  // Build industries from static meta + translated content
+  const INDUSTRIES: Industry[] = useMemo(
+    () =>
+      INDUSTRY_META.map((meta, i) => {
+        const texts = tArray(`aiReceptionist.industries.${i}.messages`);
+        return {
+          ...meta,
+          service: t(`aiReceptionist.industries.${i}.service`),
+          time: t(`aiReceptionist.industries.${i}.time`),
+          messages: MESSAGE_ROLES.map((role, j) => ({
+            role,
+            text: texts[j] || "",
+          })),
+        };
+      }),
+    [t, tArray]
+  );
+
+  const industry = useMemo(
+    () => INDUSTRIES[idx] || INDUSTRIES[0],
+    [INDUSTRIES, idx]
+  );
 
   const handleCycle = () => setIdx((p) => (p + 1) % INDUSTRIES.length);
 
@@ -594,15 +516,14 @@ export default function AIReceptionist() {
               className="w-1.5 h-1.5 rounded-full animate-pulse"
               style={{ background: industry.accent }}
             />
-            NOVA AI Automation
+            {t("aiReceptionist.tag")}
           </span>
           <h2 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05]">
-            Meet Your{" "}
-            <span className="text-gradient">AI Receptionist</span>
+            {t("aiReceptionist.title1")}{" "}
+            <span className="text-gradient">{t("aiReceptionist.title2")}</span>
           </h2>
           <p className="mt-5 text-sm sm:text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            24/7 customer support, bookings, FAQs, and instant responses —
-            powered by modern AI automation.
+            {t("aiReceptionist.subtitle")}
           </p>
         </motion.div>
 
@@ -646,7 +567,7 @@ export default function AIReceptionist() {
               }}
             >
               <p className="text-[11px] uppercase tracking-[0.18em] text-gray-500 mb-3">
-                Or speak naturally
+                {t("aiReceptionist.voicePrompt")}
               </p>
               <VoiceButton accent={industry.accent} accent2={industry.accent2} />
             </div>
@@ -673,7 +594,7 @@ export default function AIReceptionist() {
               <div className="absolute inset-0 animate-shimmer pointer-events-none" />
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[10px] uppercase tracking-[0.18em] text-gray-400">
-                  Live Booking
+                  {t("aiReceptionist.liveBooking")}
                 </span>
                 <span
                   className="flex items-center gap-1.5 text-[11px] font-semibold"
@@ -683,7 +604,7 @@ export default function AIReceptionist() {
                     className="w-1.5 h-1.5 rounded-full animate-pulse"
                     style={{ background: industry.accent }}
                   />
-                  Automated
+                  {t("aiReceptionist.automated")}
                 </span>
               </div>
               <div className="flex items-center gap-4">
@@ -716,7 +637,7 @@ export default function AIReceptionist() {
                     >
                       ✓
                     </span>
-                    Confirmed
+                    {t("aiReceptionist.confirmed")}
                   </p>
                 </div>
               </div>
@@ -724,9 +645,9 @@ export default function AIReceptionist() {
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-3">
-              {STATS.map((s) => (
+              {STAT_VALUES.map((s) => (
                 <div
-                  key={s.label}
+                  key={s.key}
                   className="glass rounded-xl p-3.5 border border-white/[0.06] text-center"
                 >
                   <p
@@ -734,7 +655,7 @@ export default function AIReceptionist() {
                     style={{ color: industry.accent, transition: "color 0.6s" }}
                   >
                     {s.isZero ? (
-                      "Zero"
+                      t("aiReceptionist.stats.zero")
                     ) : (
                       <CountUp
                         target={s.value}
@@ -744,7 +665,7 @@ export default function AIReceptionist() {
                     )}
                   </p>
                   <p className="text-[10px] sm:text-xs text-gray-500 mt-0.5">
-                    {s.label}
+                    {t(`aiReceptionist.stats.${s.key}`)}
                   </p>
                 </div>
               ))}
@@ -752,9 +673,9 @@ export default function AIReceptionist() {
 
             {/* Feature cards */}
             <div className="space-y-2.5">
-              {FEATURES.map((f, i) => (
+              {FEATURE_ICONS.map((iconPath, i) => (
                 <motion.div
-                  key={f.title}
+                  key={i}
                   initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -777,15 +698,15 @@ export default function AIReceptionist() {
                       strokeWidth={1.6}
                       style={{ transition: "stroke 0.6s" }}
                     >
-                      {f.icon}
+                      {iconPath}
                     </svg>
                   </div>
                   <div className="min-w-0">
                     <p className="text-sm font-semibold text-white">
-                      {f.title}
+                      {t(`aiReceptionist.features.${i}.title`)}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                      {f.desc}
+                      {t(`aiReceptionist.features.${i}.desc`)}
                     </p>
                   </div>
                 </motion.div>
@@ -811,12 +732,11 @@ export default function AIReceptionist() {
           >
             <div className="absolute inset-0 animate-shimmer pointer-events-none" />
             <h3 className="relative text-2xl sm:text-4xl font-bold tracking-tight">
-              Want an AI Assistant For{" "}
-              <span className="text-gradient">Your Business?</span>
+              {t("aiReceptionist.ctaTitle1")}{" "}
+              <span className="text-gradient">{t("aiReceptionist.ctaTitle2")}</span>
             </h3>
             <p className="relative mt-3 text-sm sm:text-base text-gray-400 max-w-xl mx-auto">
-              Join the businesses booking more, missing less, and working
-              smarter — automatically.
+              {t("aiReceptionist.ctaSubtitle")}
             </p>
             <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
@@ -827,13 +747,13 @@ export default function AIReceptionist() {
                   boxShadow: `0 0 30px ${industry.accent}55`,
                 }}
               >
-                Book a Free Consultation
+                {t("aiReceptionist.ctaBook")}
               </button>
               <button
                 onClick={openLiveDemo}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-sm text-white border border-white/15 bg-white/[0.04] hover:bg-white/[0.08] transition-all duration-300 hover:scale-[1.03] active:scale-95"
               >
-                See Live Demo
+                {t("aiReceptionist.ctaDemo")}
               </button>
             </div>
           </div>

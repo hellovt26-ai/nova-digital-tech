@@ -472,5 +472,97 @@
       "Transparent project planning"
     ],
     "acceptedLabel": "Accepted payments"
+  },
+  "aiReceptionist": {
+    "tag": "NOVA AI Automation",
+    "title1": "Meet Your",
+    "title2": "AI Receptionist",
+    "subtitle": "24/7 customer support, bookings, FAQs, and instant responses — powered by modern AI automation.",
+    "headerName": "NOVA AI Receptionist",
+    "status": "Online • Responds instantly",
+    "typing": "AI is typing",
+    "voicePrompt": "Or speak naturally",
+    "voiceIdle": "Tap to talk to your AI",
+    "voiceListening": "Listening…",
+    "voiceResponding": "✨ Booking your appointment…",
+    "liveBooking": "Live Booking",
+    "automated": "Automated",
+    "confirmed": "Confirmed",
+    "stats": {
+      "faster": "Faster Responses",
+      "availability": "Availability",
+      "bookings": "More Bookings",
+      "missed": "Missed Calls",
+      "zero": "Zero"
+    },
+    "features": [
+      { "title": "Books Appointments Automatically", "desc": "Confirms, reschedules, and syncs your calendar — hands-free." },
+      { "title": "Answers Customer Questions 24/7", "desc": "Pricing, hours, services — instant accurate replies, any hour." },
+      { "title": "Works While You Sleep", "desc": "Your business never closes. Leads captured at 3 AM, too." },
+      { "title": "Never Miss Another Lead", "desc": "Every inquiry is captured, qualified, and followed up instantly." },
+      { "title": "Supports Multiple Languages", "desc": "Greets every customer in English, French, or Creole." }
+    ],
+    "ctaTitle1": "Want an AI Assistant For",
+    "ctaTitle2": "Your Business?",
+    "ctaSubtitle": "Join the businesses booking more, missing less, and working smarter — automatically.",
+    "ctaBook": "Book a Free Consultation",
+    "ctaDemo": "See Live Demo",
+    "industries": [
+      {
+        "service": "Haircut & Beard Trim",
+        "time": "Fri · 4:30 PM",
+        "messages": [
+          "Hi, do you have openings this Friday?",
+          "Yes! We have appointments at 2:00 PM and 4:30 PM. Which time works best for you?",
+          "4:30 PM please.",
+          "Perfect — your appointment has been reserved. Would you like a confirmation text message?",
+          "Appointment Confirmed"
+        ]
+      },
+      {
+        "service": "Table for 4 · Dinner",
+        "time": "Sat · 7:00 PM",
+        "messages": [
+          "Do you have a table for 4 on Saturday night?",
+          "We do! 6:30 PM and 7:00 PM are open for a party of 4. Which would you prefer?",
+          "7:00 PM works great.",
+          "Wonderful — your table is booked for Saturday at 7:00 PM. We'll text you a reminder!",
+          "Reservation Confirmed"
+        ]
+      },
+      {
+        "service": "Deep Home Cleaning",
+        "time": "Mon · 10:00 AM",
+        "messages": [
+          "Can I get a deep cleaning next Monday morning?",
+          "Absolutely! We have 9:00 AM and 10:00 AM slots open Monday. Which works for you?",
+          "10:00 AM is perfect.",
+          "Great — your deep cleaning is scheduled for Monday at 10:00 AM. A confirmation is on its way!",
+          "Booking Confirmed"
+        ]
+      },
+      {
+        "service": "Cleaning & Checkup",
+        "time": "Wed · 1:15 PM",
+        "messages": [
+          "I need to book a cleaning this week.",
+          "Of course! We have Wednesday at 1:15 PM or Thursday at 9:00 AM available. Which suits you?",
+          "Wednesday 1:15 PM.",
+          "Perfect — you're booked for Wednesday at 1:15 PM. We'll send a reminder the day before!",
+          "Appointment Confirmed"
+        ]
+      },
+      {
+        "service": "Full Color & Style",
+        "time": "Fri · 11:00 AM",
+        "messages": [
+          "Hi! Any color appointments open Friday?",
+          "Yes! We have 11:00 AM and 3:00 PM open for a full color & style. Which would you like?",
+          "11:00 AM please 💕",
+          "You're all set for Friday at 11:00 AM! A confirmation text is on the way.",
+          "Appointment Confirmed"
+        ]
+      }
+    ]
   }
 }

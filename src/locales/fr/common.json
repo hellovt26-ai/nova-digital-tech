@@ -472,5 +472,97 @@
       "Planification transparente du projet"
     ],
     "acceptedLabel": "Paiements acceptés"
+  },
+  "aiReceptionist": {
+    "tag": "NOVA Automatisation IA",
+    "title1": "Découvrez Votre",
+    "title2": "Réceptionniste IA",
+    "subtitle": "Support client 24/7, réservations, FAQ et réponses instantanées — propulsé par l'automatisation IA moderne.",
+    "headerName": "Réceptionniste IA NOVA",
+    "status": "En ligne • Répond instantanément",
+    "typing": "L'IA écrit",
+    "voicePrompt": "Ou parlez naturellement",
+    "voiceIdle": "Touchez pour parler à votre IA",
+    "voiceListening": "Écoute…",
+    "voiceResponding": "✨ Réservation de votre rendez-vous…",
+    "liveBooking": "Réservation en direct",
+    "automated": "Automatisé",
+    "confirmed": "Confirmé",
+    "stats": {
+      "faster": "Réponses plus rapides",
+      "availability": "Disponibilité",
+      "bookings": "Plus de réservations",
+      "missed": "Appels manqués",
+      "zero": "Zéro"
+    },
+    "features": [
+      { "title": "Prend les rendez-vous automatiquement", "desc": "Confirme, replanifie et synchronise votre calendrier — sans effort." },
+      { "title": "Répond aux questions 24/7", "desc": "Tarifs, horaires, services — des réponses précises à toute heure." },
+      { "title": "Travaille pendant que vous dormez", "desc": "Votre entreprise ne ferme jamais. Des prospects captés même à 3 h." },
+      { "title": "Ne manquez plus aucun prospect", "desc": "Chaque demande est captée, qualifiée et suivie instantanément." },
+      { "title": "Prend en charge plusieurs langues", "desc": "Accueille chaque client en anglais, français ou créole." }
+    ],
+    "ctaTitle1": "Vous voulez un assistant IA pour",
+    "ctaTitle2": "votre entreprise ?",
+    "ctaSubtitle": "Rejoignez les entreprises qui réservent plus, manquent moins et travaillent plus intelligemment — automatiquement.",
+    "ctaBook": "Réserver une consultation gratuite",
+    "ctaDemo": "Voir la démo en direct",
+    "industries": [
+      {
+        "service": "Coupe & taille de barbe",
+        "time": "Ven · 16h30",
+        "messages": [
+          "Bonjour, avez-vous des disponibilités ce vendredi ?",
+          "Oui ! Nous avons des rendez-vous à 14h00 et 16h30. Quelle heure vous convient le mieux ?",
+          "16h30 s'il vous plaît.",
+          "Parfait — votre rendez-vous est réservé. Souhaitez-vous un SMS de confirmation ?",
+          "Rendez-vous confirmé"
+        ]
+      },
+      {
+        "service": "Table pour 4 · Dîner",
+        "time": "Sam · 19h00",
+        "messages": [
+          "Avez-vous une table pour 4 samedi soir ?",
+          "Oui ! 18h30 et 19h00 sont libres pour 4 personnes. Que préférez-vous ?",
+          "19h00 c'est parfait.",
+          "Merveilleux — votre table est réservée pour samedi à 19h00. Nous vous enverrons un rappel !",
+          "Réservation confirmée"
+        ]
+      },
+      {
+        "service": "Nettoyage en profondeur",
+        "time": "Lun · 10h00",
+        "messages": [
+          "Puis-je avoir un nettoyage en profondeur lundi matin ?",
+          "Absolument ! Nous avons des créneaux à 9h00 et 10h00 lundi. Lequel vous convient ?",
+          "10h00 est parfait.",
+          "Super — votre nettoyage en profondeur est prévu lundi à 10h00. Une confirmation arrive !",
+          "Réservation confirmée"
+        ]
+      },
+      {
+        "service": "Nettoyage & examen",
+        "time": "Mer · 13h15",
+        "messages": [
+          "J'ai besoin de réserver un nettoyage cette semaine.",
+          "Bien sûr ! Nous avons mercredi à 13h15 ou jeudi à 9h00. Qu'est-ce qui vous convient ?",
+          "Mercredi 13h15.",
+          "Parfait — vous êtes réservé pour mercredi à 13h15. Nous enverrons un rappel la veille !",
+          "Rendez-vous confirmé"
+        ]
+      },
+      {
+        "service": "Coloration & coiffure complète",
+        "time": "Ven · 11h00",
+        "messages": [
+          "Bonjour ! Des rendez-vous coloration libres vendredi ?",
+          "Oui ! Nous avons 11h00 et 15h00 libres pour une coloration & coiffure complète. Lequel souhaitez-vous ?",
+          "11h00 s'il vous plaît 💕",
+          "Tout est réglé pour vendredi à 11h00 ! Un SMS de confirmation arrive.",
+          "Rendez-vous confirmé"
+        ]
+      }
+    ]
   }
 }

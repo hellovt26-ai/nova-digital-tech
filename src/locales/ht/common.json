@@ -472,5 +472,97 @@
       "Planifikasyon pwojè transparan"
     ],
     "acceptedLabel": "Peman aksepte"
+  },
+  "aiReceptionist": {
+    "tag": "NOVA Otomatizasyon IA",
+    "title1": "Rankontre",
+    "title2": "Resepsyonis IA Ou",
+    "subtitle": "Sipò kliyan 24/7, rezèvasyon, kesyon, ak repons rapid — ak otomatizasyon IA modèn.",
+    "headerName": "Resepsyonis IA NOVA",
+    "status": "An liy • Reponn touswit",
+    "typing": "IA a ap ekri",
+    "voicePrompt": "Oswa pale natirèlman",
+    "voiceIdle": "Tape pou pale ak IA ou",
+    "voiceListening": "M ap koute…",
+    "voiceResponding": "✨ M ap rezève randevou ou…",
+    "liveBooking": "Rezèvasyon Dirèk",
+    "automated": "Otomatik",
+    "confirmed": "Konfime",
+    "stats": {
+      "faster": "Repons Pi Rapid",
+      "availability": "Disponiblite",
+      "bookings": "Plis Rezèvasyon",
+      "missed": "Apèl Manke",
+      "zero": "Zewo"
+    },
+    "features": [
+      { "title": "Pran Randevou Otomatikman", "desc": "Konfime, replanifye, epi senkronize kalandriye ou — san efò." },
+      { "title": "Reponn Kesyon Kliyan 24/7", "desc": "Pri, lè, sèvis — repons egzak nenpòt lè." },
+      { "title": "Travay Pandan W ap Dòmi", "desc": "Biznis ou pa janm fèmen. Nou kenbe pwospè menm a 3 zè nan maten." },
+      { "title": "Pa Janm Manke Yon Pwospè", "desc": "Chak demann kaptire, kalifye, epi swiv touswit." },
+      { "title": "Sipòte Plizyè Lang", "desc": "Salye chak kliyan an Anglè, Fransè, oswa Kreyòl." }
+    ],
+    "ctaTitle1": "Èske w vle yon Asistan IA pou",
+    "ctaTitle2": "Biznis ou?",
+    "ctaSubtitle": "Vin jwenn biznis k ap rezève plis, manke mwens, epi travay pi entelijan — otomatikman.",
+    "ctaBook": "Rezève yon Konsiltasyon Gratis",
+    "ctaDemo": "Gade Demo Dirèk",
+    "industries": [
+      {
+        "service": "Koup Cheve & Taye Bab",
+        "time": "Van · 4:30 PM",
+        "messages": [
+          "Bonjou, èske nou gen plas vandredi sa a?",
+          "Wi! Nou gen randevou a 2:00 PM ak 4:30 PM. Ki lè ki pi bon pou ou?",
+          "4:30 PM souple.",
+          "Pafè — randevou ou rezève. Èske w vle yon mesaj tèks konfimasyon?",
+          "Randevou Konfime"
+        ]
+      },
+      {
+        "service": "Tab pou 4 · Dine",
+        "time": "Sam · 7:00 PM",
+        "messages": [
+          "Èske nou gen yon tab pou 4 samdi swa?",
+          "Wi! 6:30 PM ak 7:00 PM lib pou 4 moun. Kilès ou prefere?",
+          "7:00 PM bon nèt.",
+          "Bèl bagay — tab ou rezève pou samdi a 7:00 PM. N ap voye yon rapèl ba ou!",
+          "Rezèvasyon Konfime"
+        ]
+      },
+      {
+        "service": "Gwo Netwayaj Kay",
+        "time": "Len · 10:00 AM",
+        "messages": [
+          "Èske m ka jwenn yon gwo netwayaj lendi maten?",
+          "Absoliman! Nou gen plas a 9:00 AM ak 10:00 AM lendi. Kilès ki bon pou ou?",
+          "10:00 AM pafè.",
+          "Bon — gwo netwayaj ou pwograme pou lendi a 10:00 AM. Yon konfimasyon ap vini!",
+          "Rezèvasyon Konfime"
+        ]
+      },
+      {
+        "service": "Netwayaj & Egzamen",
+        "time": "Mèk · 1:15 PM",
+        "messages": [
+          "Mwen bezwen rezève yon netwayaj semèn sa a.",
+          "Natirèlman! Nou gen mèkredi a 1:15 PM oswa jedi a 9:00 AM. Kilès ki bon pou ou?",
+          "Mèkredi 1:15 PM.",
+          "Pafè — ou rezève pou mèkredi a 1:15 PM. N ap voye yon rapèl jou anvan an!",
+          "Randevou Konfime"
+        ]
+      },
+      {
+        "service": "Koulè & Estil Konplè",
+        "time": "Van · 11:00 AM",
+        "messages": [
+          "Bonjou! Èske gen randevou koulè lib vandredi?",
+          "Wi! Nou gen 11:00 AM ak 3:00 PM lib pou yon koulè & estil konplè. Kilès ou vle?",
+          "11:00 AM souple 💕",
+          "Tout bagay pare pou vandredi a 11:00 AM! Yon mesaj konfimasyon ap vini.",
+          "Randevou Konfime"
+        ]
+      }
+    ]
   }
 }
