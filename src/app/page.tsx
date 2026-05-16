@@ -47,11 +47,11 @@ export default function Home() {
         <VideoSection />
         <TechStack />
         <ClientResults />
-        <Services />
+        <AIReceptionist />
         <HolographicCards />
         <Industries />
         <FeaturedOffer />
-        <AIReceptionist />
+        <Services />
         <Portfolio />
         <FounderStudio />
         <LatestTransformations />
