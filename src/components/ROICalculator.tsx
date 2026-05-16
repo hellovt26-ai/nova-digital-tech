@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
+import { useAccentCycle } from "@/lib/useAccentCycle";
 
 /* ─── Animated Counter ─── */
 function AnimatedNumber({
@@ -62,6 +63,9 @@ function Slider({
   prefix = "",
   suffix = "",
   icon,
+  accent,
+  accent2,
+  ct,
 }: {
   label: string;
   value: number;
@@ -72,6 +76,9 @@ function Slider({
   prefix?: string;
   suffix?: string;
   icon: string;
+  accent: string;
+  accent2: string;
+  ct: string;
 }) {
   const percent = ((value - min) / (max - min)) * 100;
 
@@ -82,7 +89,10 @@ function Slider({
           <span className="text-base">{icon}</span>
           {label}
         </label>
-        <span className="text-sm sm:text-base font-bold text-nova-cyan tabular-nums">
+        <span
+          className="text-sm sm:text-base font-bold tabular-nums"
+          style={{ color: accent, transition: ct }}
+        >
           {prefix}
           {value.toLocaleString()}
           {suffix}
@@ -98,7 +108,8 @@ function Slider({
           onChange={(e) => onChange(Number(e.target.value))}
           className="w-full h-2 bg-white/5 rounded-full appearance-none cursor-pointer slider-input"
           style={{
-            background: `linear-gradient(to right, #00e5ff 0%, #2979ff ${percent}%, rgba(255,255,255,0.05) ${percent}%, rgba(255,255,255,0.05) 100%)`,
+            background: `linear-gradient(to right, ${accent} 0%, ${accent2} ${percent}%, rgba(255,255,255,0.05) ${percent}%, rgba(255,255,255,0.05) 100%)`,
+            transition: ct,
           }}
         />
       </div>
@@ -108,6 +119,7 @@ function Slider({
 
 /* ─── Main ROI Calculator ─── */
 export default function ROICalculator() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   const [customers, setCustomers] = useState(50);
   const [avgRevenue, setAvgRevenue] = useState(150);
   const [hoursWasted, setHoursWasted] = useState(10);
@@ -140,11 +152,25 @@ export default function ROICalculator() {
   };
 
   return (
-    <section className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section
+      className="relative py-10 sm:py-14 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      style={
+        {
+          "--roi-accent": accent,
+          "--roi-accent2": accent2,
+        } as React.CSSProperties
+      }
+    >
       {/* Background glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-nova-cyan/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-nova-blue/5 rounded-full blur-3xl" />
+        <div
+          className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full blur-3xl"
+          style={{ background: `${accent}0d`, transition: ct }}
+        />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-72 h-72 rounded-full blur-3xl"
+          style={{ background: `${accent2}0d`, transition: ct }}
+        />
       </div>
 
       <div className="relative max-w-5xl mx-auto">
@@ -156,12 +182,25 @@ export default function ROICalculator() {
           transition={{ duration: 0.6 }}
           className="text-center mb-6 sm:mb-8"
         >
-          <span className="text-[10px] uppercase tracking-[0.2em] text-nova-cyan font-medium">
+          <span
+            className="text-[10px] uppercase tracking-[0.2em] font-medium"
+            style={{ color: accent, transition: ct }}
+          >
             ROI Calculator
           </span>
           <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
             See What NOVA Can{" "}
-            <span className="text-gradient">Earn You</span>
+            <span
+              style={{
+                background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                transition: ct,
+              }}
+            >
+              Earn You
+            </span>
           </h2>
           <p className="mt-2 text-xs sm:text-sm text-gray-400 max-w-xl mx-auto">
             Move the sliders to match your business. Watch the numbers update live.
@@ -178,7 +217,13 @@ export default function ROICalculator() {
             className="glass-strong rounded-xl p-4 sm:p-5 space-y-5 border border-white/10"
           >
             <div className="flex items-center gap-2 pb-3 border-b border-white/5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-nova-cyan/20 to-nova-blue/20 border border-white/10 flex items-center justify-center text-sm">
+              <div
+                className="w-8 h-8 rounded-lg border border-white/10 flex items-center justify-center text-sm"
+                style={{
+                  background: `linear-gradient(135deg, ${accent}33, ${accent2}33)`,
+                  transition: ct,
+                }}
+              >
                 📊
               </div>
               <div>
@@ -195,6 +240,9 @@ export default function ROICalculator() {
               max={500}
               step={5}
               onChange={setCustomers}
+              accent={accent}
+              accent2={accent2}
+              ct={ct}
             />
 
             <Slider
@@ -205,7 +253,10 @@ export default function ROICalculator() {
               max={2000}
               step={10}
               prefix="$"
-            onChange={setAvgRevenue}
+              onChange={setAvgRevenue}
+              accent={accent}
+              accent2={accent2}
+              ct={ct}
             />
 
             <Slider
@@ -217,6 +268,9 @@ export default function ROICalculator() {
               step={1}
               suffix=" hrs"
               onChange={setHoursWasted}
+              accent={accent}
+              accent2={accent2}
+              ct={ct}
             />
 
             {/* Current state */}
@@ -240,18 +294,31 @@ export default function ROICalculator() {
           >
             {/* Hero result */}
             <div
-              className="relative rounded-xl p-4 sm:p-5 border border-nova-cyan/30 overflow-hidden"
+              className="relative rounded-xl p-4 sm:p-5 border overflow-hidden"
               style={{
-                background:
-                  "linear-gradient(135deg, rgba(0,229,255,0.08) 0%, rgba(41,121,255,0.08) 100%)",
+                background: `linear-gradient(135deg, ${accent}14 0%, ${accent2}14 100%)`,
+                borderColor: `${accent}4d`,
+                transition: ct,
               }}
             >
               <div className="absolute inset-0 animate-shimmer pointer-events-none" />
-              <p className="text-[10px] uppercase tracking-[0.2em] text-nova-cyan font-medium">
+              <p
+                className="text-[10px] uppercase tracking-[0.2em] font-medium"
+                style={{ color: accent, transition: ct }}
+              >
                 Potential Annual Impact
               </p>
               <div className="mt-1 flex items-baseline gap-2">
-                <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gradient tabular-nums">
+                <p
+                  className="text-3xl sm:text-4xl lg:text-5xl font-bold tabular-nums"
+                  style={{
+                    background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    transition: ct,
+                  }}
+                >
                   <AnimatedNumber value={results.totalAnnualImpact} prefix="$" />
                 </p>
               </div>
@@ -322,7 +389,12 @@ export default function ROICalculator() {
             {/* CTA */}
             <button
               onClick={scrollToContact}
-              className="w-full mt-1 py-3 rounded-xl bg-gradient-to-r from-nova-cyan to-nova-blue text-white font-semibold text-sm hover:shadow-lg hover:shadow-nova-cyan/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+              className="w-full mt-1 py-3 rounded-xl text-white font-semibold text-sm hover:shadow-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2 group"
+              style={{
+                background: `linear-gradient(90deg, ${accent}, ${accent2})`,
+                boxShadow: `0 8px 24px ${accent}33`,
+                transition: ct,
+              }}
             >
               <span>🎯 Get This For My Business</span>
               <svg
@@ -349,24 +421,33 @@ export default function ROICalculator() {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #00e5ff, #2979ff);
+          background: linear-gradient(
+            135deg,
+            var(--roi-accent, #00e5ff),
+            var(--roi-accent2, #2979ff)
+          );
           cursor: pointer;
-          box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1), 0 4px 12px rgba(0, 229, 255, 0.3);
-          transition: all 0.2s;
+          box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08),
+            0 4px 12px rgba(0, 0, 0, 0.3);
+          transition: transform 0.2s;
         }
         .slider-input::-webkit-slider-thumb:hover {
           transform: scale(1.15);
-          box-shadow: 0 0 0 6px rgba(0, 229, 255, 0.15), 0 4px 16px rgba(0, 229, 255, 0.4);
         }
         .slider-input::-moz-range-thumb {
           width: 20px;
           height: 20px;
           border-radius: 50%;
           border: none;
-          background: linear-gradient(135deg, #00e5ff, #2979ff);
+          background: linear-gradient(
+            135deg,
+            var(--roi-accent, #00e5ff),
+            var(--roi-accent2, #2979ff)
+          );
           cursor: pointer;
-          box-shadow: 0 0 0 4px rgba(0, 229, 255, 0.1), 0 4px 12px rgba(0, 229, 255, 0.3);
-          transition: all 0.2s;
+          box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08),
+            0 4px 12px rgba(0, 0, 0, 0.3);
+          transition: transform 0.2s;
         }
         .slider-input::-moz-range-thumb:hover {
           transform: scale(1.15);
