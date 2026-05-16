@@ -58,20 +58,44 @@ function LaptopMockup({ children }: { children: React.ReactNode }) {
   );
 }
 
+const BARBERS = [
+  { name: "DJ Cuts", rating: "4.9", time: "3:00 PM", avail: true, specialty: "Fades & Tapers" },
+  { name: "Mike Style", rating: "4.8", time: "4:15 PM", avail: true, specialty: "Beard Design" },
+  { name: "Ray Fresh", rating: "5.0", time: "Full", avail: false, specialty: "Kids Cuts" },
+  { name: "Tony Blendz", rating: "4.9", time: "5:30 PM", avail: true, specialty: "Skin Fades" },
+  { name: "Sam Sharp", rating: "4.7", time: "6:00 PM", avail: true, specialty: "Classic Cuts" },
+  { name: "Lou Lining", rating: "5.0", time: "Full", avail: false, specialty: "Line-ups" },
+];
+
 function BarberProject() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <PhoneMockup>
-      <div className="bg-gradient-to-b from-nova-cyan/8 to-transparent p-4">
+      <div
+        className="p-4"
+        style={{
+          background: `linear-gradient(to bottom, ${accent}14, transparent)`,
+          transition: ct,
+        }}
+      >
         <div className="flex items-center justify-between mb-5">
           <div>
             <p className="text-[10px] text-gray-500">Good Morning</p>
             <p className="text-sm font-semibold text-white">Marcus J.</p>
           </div>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-[10px] font-bold text-white">MJ</div>
+          <div
+            className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+            style={{
+              background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+              transition: ct,
+            }}
+          >
+            MJ
+          </div>
         </div>
         <div className="rounded-xl bg-white/5 border border-white/5 p-3 mb-3">
           <div className="flex items-center gap-2 mb-2">
-            <Scissors className="w-3.5 h-3.5 text-nova-cyan" />
+            <Scissors className="w-3.5 h-3.5" style={{ color: accent, transition: ct }} />
             <span className="text-xs font-medium text-white">Next Appointment</span>
           </div>
           <div className="flex items-center justify-between">
@@ -90,34 +114,60 @@ function BarberProject() {
           <p className="text-[10px] text-gray-500">Client notified 1 hour before appointment</p>
         </div>
       </div>
-      <div className="px-4 pb-4 space-y-2">
+      <div className="px-4 pb-4">
         <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Available Barbers</p>
-        {[
-          { name: "DJ Cuts", rating: "4.9", time: "3:00 PM", avail: true, specialty: "Fades & Tapers" },
-          { name: "Mike Style", rating: "4.8", time: "4:15 PM", avail: true, specialty: "Beard Design" },
-          { name: "Ray Fresh", rating: "5.0", time: "Full", avail: false, specialty: "Kids Cuts" },
-        ].map((barber) => (
-          <div key={barber.name} className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] border border-white/5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400/50 to-pink-400/50 flex items-center justify-center text-[9px] font-bold text-white">
-              {barber.name.split(" ").map(w => w[0]).join("")}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1">
-                <span className="text-[11px] font-medium text-white">{barber.name}</span>
-                <Star className="w-2.5 h-2.5 text-yellow-500" fill="currentColor" />
-                <span className="text-[9px] text-gray-500">{barber.rating}</span>
+        {/* Auto-scrolling live demo list */}
+        <div className="overflow-hidden" style={{ height: 156 }}>
+          <motion.div
+            animate={{ y: ["0%", "-50%"] }}
+            transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
+            className="space-y-2"
+          >
+            {[...BARBERS, ...BARBERS].map((barber, idx) => (
+              <div key={idx} className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] border border-white/5">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
+                  style={{
+                    background: `linear-gradient(135deg, ${accent}80, ${accent2}80)`,
+                    transition: ct,
+                  }}
+                >
+                  {barber.name.split(" ").map((w) => w[0]).join("")}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1">
+                    <span className="text-[11px] font-medium text-white">{barber.name}</span>
+                    <Star className="w-2.5 h-2.5 text-yellow-500" fill="currentColor" />
+                    <span className="text-[9px] text-gray-500">{barber.rating}</span>
+                  </div>
+                  <p className="text-[8px] text-gray-600">{barber.specialty}</p>
+                </div>
+                <span
+                  className="text-[9px] font-medium"
+                  style={
+                    barber.avail
+                      ? { color: accent, transition: ct }
+                      : { color: "#4b5563" }
+                  }
+                >
+                  {barber.time}
+                </span>
               </div>
-              <p className="text-[8px] text-gray-600">{barber.specialty}</p>
-            </div>
-            <span className={`text-[9px] font-medium ${barber.avail ? "text-nova-cyan" : "text-gray-600"}`}>{barber.time}</span>
-          </div>
-        ))}
+            ))}
+          </motion.div>
+        </div>
         <div className="grid grid-cols-3 gap-2 mt-3">
           {["Fade", "Lineup", "Beard"].map((s) => (
             <div key={s} className="text-center py-2 rounded-lg bg-white/5 border border-white/5 text-[9px] text-gray-400">{s}</div>
           ))}
         </div>
-        <button className="w-full mt-2 py-2.5 rounded-xl bg-gradient-to-r from-nova-cyan to-nova-blue text-[11px] font-semibold text-black">
+        <button
+          className="w-full mt-2 py-2.5 rounded-xl text-[11px] font-semibold text-black"
+          style={{
+            background: `linear-gradient(90deg, ${accent}, ${accent2})`,
+            transition: ct,
+          }}
+        >
           Book Appointment
         </button>
       </div>
