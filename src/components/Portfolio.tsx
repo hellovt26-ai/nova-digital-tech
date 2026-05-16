@@ -68,8 +68,35 @@ const BARBERS = [
   { name: "Lou Lining", rating: "5.0", time: "Full", avail: false, specialty: "Line-ups" },
 ];
 
+const BARBER_ITEM_H = 52; // px per row slot
+
 function BarberProject() {
   const { accent, accent2, transition: ct } = useAccentCycle();
+  // Stepped scroll: advance one barber, pause, repeat (natural browsing feel)
+  const [offset, setOffset] = useState(0);
+  const [animate, setAnimate] = useState(true);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      setOffset((o) => o + 1);
+    }, offset === 0 ? 1600 : 2100);
+    return () => clearTimeout(id);
+  }, [offset]);
+
+  useEffect(() => {
+    // After scrolling through the full list, silently snap back to start
+    if (offset >= BARBERS.length) {
+      const id = setTimeout(() => {
+        setAnimate(false);
+        setOffset(0);
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => setAnimate(true))
+        );
+      }, 600);
+      return () => clearTimeout(id);
+    }
+  }, [offset]);
+
   return (
     <PhoneMockup>
       <div
@@ -117,15 +144,25 @@ function BarberProject() {
       </div>
       <div className="px-4 pb-4">
         <p className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Available Barbers</p>
-        {/* Auto-scrolling live demo list */}
-        <div className="overflow-hidden" style={{ height: 156 }}>
-          <motion.div
-            animate={{ y: ["0%", "-50%"] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-            className="space-y-2"
+        {/* Stepped live demo list — scrolls one item, pauses, repeats */}
+        <div
+          className="overflow-hidden"
+          style={{ height: BARBER_ITEM_H * 3 }}
+        >
+          <div
+            style={{
+              transform: `translateY(-${offset * BARBER_ITEM_H}px)`,
+              transition: animate
+                ? "transform 0.55s cubic-bezier(0.4, 0, 0.2, 1)"
+                : "none",
+            }}
           >
             {[...BARBERS, ...BARBERS].map((barber, idx) => (
-              <div key={idx} className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] border border-white/5">
+              <div
+                key={idx}
+                className="flex items-center gap-3 px-2.5 rounded-lg bg-white/[0.03] border border-white/5"
+                style={{ height: BARBER_ITEM_H - 6, marginBottom: 6 }}
+              >
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-[9px] font-bold text-white flex-shrink-0"
                   style={{
@@ -155,7 +192,7 @@ function BarberProject() {
                 </span>
               </div>
             ))}
-          </motion.div>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2 mt-3">
           {["Fade", "Lineup", "Beard"].map((s) => (
