@@ -786,6 +786,17 @@ export default function ChatBot() {
 
   useEffect(() => setMounted(true), []);
 
+  // Open chat when triggered externally (e.g., "See Live Demo" button)
+  useEffect(() => {
+    const open = () => {
+      setIsOpen(true);
+      setIsMinimized(false);
+      setHasNewMessage(false);
+    };
+    window.addEventListener("nova-open-chat", open);
+    return () => window.removeEventListener("nova-open-chat", open);
+  }, []);
+
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
