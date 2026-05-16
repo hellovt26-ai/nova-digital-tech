@@ -1,8 +1,10 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Code2, Palette, Lightbulb, Rocket, Users, Sparkles } from "lucide-react";
+import { Code2, Palette, Lightbulb, Rocket, Sparkles } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { useAccentCycle } from "@/lib/useAccentCycle";
 
 const studioValues = [
   { icon: Code2, color: "from-cyan-500/20 to-blue-500/20", iconColor: "text-cyan-400" },
@@ -26,25 +28,46 @@ function WorkScene({ className, children }: { className?: string; children: Reac
 }
 
 function DesignReviewScene() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <WorkScene className="p-5 h-full">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-[10px] font-bold text-white">N</div>
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
+          style={{
+            background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+            transition: ct,
+          }}
+        >
+          N
+        </div>
         <div>
           <div className="text-xs font-medium text-white">Design Review</div>
           <div className="text-[10px] text-gray-500">In Progress</div>
         </div>
-        <div className="ml-auto flex gap-1">
+        <div className="ml-auto flex gap-1 items-center">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-[10px] text-emerald-400">Live</span>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="h-20 rounded-lg bg-gradient-to-br from-nova-cyan/15 to-nova-blue/10 border border-white/5 flex items-center justify-center">
-          <Palette className="w-6 h-6 text-nova-cyan/40" />
+        <div
+          className="h-20 rounded-lg border border-white/5 flex items-center justify-center"
+          style={{
+            background: `linear-gradient(135deg, ${accent}26, ${accent2}1a)`,
+            transition: ct,
+          }}
+        >
+          <Palette className="w-6 h-6" style={{ color: `${accent}66`, transition: ct }} />
         </div>
-        <div className="h-20 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-white/5 flex items-center justify-center">
-          <Sparkles className="w-6 h-6 text-purple-400/40" />
+        <div
+          className="h-20 rounded-lg border border-white/5 flex items-center justify-center"
+          style={{
+            background: `linear-gradient(135deg, ${accent2}26, ${accent}1a)`,
+            transition: ct,
+          }}
+        >
+          <Sparkles className="w-6 h-6" style={{ color: `${accent2}66`, transition: ct }} />
         </div>
       </div>
       <div className="space-y-2">
@@ -61,8 +84,14 @@ function DesignReviewScene() {
           <div className="h-2 w-3/4 rounded bg-white/10" />
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 rounded bg-nova-cyan/20 flex items-center justify-center">
-            <div className="w-2 h-2 rounded-full bg-nova-cyan animate-pulse" />
+          <div
+            className="w-5 h-5 rounded flex items-center justify-center"
+            style={{ background: `${accent}33`, transition: ct }}
+          >
+            <div
+              className="w-2 h-2 rounded-full animate-pulse"
+              style={{ background: accent, transition: ct }}
+            />
           </div>
           <div className="h-2 w-2/3 rounded bg-white/10" />
         </div>
@@ -71,7 +100,77 @@ function DesignReviewScene() {
   );
 }
 
+// Each line: indent (px) + array of {t:text, c:colorClass} tokens
+const CODE_LINES: { indent: number; tokens: { t: string; c: string }[] }[] = [
+  { indent: 0, tokens: [{ t: "const ", c: "text-purple-400" }, { t: "App", c: "text-cyan-300" }, { t: " = ", c: "text-gray-500" }, { t: "() => {", c: "text-gray-400" }] },
+  { indent: 12, tokens: [{ t: "return ", c: "text-purple-400" }, { t: "(", c: "text-gray-400" }] },
+  { indent: 20, tokens: [{ t: "<Layout>", c: "text-emerald-400" }] },
+  { indent: 28, tokens: [{ t: "<Hero ", c: "text-blue-400" }, { t: "title", c: "text-orange-300" }, { t: "=", c: "text-gray-500" }, { t: '"NOVA"', c: "text-emerald-300" }, { t: " />", c: "text-blue-400" }] },
+  { indent: 28, tokens: [{ t: "<Services />", c: "text-blue-400" }] },
+  { indent: 28, tokens: [{ t: "<Booking ", c: "text-blue-400" }, { t: "realTime", c: "text-orange-300" }, { t: " />", c: "text-blue-400" }] },
+  { indent: 28, tokens: [{ t: "<AIChat />", c: "text-blue-400" }] },
+  { indent: 20, tokens: [{ t: "</Layout>", c: "text-emerald-400" }] },
+  { indent: 12, tokens: [{ t: ")", c: "text-gray-400" }] },
+  { indent: 0, tokens: [{ t: "}", c: "text-gray-400" }] },
+];
+
 function CodeScene() {
+  const { accent, transition: ct } = useAccentCycle();
+  // typed = total characters typed so far across all lines
+  const [typed, setTyped] = useState(0);
+
+  const totalChars = CODE_LINES.reduce(
+    (sum, l) => sum + l.tokens.reduce((s, tk) => s + tk.t.length, 0),
+    0
+  );
+
+  useEffect(() => {
+    if (typed < totalChars) {
+      const id = setTimeout(() => setTyped((p) => p + 1), 38);
+      return () => clearTimeout(id);
+    }
+    // Finished — hold, then restart the live demo
+    const id = setTimeout(() => setTyped(0), 2600);
+    return () => clearTimeout(id);
+  }, [typed, totalChars]);
+
+  // Render lines up to the current typed position
+  let remaining = typed;
+  const rendered: React.ReactNode[] = [];
+  for (let li = 0; li < CODE_LINES.length; li++) {
+    const line = CODE_LINES[li];
+    const lineLen = line.tokens.reduce((s, tk) => s + tk.t.length, 0);
+    if (remaining <= 0) break;
+    const take = Math.min(remaining, lineLen);
+    let used = 0;
+    const tokenEls: React.ReactNode[] = [];
+    for (let ti = 0; ti < line.tokens.length; ti++) {
+      const tk = line.tokens[ti];
+      if (used >= take) break;
+      const slice = tk.t.slice(0, Math.max(0, take - used));
+      if (slice)
+        tokenEls.push(
+          <span key={ti} className={tk.c}>
+            {slice}
+          </span>
+        );
+      used += tk.t.length;
+    }
+    rendered.push(
+      <div key={li} style={{ paddingLeft: line.indent }}>
+        {tokenEls}
+        {take < lineLen && (
+          <span
+            className="inline-block w-[6px] h-[10px] align-middle ml-px animate-pulse"
+            style={{ background: accent, transition: ct }}
+          />
+        )}
+      </div>
+    );
+    remaining -= lineLen;
+    if (take < lineLen) break;
+  }
+
   return (
     <WorkScene className="p-5 h-full">
       <div className="flex items-center gap-1.5 mb-3">
@@ -79,21 +178,19 @@ function CodeScene() {
         <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
         <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
         <span className="ml-2 text-[10px] text-gray-600">app.tsx</span>
-      </div>
-      <div className="font-mono text-[10px] leading-relaxed space-y-0.5">
-        <div><span className="text-purple-400">const</span> <span className="text-cyan-300">App</span> <span className="text-gray-500">=</span> <span className="text-gray-400">() =&gt; {"{"}</span></div>
-        <div className="pl-3"><span className="text-purple-400">return</span> <span className="text-gray-400">(</span></div>
-        <div className="pl-5"><span className="text-emerald-400">&lt;Layout&gt;</span></div>
-        <div className="pl-7"><span className="text-blue-400">&lt;Hero</span> <span className="text-orange-300">title</span><span className="text-gray-500">=</span><span className="text-emerald-300">&quot;...&quot;</span> <span className="text-blue-400">/&gt;</span></div>
-        <div className="pl-7"><span className="text-blue-400">&lt;Services /&gt;</span></div>
-        <div className="pl-7"><span className="text-blue-400">&lt;Booking</span> <span className="text-orange-300">realTime</span> <span className="text-blue-400">/&gt;</span></div>
-        <motion.div
-          animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
-          className="pl-7"
+        <span
+          className="ml-auto text-[8px] font-medium flex items-center gap-1"
+          style={{ color: accent, transition: ct }}
         >
-          <span className="text-gray-600">|</span>
-        </motion.div>
+          <span
+            className="w-1.5 h-1.5 rounded-full animate-pulse"
+            style={{ background: accent }}
+          />
+          building…
+        </span>
+      </div>
+      <div className="font-mono text-[10px] leading-relaxed space-y-0.5 min-h-[170px]">
+        {rendered}
       </div>
     </WorkScene>
   );
@@ -141,6 +238,7 @@ function CollabScene() {
 
 export default function FounderStudio() {
   const { t } = useI18n();
+  const { accent, accent2, transition: ct } = useAccentCycle();
 
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden">
@@ -202,7 +300,18 @@ export default function FounderStudio() {
                 transition={{ delay: 0.2 }}
                 className="rounded-2xl glass-strong p-4 text-center"
               >
-                <div className="text-2xl font-bold text-gradient">100%</div>
+                <div
+                  className="text-2xl font-bold"
+                  style={{
+                    background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    backgroundClip: "text",
+                    transition: ct,
+                  }}
+                >
+                  100%
+                </div>
                 <div className="text-[10px] text-gray-500 mt-1">{t("founder.stat")}</div>
               </motion.div>
             </div>
