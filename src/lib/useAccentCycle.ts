@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
- * Shared, synchronized accent-color cycle.
+ * Independent accent-color cycle.
  *
- * Every component that calls this hook reads from ONE module-level timer,
- * so the whole site shifts colors at the exact same moment — cohesive,
- * intentional, premium. Matches the AI Receptionist demo palette.
+ * Each component that calls this hook gets its OWN timer and its own
+ * randomized starting color + slightly varied interval — so different
+ * mockups across the site show different colors at the same time.
+ * Matches the AI Receptionist demo palette.
  */
 export const ACCENT_PAIRS: [string, string][] = [
   ["#00e5ff", "#2979ff"], // cyan → blue
@@ -16,27 +17,6 @@ export const ACCENT_PAIRS: [string, string][] = [
   ["#8b5cf6", "#6366f1"], // purple → indigo
   ["#ec4899", "#a855f7"], // pink → purple
 ];
-
-const INTERVAL_MS = 3200;
-
-let sharedIndex = 0;
-let timer: ReturnType<typeof setInterval> | null = null;
-const listeners = new Set<(i: number) => void>();
-
-function ensureTimer() {
-  if (timer || typeof window === "undefined") return;
-  timer = setInterval(() => {
-    sharedIndex = (sharedIndex + 1) % ACCENT_PAIRS.length;
-    listeners.forEach((fn) => fn(sharedIndex));
-  }, INTERVAL_MS);
-}
-
-function maybeStopTimer() {
-  if (listeners.size === 0 && timer) {
-    clearInterval(timer);
-    timer = null;
-  }
-}
 
 export interface AccentCycle {
   accent: string;
@@ -47,18 +27,17 @@ export interface AccentCycle {
 }
 
 export function useAccentCycle(): AccentCycle {
-  const [index, setIndex] = useState(sharedIndex);
+  // Random starting color so sections don't begin in lockstep
+  const startRef = useRef(Math.floor(Math.random() * ACCENT_PAIRS.length));
+  // Slightly varied interval (2.8s–3.8s) so they drift independently
+  const intervalRef = useRef(2800 + Math.floor(Math.random() * 1000));
+  const [index, setIndex] = useState(startRef.current);
 
   useEffect(() => {
-    const listener = (i: number) => setIndex(i);
-    listeners.add(listener);
-    ensureTimer();
-    // Sync immediately in case timer already advanced
-    setIndex(sharedIndex);
-    return () => {
-      listeners.delete(listener);
-      maybeStopTimer();
-    };
+    const id = setInterval(() => {
+      setIndex((p) => (p + 1) % ACCENT_PAIRS.length);
+    }, intervalRef.current);
+    return () => clearInterval(id);
   }, []);
 
   const [accent, accent2] = ACCENT_PAIRS[index];
