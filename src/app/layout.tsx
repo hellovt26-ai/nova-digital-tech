@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { I18nProvider } from "@/lib/i18n";
 
@@ -87,6 +88,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <I18nProvider>{children}</I18nProvider>
+        {/* Vercel Analytics — page views & visitor monitoring */}
+        <Analytics />
         {/* Google Analytics — loaded after page is interactive */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-R73YNG7X22"
