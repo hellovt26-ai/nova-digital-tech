@@ -12,8 +12,8 @@ const config: Config = {
         nova: {
           cyan: "#00e5ff",
           blue: "#2979ff",
-          dark: "#0a0a0f",
-          card: "#111119",
+          dark: "#14141d",
+          card: "#1b1b26",
           border: "rgba(255,255,255,0.08)",
         },
       },

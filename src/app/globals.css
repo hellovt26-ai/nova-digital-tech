@@ -16,7 +16,7 @@ html {
 }
 
 body {
-  background: #0a0a0f;
+  background: #14141d;
   color: #ffffff;
   font-family: var(--font-inter), system-ui, sans-serif;
   overflow-x: hidden;
@@ -50,7 +50,7 @@ select::-ms-expand {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: #14141d;
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 229, 255, 0.3);

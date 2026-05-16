@@ -4,7 +4,7 @@
   "description": "Premium websites, mobile apps, booking systems, and AI automation for small businesses.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0f",
+  "background_color": "#14141d",
   "theme_color": "#0088ff",
   "icons": [
     {
