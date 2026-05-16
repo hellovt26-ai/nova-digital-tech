@@ -238,7 +238,7 @@ function CollabScene() {
 
 export default function FounderStudio() {
   const { t } = useI18n();
-  const { accent, accent2, transition: ct } = useAccentCycle();
+  const { accent } = useAccentCycle();
 
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden">
@@ -302,13 +302,7 @@ export default function FounderStudio() {
               >
                 <div
                   className="text-2xl font-bold"
-                  style={{
-                    background: `linear-gradient(135deg, ${accent}, ${accent2})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    transition: ct,
-                  }}
+                  style={{ color: accent, transition: "color 1s ease" }}
                 >
                   100%
                 </div>

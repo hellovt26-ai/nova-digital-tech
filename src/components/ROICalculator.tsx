@@ -190,15 +190,7 @@ export default function ROICalculator() {
           </span>
           <h2 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
             See What NOVA Can{" "}
-            <span
-              style={{
-                background: `linear-gradient(135deg, ${accent}, ${accent2})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                transition: ct,
-              }}
-            >
+            <span style={{ color: accent, transition: "color 1s ease" }}>
               Earn You
             </span>
           </h2>
@@ -311,13 +303,7 @@ export default function ROICalculator() {
               <div className="mt-1 flex items-baseline gap-2">
                 <p
                   className="text-3xl sm:text-4xl lg:text-5xl font-bold tabular-nums"
-                  style={{
-                    background: `linear-gradient(135deg, ${accent}, ${accent2})`,
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    transition: ct,
-                  }}
+                  style={{ color: accent, transition: "color 1s ease" }}
                 >
                   <AnimatedNumber value={results.totalAnnualImpact} prefix="$" />
                 </p>
