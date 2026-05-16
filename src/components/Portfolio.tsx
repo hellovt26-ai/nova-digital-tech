@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Scissors,
@@ -303,8 +304,30 @@ function RestaurantProject() {
   );
 }
 
+const CLEAN_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+const CLEAN_TIMES = ["9:00 AM", "11:00 AM", "2:00 PM"];
+
 function CleaningProject() {
   const { accent, accent2, transition: ct } = useAccentCycle();
+  // Live scheduling demo — auto-cycles the selected date & time
+  const [dateIdx, setDateIdx] = useState(2);
+  const [timeIdx, setTimeIdx] = useState(1);
+
+  useEffect(() => {
+    const dt = setInterval(
+      () => setDateIdx((p) => (p + 1) % CLEAN_DAYS.length),
+      2400
+    );
+    const tt = setInterval(
+      () => setTimeIdx((p) => (p + 1) % CLEAN_TIMES.length),
+      3100
+    );
+    return () => {
+      clearInterval(dt);
+      clearInterval(tt);
+    };
+  }, []);
+
   return (
     <LaptopMockup>
       <div className="p-4">
@@ -392,38 +415,52 @@ function CleaningProject() {
           <div className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
             <p className="text-[10px] font-medium text-gray-400 mb-2">Select Date</p>
             <div className="grid grid-cols-5 gap-1">
-              {["Mon", "Tue", "Wed", "Thu", "Fri"].map((d, i) => (
-                <div
-                  key={d}
-                  className={`text-center py-1.5 rounded text-[8px] ${i === 2 ? "font-medium" : "bg-white/5 text-gray-500"}`}
-                  style={
-                    i === 2
-                      ? { background: `${accent}33`, color: accent, transition: ct }
-                      : undefined
-                  }
-                >
-                  <p>{d}</p>
-                  <p className="font-semibold">{12 + i}</p>
-                </div>
-              ))}
+              {CLEAN_DAYS.map((d, i) => {
+                const sel = i === dateIdx;
+                return (
+                  <div
+                    key={d}
+                    className={`text-center py-1.5 rounded text-[8px] ${sel ? "font-medium" : "bg-white/5 text-gray-500"}`}
+                    style={
+                      sel
+                        ? {
+                            background: `${accent}33`,
+                            color: accent,
+                            transition: "background 0.3s ease, color 0.3s ease",
+                          }
+                        : { transition: "background 0.3s ease" }
+                    }
+                  >
+                    <p>{d}</p>
+                    <p className="font-semibold">{12 + i}</p>
+                  </div>
+                );
+              })}
             </div>
           </div>
           <div className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
             <p className="text-[10px] font-medium text-gray-400 mb-2">Time Slots</p>
             <div className="space-y-1">
-              {["9:00 AM", "11:00 AM", "2:00 PM"].map((time, i) => (
-                <div
-                  key={time}
-                  className={`px-2 py-1.5 rounded text-[9px] text-center ${i === 1 ? "" : "bg-white/5 text-gray-500"}`}
-                  style={
-                    i === 1
-                      ? { background: `${accent}33`, color: accent, transition: ct }
-                      : undefined
-                  }
-                >
-                  {time}
-                </div>
-              ))}
+              {CLEAN_TIMES.map((time, i) => {
+                const sel = i === timeIdx;
+                return (
+                  <div
+                    key={time}
+                    className={`px-2 py-1.5 rounded text-[9px] text-center ${sel ? "" : "bg-white/5 text-gray-500"}`}
+                    style={
+                      sel
+                        ? {
+                            background: `${accent}33`,
+                            color: accent,
+                            transition: "background 0.3s ease, color 0.3s ease",
+                          }
+                        : { transition: "background 0.3s ease" }
+                    }
+                  >
+                    {time}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -437,7 +474,10 @@ function CleaningProject() {
           }}
         >
           <div>
-            <p className="text-[10px] text-gray-400">Deep Clean — Wed, Jan 14</p>
+            <p className="text-[10px] text-gray-400">
+              Deep Clean — {CLEAN_DAYS[dateIdx]}, Jan {12 + dateIdx} ·{" "}
+              {CLEAN_TIMES[timeIdx]}
+            </p>
             <p className="text-sm font-bold text-white">$220.00</p>
           </div>
           <button
