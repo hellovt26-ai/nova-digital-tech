@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick, playHover } from "@/lib/sounds";
+import { useAccentCycle } from "@/lib/useAccentCycle";
 
 function PhoneMockup({ children }: { children: React.ReactNode }) {
   return (
@@ -125,13 +126,23 @@ function BarberProject() {
 }
 
 function RestaurantProject() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <LaptopMockup>
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-orange-500/30 to-red-500/30 flex items-center justify-center">
-              <UtensilsCrossed className="w-3.5 h-3.5 text-orange-400" />
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${accent}4d, ${accent2}4d)`,
+                transition: ct,
+              }}
+            >
+              <UtensilsCrossed
+                className="w-3.5 h-3.5"
+                style={{ color: accent, transition: ct }}
+              />
             </div>
             <div>
               <p className="text-xs font-semibold text-white">Bella Cucina</p>
@@ -148,16 +159,38 @@ function RestaurantProject() {
           </div>
           <div className="relative">
             <ShoppingCart className="w-4 h-4 text-gray-400" />
-            <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 flex items-center justify-center text-[6px] font-bold text-white">3</div>
+            <div
+              className="absolute -top-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[6px] font-bold text-white"
+              style={{ background: accent, transition: ct }}
+            >
+              3
+            </div>
           </div>
         </div>
 
-        <div className="rounded-xl bg-gradient-to-r from-orange-500/10 to-red-500/5 border border-orange-500/10 p-4 mb-4">
+        <div
+          className="rounded-xl border p-4 mb-4"
+          style={{
+            background: `linear-gradient(90deg, ${accent}1a, ${accent2}0d)`,
+            borderColor: `${accent}1a`,
+            transition: ct,
+          }}
+        >
           <p className="text-sm font-semibold text-white mb-1">Order Online</p>
           <p className="text-[10px] text-gray-400 mb-3">Fresh Italian cuisine delivered to your door</p>
           <div className="flex gap-2">
             {["Popular", "Pizza", "Pasta", "Salads", "Desserts"].map((cat, i) => (
-              <span key={cat} className={`px-2.5 py-1 rounded-full text-[8px] font-medium ${i === 0 ? "bg-orange-500/20 text-orange-400" : "bg-white/5 text-gray-500"}`}>{cat}</span>
+              <span
+                key={cat}
+                className={`px-2.5 py-1 rounded-full text-[8px] font-medium ${i === 0 ? "" : "bg-white/5 text-gray-500"}`}
+                style={
+                  i === 0
+                    ? { background: `${accent}33`, color: accent, transition: ct }
+                    : undefined
+                }
+              >
+                {cat}
+              </span>
             ))}
           </div>
         </div>
@@ -170,24 +203,50 @@ function RestaurantProject() {
             { name: "Tiramisu", price: "$9.99", time: "5 min" },
           ].map((item) => (
             <div key={item.name} className="rounded-lg bg-white/[0.03] border border-white/5 p-3">
-              <div className="w-full h-12 rounded-md bg-gradient-to-br from-orange-500/10 to-red-500/5 flex items-center justify-center mb-2">
-                <UtensilsCrossed className="w-4 h-4 text-orange-400/40" />
+              <div
+                className="w-full h-12 rounded-md flex items-center justify-center mb-2"
+                style={{
+                  background: `linear-gradient(135deg, ${accent}1a, ${accent2}0d)`,
+                  transition: ct,
+                }}
+              >
+                <UtensilsCrossed
+                  className="w-4 h-4"
+                  style={{ color: `${accent}66`, transition: ct }}
+                />
               </div>
               <p className="text-[10px] font-medium text-white">{item.name}</p>
               <div className="flex items-center justify-between mt-1">
-                <span className="text-[10px] font-semibold text-orange-400">{item.price}</span>
+                <span
+                  className="text-[10px] font-semibold"
+                  style={{ color: accent, transition: ct }}
+                >
+                  {item.price}
+                </span>
                 <span className="text-[8px] text-gray-600"><Clock className="w-2 h-2 inline mr-0.5" />{item.time}</span>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="rounded-lg bg-gradient-to-r from-orange-500/10 to-transparent border border-orange-500/10 p-3 flex items-center justify-between">
+        <div
+          className="rounded-lg border p-3 flex items-center justify-between"
+          style={{
+            background: `linear-gradient(90deg, ${accent}1a, transparent)`,
+            borderColor: `${accent}1a`,
+            transition: ct,
+          }}
+        >
           <div>
             <p className="text-[10px] text-gray-400">Cart Total (3 items)</p>
             <p className="text-sm font-bold text-white">$45.97</p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-orange-500 text-[10px] font-semibold text-white">Checkout</button>
+          <button
+            className="px-4 py-2 rounded-lg text-[10px] font-semibold text-white"
+            style={{ background: accent, transition: ct }}
+          >
+            Checkout
+          </button>
         </div>
       </div>
     </LaptopMockup>
@@ -195,13 +254,23 @@ function RestaurantProject() {
 }
 
 function CleaningProject() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <LaptopMockup>
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500/30 to-cyan-500/30 flex items-center justify-center">
-              <SprayCan className="w-3.5 h-3.5 text-emerald-400" />
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{
+                background: `linear-gradient(135deg, ${accent}4d, ${accent2}4d)`,
+                transition: ct,
+              }}
+            >
+              <SprayCan
+                className="w-3.5 h-3.5"
+                style={{ color: accent, transition: ct }}
+              />
             </div>
             <p className="text-xs font-semibold text-white">CleanPro Services</p>
           </div>
@@ -213,7 +282,14 @@ function CleaningProject() {
           </div>
         </div>
 
-        <div className="rounded-xl bg-gradient-to-r from-emerald-500/10 to-cyan-500/5 border border-emerald-500/10 p-4 mb-4">
+        <div
+          className="rounded-xl border p-4 mb-4"
+          style={{
+            background: `linear-gradient(90deg, ${accent}1a, ${accent2}0d)`,
+            borderColor: `${accent}1a`,
+            transition: ct,
+          }}
+        >
           <p className="text-sm font-semibold text-white mb-1">Book Your Clean</p>
           <p className="text-[10px] text-gray-400 mb-3">Professional cleaning, hassle-free scheduling</p>
           <div className="grid grid-cols-3 gap-2">
@@ -221,13 +297,44 @@ function CleaningProject() {
               { name: "Standard", price: "$120", icon: Home },
               { name: "Deep Clean", price: "$220", icon: SprayCan },
               { name: "Move-In/Out", price: "$350", icon: MapPin },
-            ].map((pkg) => (
-              <div key={pkg.name} className={`rounded-lg p-2.5 text-center border ${pkg.name === "Deep Clean" ? "bg-emerald-500/10 border-emerald-500/20" : "bg-white/[0.03] border-white/5"}`}>
-                <pkg.icon className={`w-4 h-4 mx-auto mb-1 ${pkg.name === "Deep Clean" ? "text-emerald-400" : "text-gray-500"}`} />
-                <p className="text-[9px] font-medium text-white">{pkg.name}</p>
-                <p className={`text-[10px] font-semibold ${pkg.name === "Deep Clean" ? "text-emerald-400" : "text-gray-400"}`}>{pkg.price}</p>
-              </div>
-            ))}
+            ].map((pkg) => {
+              const active = pkg.name === "Deep Clean";
+              return (
+                <div
+                  key={pkg.name}
+                  className={`rounded-lg p-2.5 text-center border ${active ? "" : "bg-white/[0.03] border-white/5"}`}
+                  style={
+                    active
+                      ? {
+                          background: `${accent}1a`,
+                          borderColor: `${accent}33`,
+                          transition: ct,
+                        }
+                      : undefined
+                  }
+                >
+                  <pkg.icon
+                    className="w-4 h-4 mx-auto mb-1"
+                    style={
+                      active
+                        ? { color: accent, transition: ct }
+                        : { color: "#6b7280" }
+                    }
+                  />
+                  <p className="text-[9px] font-medium text-white">{pkg.name}</p>
+                  <p
+                    className="text-[10px] font-semibold"
+                    style={
+                      active
+                        ? { color: accent, transition: ct }
+                        : { color: "#9ca3af" }
+                    }
+                  >
+                    {pkg.price}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -236,7 +343,15 @@ function CleaningProject() {
             <p className="text-[10px] font-medium text-gray-400 mb-2">Select Date</p>
             <div className="grid grid-cols-5 gap-1">
               {["Mon", "Tue", "Wed", "Thu", "Fri"].map((d, i) => (
-                <div key={d} className={`text-center py-1.5 rounded text-[8px] ${i === 2 ? "bg-emerald-500/20 text-emerald-400 font-medium" : "bg-white/5 text-gray-500"}`}>
+                <div
+                  key={d}
+                  className={`text-center py-1.5 rounded text-[8px] ${i === 2 ? "font-medium" : "bg-white/5 text-gray-500"}`}
+                  style={
+                    i === 2
+                      ? { background: `${accent}33`, color: accent, transition: ct }
+                      : undefined
+                  }
+                >
                   <p>{d}</p>
                   <p className="font-semibold">{12 + i}</p>
                 </div>
@@ -247,18 +362,40 @@ function CleaningProject() {
             <p className="text-[10px] font-medium text-gray-400 mb-2">Time Slots</p>
             <div className="space-y-1">
               {["9:00 AM", "11:00 AM", "2:00 PM"].map((time, i) => (
-                <div key={time} className={`px-2 py-1.5 rounded text-[9px] text-center ${i === 1 ? "bg-emerald-500/20 text-emerald-400" : "bg-white/5 text-gray-500"}`}>{time}</div>
+                <div
+                  key={time}
+                  className={`px-2 py-1.5 rounded text-[9px] text-center ${i === 1 ? "" : "bg-white/5 text-gray-500"}`}
+                  style={
+                    i === 1
+                      ? { background: `${accent}33`, color: accent, transition: ct }
+                      : undefined
+                  }
+                >
+                  {time}
+                </div>
               ))}
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/10 p-3 flex items-center justify-between">
+        <div
+          className="rounded-lg border p-3 flex items-center justify-between"
+          style={{
+            background: `linear-gradient(90deg, ${accent}1a, transparent)`,
+            borderColor: `${accent}1a`,
+            transition: ct,
+          }}
+        >
           <div>
             <p className="text-[10px] text-gray-400">Deep Clean — Wed, Jan 14</p>
             <p className="text-sm font-bold text-white">$220.00</p>
           </div>
-          <button className="px-4 py-2 rounded-lg bg-emerald-500 text-[10px] font-semibold text-white">Confirm Booking</button>
+          <button
+            className="px-4 py-2 rounded-lg text-[10px] font-semibold text-white"
+            style={{ background: accent, transition: ct }}
+          >
+            Confirm Booking
+          </button>
         </div>
       </div>
     </LaptopMockup>
