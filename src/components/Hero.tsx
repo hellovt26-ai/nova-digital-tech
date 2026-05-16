@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   Smartphone,
@@ -18,30 +17,11 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
-
-// Same palette the AI Receptionist demo cycles through
-const COLOR_PAIRS = [
-  ["#00e5ff", "#2979ff"],
-  ["#f59e0b", "#ef4444"],
-  ["#10b981", "#06b6d4"],
-  ["#8b5cf6", "#6366f1"],
-  ["#ec4899", "#a855f7"],
-];
+import { useAccentCycle } from "@/lib/useAccentCycle";
 
 export default function Hero() {
   const { t } = useI18n();
-
-  // Cycle accent colors for the dashboard mockup
-  const [colorIdx, setColorIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(
-      () => setColorIdx((p) => (p + 1) % COLOR_PAIRS.length),
-      3200
-    );
-    return () => clearInterval(id);
-  }, []);
-  const [accent, accent2] = COLOR_PAIRS[colorIdx];
-  const colorTransition = "background 1s ease, box-shadow 1s ease, color 1s ease, border-color 1s ease";
+  const { accent, accent2, transition: colorTransition } = useAccentCycle();
 
   const trustBadges = [
     { icon: Rocket, label: t("hero.trustBadges.fastDelivery") },

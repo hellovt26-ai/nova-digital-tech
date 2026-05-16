@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useI18n } from "@/lib/i18n";
+import { useAccentCycle } from "@/lib/useAccentCycle";
 import {
   Calendar,
   Clock,
@@ -24,10 +25,17 @@ import {
 } from "lucide-react";
 
 function BarberBookingMockup() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <div className="w-full max-w-[280px] mx-auto">
       <div className="rounded-[2rem] glass-strong border border-white/10 overflow-hidden shadow-2xl shadow-black/50">
-        <div className="bg-gradient-to-b from-nova-cyan/10 to-transparent p-4 pt-8">
+        <div
+          className="p-4 pt-8"
+          style={{
+            background: `linear-gradient(to bottom, ${accent}1a, transparent)`,
+            transition: ct,
+          }}
+        >
           <div className="flex items-center justify-between mb-6">
             <div>
               <p className="text-[10px] text-gray-500">Good Morning</p>
@@ -37,7 +45,7 @@ function BarberBookingMockup() {
           </div>
           <div className="rounded-xl bg-white/5 border border-white/5 p-3 mb-3">
             <div className="flex items-center gap-2 mb-2">
-              <Scissors className="w-3.5 h-3.5 text-nova-cyan" />
+              <Scissors className="w-3.5 h-3.5" style={{ color: accent, transition: ct }} />
               <span className="text-xs font-medium text-white">Next Appointment</span>
             </div>
             <div className="flex items-center justify-between">
@@ -67,10 +75,25 @@ function BarberBookingMockup() {
                   <span className="text-[9px] text-gray-500">{barber.rating}</span>
                 </div>
               </div>
-              <span className={`text-[9px] font-medium ${barber.avail ? "text-nova-cyan" : "text-gray-600"}`}>{barber.time}</span>
+              <span
+                className="text-[9px] font-medium"
+                style={
+                  barber.avail
+                    ? { color: accent, transition: ct }
+                    : { color: "#4b5563" }
+                }
+              >
+                {barber.time}
+              </span>
             </div>
           ))}
-          <button className="w-full mt-2 py-2.5 rounded-xl bg-gradient-to-r from-nova-cyan to-nova-blue text-[11px] font-semibold text-black">
+          <button
+            className="w-full mt-2 py-2.5 rounded-xl text-[11px] font-semibold text-black"
+            style={{
+              background: `linear-gradient(90deg, ${accent}, ${accent2})`,
+              transition: ct,
+            }}
+          >
             Book Now
           </button>
         </div>
@@ -133,6 +156,7 @@ function RestaurantOrderMockup() {
 }
 
 function DashboardMockup() {
+  const { accent, accent2, transition: ct } = useAccentCycle();
   return (
     <div className="w-full rounded-2xl glass-strong border border-white/10 overflow-hidden shadow-2xl shadow-black/50">
       <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
@@ -163,11 +187,22 @@ function DashboardMockup() {
           <div className="col-span-2 rounded-lg bg-white/[0.03] border border-white/5 p-3">
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-medium text-gray-400">Revenue Overview</span>
-              <BarChart3 className="w-3.5 h-3.5 text-nova-cyan/50" />
+              <BarChart3
+                className="w-3.5 h-3.5"
+                style={{ color: `${accent}80`, transition: ct }}
+              />
             </div>
             <div className="flex items-end gap-1 h-16">
               {[35, 55, 40, 70, 60, 85, 75, 90, 65, 80, 95, 88].map((h, i) => (
-                <div key={i} className="flex-1 rounded-t bg-gradient-to-t from-nova-cyan/40 to-nova-blue/20" style={{ height: `${h}%` }} />
+                <div
+                  key={i}
+                  className="flex-1 rounded-t"
+                  style={{
+                    height: `${h}%`,
+                    background: `linear-gradient(to top, ${accent}66, ${accent2}33)`,
+                    transition: ct,
+                  }}
+                />
               ))}
             </div>
           </div>

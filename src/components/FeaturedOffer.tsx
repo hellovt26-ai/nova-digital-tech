@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { playClick } from "@/lib/sounds";
+import { useAccentCycle } from "@/lib/useAccentCycle";
 
 const features = [
   { icon: Globe, key: 0 },
@@ -24,6 +25,7 @@ const features = [
 
 export default function FeaturedOffer() {
   const { t } = useI18n();
+  const { accent, accent2, transition: ct } = useAccentCycle();
 
   return (
     <section className="relative py-24 lg:py-32 overflow-hidden">
@@ -95,7 +97,13 @@ export default function FeaturedOffer() {
             transition={{ duration: 0.7 }}
             className="relative"
           >
-            <div className="rounded-2xl glass-strong p-6 glow-cyan">
+            <div
+              className="rounded-2xl glass-strong p-6"
+              style={{
+                boxShadow: `0 0 30px ${accent}26, 0 0 60px ${accent}0d`,
+                transition: ct,
+              }}
+            >
               <div className="flex items-center gap-2 mb-5">
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
@@ -106,12 +114,24 @@ export default function FeaturedOffer() {
               </div>
 
               <div className="space-y-3">
-                <div className="rounded-xl bg-gradient-to-br from-nova-cyan/10 to-nova-blue/5 border border-white/5 p-4">
+                <div
+                  className="rounded-xl border border-white/5 p-4"
+                  style={{
+                    background: `linear-gradient(135deg, ${accent}1a, ${accent2}0d)`,
+                    transition: ct,
+                  }}
+                >
                   <div className="h-3 w-2/3 bg-white/15 rounded mb-2" />
                   <div className="h-2 w-full bg-white/5 rounded mb-1" />
                   <div className="h-2 w-4/5 bg-white/5 rounded" />
                   <div className="mt-3 flex gap-2">
-                    <div className="h-7 px-4 rounded-lg bg-gradient-to-r from-nova-cyan/30 to-nova-blue/30 flex items-center">
+                    <div
+                      className="h-7 px-4 rounded-lg flex items-center"
+                      style={{
+                        background: `linear-gradient(90deg, ${accent}4d, ${accent2}4d)`,
+                        transition: ct,
+                      }}
+                    >
                       <span className="text-[9px] text-white/60">Book Now</span>
                     </div>
                     <div className="h-7 px-4 rounded-lg bg-white/5 flex items-center">
@@ -132,7 +152,10 @@ export default function FeaturedOffer() {
                       transition={{ duration: 2, delay: i * 0.3, repeat: Infinity, ease: "easeInOut" }}
                       className="rounded-lg bg-white/[0.03] border border-white/5 p-3 text-center"
                     >
-                      <item.icon className="w-4 h-4 text-nova-cyan/50 mx-auto mb-1" />
+                      <item.icon
+                        className="w-4 h-4 mx-auto mb-1"
+                        style={{ color: `${accent}80`, transition: ct }}
+                      />
                       <span className="text-[9px] text-gray-500">{item.label}</span>
                     </motion.div>
                   ))}
@@ -148,18 +171,28 @@ export default function FeaturedOffer() {
                     </div>
                   </div>
                   <div className="grid grid-cols-7 gap-1">
-                    {Array.from({ length: 14 }).map((_, i) => (
-                      <div
-                        key={i}
-                        className={`h-4 rounded text-[7px] flex items-center justify-center ${
-                          [3, 5, 8, 11].includes(i)
-                            ? "bg-nova-cyan/20 text-nova-cyan/60"
-                            : "bg-white/5 text-gray-700"
-                        }`}
-                      >
-                        {i + 1}
-                      </div>
-                    ))}
+                    {Array.from({ length: 14 }).map((_, i) => {
+                      const hot = [3, 5, 8, 11].includes(i);
+                      return (
+                        <div
+                          key={i}
+                          className={`h-4 rounded text-[7px] flex items-center justify-center ${
+                            hot ? "" : "bg-white/5 text-gray-700"
+                          }`}
+                          style={
+                            hot
+                              ? {
+                                  background: `${accent}33`,
+                                  color: `${accent}99`,
+                                  transition: ct,
+                                }
+                              : undefined
+                          }
+                        >
+                          {i + 1}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -168,7 +201,11 @@ export default function FeaturedOffer() {
             <motion.div
               animate={{ y: [-6, 6, -6] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 top-12 rounded-xl glass-strong p-3 glow-blue"
+              className="absolute -right-4 top-12 rounded-xl glass-strong p-3"
+              style={{
+                boxShadow: `0 0 30px ${accent2}26, 0 0 60px ${accent2}0d`,
+                transition: ct,
+              }}
             >
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-full bg-emerald-500/15 flex items-center justify-center">
