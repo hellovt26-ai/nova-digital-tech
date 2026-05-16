@@ -306,32 +306,47 @@ function RestaurantProject() {
 
 const CLEAN_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const CLEAN_TIMES = ["9:00 AM", "11:00 AM", "2:00 PM"];
+const SEL_DATE = 2; // Wed 14
+const SEL_TIME = 1; // 11:00 AM
+
+// Full booking journey: 0 idle → 1 service → 2 date → 3 time → 4 confirm → 5 done
+const STEP_DURATIONS = [900, 1500, 1500, 1500, 850, 2900];
+const STEP_LABELS = [
+  "Choose your service",
+  "Pick a date",
+  "Select a time",
+  "Review your booking",
+  "Confirming…",
+  "All done!",
+];
 
 function CleaningProject() {
   const { accent, accent2, transition: ct } = useAccentCycle();
-  // Live scheduling demo — auto-cycles the selected date & time
-  const [dateIdx, setDateIdx] = useState(2);
-  const [timeIdx, setTimeIdx] = useState(1);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    const dt = setInterval(
-      () => setDateIdx((p) => (p + 1) % CLEAN_DAYS.length),
-      2400
+    const id = setTimeout(
+      () => setStep((p) => (p + 1) % STEP_DURATIONS.length),
+      STEP_DURATIONS[step]
     );
-    const tt = setInterval(
-      () => setTimeIdx((p) => (p + 1) % CLEAN_TIMES.length),
-      3100
-    );
-    return () => {
-      clearInterval(dt);
-      clearInterval(tt);
-    };
-  }, []);
+    return () => clearTimeout(id);
+  }, [step]);
+
+  const pkgChosen = step >= 1;
+  const dateChosen = step >= 2;
+  const timeChosen = step >= 3;
+  const confirming = step === 4;
+  const done = step === 5;
+
+  const stepTransition = "background 0.35s ease, color 0.35s ease, border-color 0.35s ease";
+  // Progress: 4 visible stages (service, date, time, confirm)
+  const progress = Math.min(step, 4);
 
   return (
     <LaptopMockup>
-      <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
+      <div className="relative p-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div
               className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -355,8 +370,35 @@ function CleaningProject() {
           </div>
         </div>
 
+        {/* Step progress bar */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 flex gap-1">
+            {[0, 1, 2, 3].map((s) => (
+              <div
+                key={s}
+                className="h-1 flex-1 rounded-full overflow-hidden bg-white/10"
+              >
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: progress > s ? "100%" : progress === s ? "50%" : "0%",
+                    background: accent,
+                    transition: "width 0.5s ease, background 1s ease",
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <span
+            className="text-[9px] font-medium whitespace-nowrap"
+            style={{ color: accent, transition: ct }}
+          >
+            {STEP_LABELS[step]}
+          </span>
+        </div>
+
         <div
-          className="rounded-xl border p-4 mb-4"
+          className="rounded-xl border p-4 mb-3"
           style={{
             background: `linear-gradient(90deg, ${accent}1a, ${accent2}0d)`,
             borderColor: `${accent}1a`,
@@ -371,26 +413,31 @@ function CleaningProject() {
               { name: "Deep Clean", price: "$220", icon: SprayCan },
               { name: "Move-In/Out", price: "$350", icon: MapPin },
             ].map((pkg) => {
-              const active = pkg.name === "Deep Clean";
+              const active = pkg.name === "Deep Clean" && pkgChosen;
               return (
                 <div
                   key={pkg.name}
-                  className={`rounded-lg p-2.5 text-center border ${active ? "" : "bg-white/[0.03] border-white/5"}`}
+                  className="rounded-lg p-2.5 text-center border"
                   style={
                     active
                       ? {
-                          background: `${accent}1a`,
-                          borderColor: `${accent}33`,
-                          transition: ct,
+                          background: `${accent}1f`,
+                          borderColor: `${accent}55`,
+                          transition: stepTransition,
+                          transform: "scale(1.04)",
                         }
-                      : undefined
+                      : {
+                          background: "rgba(255,255,255,0.03)",
+                          borderColor: "rgba(255,255,255,0.05)",
+                          transition: stepTransition,
+                        }
                   }
                 >
                   <pkg.icon
                     className="w-4 h-4 mx-auto mb-1"
                     style={
                       active
-                        ? { color: accent, transition: ct }
+                        ? { color: accent, transition: stepTransition }
                         : { color: "#6b7280" }
                     }
                   />
@@ -399,7 +446,7 @@ function CleaningProject() {
                     className="text-[10px] font-semibold"
                     style={
                       active
-                        ? { color: accent, transition: ct }
+                        ? { color: accent, transition: stepTransition }
                         : { color: "#9ca3af" }
                     }
                   >
@@ -416,19 +463,23 @@ function CleaningProject() {
             <p className="text-[10px] font-medium text-gray-400 mb-2">Select Date</p>
             <div className="grid grid-cols-5 gap-1">
               {CLEAN_DAYS.map((d, i) => {
-                const sel = i === dateIdx;
+                const sel = dateChosen && i === SEL_DATE;
                 return (
                   <div
                     key={d}
-                    className={`text-center py-1.5 rounded text-[8px] ${sel ? "font-medium" : "bg-white/5 text-gray-500"}`}
+                    className="text-center py-1.5 rounded text-[8px]"
                     style={
                       sel
                         ? {
                             background: `${accent}33`,
                             color: accent,
-                            transition: "background 0.3s ease, color 0.3s ease",
+                            transition: stepTransition,
                           }
-                        : { transition: "background 0.3s ease" }
+                        : {
+                            background: "rgba(255,255,255,0.05)",
+                            color: "#6b7280",
+                            transition: stepTransition,
+                          }
                     }
                   >
                     <p>{d}</p>
@@ -442,19 +493,23 @@ function CleaningProject() {
             <p className="text-[10px] font-medium text-gray-400 mb-2">Time Slots</p>
             <div className="space-y-1">
               {CLEAN_TIMES.map((time, i) => {
-                const sel = i === timeIdx;
+                const sel = timeChosen && i === SEL_TIME;
                 return (
                   <div
                     key={time}
-                    className={`px-2 py-1.5 rounded text-[9px] text-center ${sel ? "" : "bg-white/5 text-gray-500"}`}
+                    className="px-2 py-1.5 rounded text-[9px] text-center"
                     style={
                       sel
                         ? {
                             background: `${accent}33`,
                             color: accent,
-                            transition: "background 0.3s ease, color 0.3s ease",
+                            transition: stepTransition,
                           }
-                        : { transition: "background 0.3s ease" }
+                        : {
+                            background: "rgba(255,255,255,0.05)",
+                            color: "#6b7280",
+                            transition: stepTransition,
+                          }
                     }
                   >
                     {time}
@@ -475,18 +530,66 @@ function CleaningProject() {
         >
           <div>
             <p className="text-[10px] text-gray-400">
-              Deep Clean — {CLEAN_DAYS[dateIdx]}, Jan {12 + dateIdx} ·{" "}
-              {CLEAN_TIMES[timeIdx]}
+              {pkgChosen ? "Deep Clean" : "—"}
+              {dateChosen ? ` · Wed, Jan ${12 + SEL_DATE}` : ""}
+              {timeChosen ? ` · ${CLEAN_TIMES[SEL_TIME]}` : ""}
             </p>
-            <p className="text-sm font-bold text-white">$220.00</p>
+            <p className="text-sm font-bold text-white">
+              {pkgChosen ? "$220.00" : "$0.00"}
+            </p>
           </div>
           <button
             className="px-4 py-2 rounded-lg text-[10px] font-semibold text-white"
-            style={{ background: accent, transition: ct }}
+            style={{
+              background: accent,
+              transition: ct,
+              transform: confirming ? "scale(0.92)" : "scale(1)",
+              opacity: timeChosen ? 1 : 0.5,
+            }}
           >
-            Confirm Booking
+            {confirming ? "Booking…" : "Confirm Booking"}
           </button>
         </div>
+
+        {/* Success overlay */}
+        {done && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 flex flex-col items-center justify-center backdrop-blur-sm rounded-xl"
+            style={{ background: "rgba(12,12,20,0.82)" }}
+          >
+            <motion.div
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 18 }}
+              className="w-14 h-14 rounded-full flex items-center justify-center mb-3"
+              style={{
+                background: `linear-gradient(135deg, ${accent}, ${accent2})`,
+                boxShadow: `0 0 30px ${accent}66`,
+                transition: ct,
+              }}
+            >
+              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </motion.div>
+            <p className="text-sm font-bold text-white">Booking Confirmed!</p>
+            <p className="text-[10px] text-gray-400 mt-1">
+              Deep Clean · Wed, Jan {12 + SEL_DATE} · {CLEAN_TIMES[SEL_TIME]}
+            </p>
+            <p
+              className="text-[9px] mt-2 flex items-center gap-1"
+              style={{ color: accent, transition: ct }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full animate-pulse"
+                style={{ background: accent }}
+              />
+              Confirmation sent to customer
+            </p>
+          </motion.div>
+        )}
       </div>
     </LaptopMockup>
   );
