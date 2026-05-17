@@ -19,10 +19,10 @@ export default function Particles() {
     let time = 0;
     let frameCount = 0;
 
-    // Fewer particles, skip frames on mobile
-    const count = isMobile ? 8 : 35;
-    const skipFrames = isMobile ? 2 : 0; // Only render every 3rd frame on mobile
-    const connectionDist = isMobile ? 100 : 140;
+    // Fewer particles + frame-skip everywhere for smooth performance
+    const count = isMobile ? 8 : 20;
+    const skipFrames = isMobile ? 2 : 1; // mobile: every 3rd frame, desktop: every 2nd (~30fps)
+    const connectionDist = isMobile ? 100 : 120;
 
     const particles: {
       x: number; y: number; vx: number; vy: number;
@@ -177,8 +177,13 @@ export default function Particles() {
     }
 
     const animate = () => {
+      // Pause entirely when the tab/window isn't visible
+      if (document.hidden) {
+        animId = requestAnimationFrame(animate);
+        return;
+      }
       frameCount++;
-      // Skip frames on mobile for better performance
+      // Skip frames for better performance
       if (skipFrames > 0 && frameCount % (skipFrames + 1) !== 0) {
         // Still update time for smooth animations when we do render
         time += 0.016;

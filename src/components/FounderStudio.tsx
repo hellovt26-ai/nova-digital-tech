@@ -126,7 +126,11 @@ function CodeScene() {
 
   useEffect(() => {
     if (typed < totalChars) {
-      const id = setTimeout(() => setTyped((p) => p + 1), 38);
+      // Type 2 chars per tick at 60ms — same visual speed, ~half the re-renders
+      const id = setTimeout(
+        () => setTyped((p) => Math.min(p + 2, totalChars)),
+        60
+      );
       return () => clearTimeout(id);
     }
     // Finished — hold, then restart the live demo
