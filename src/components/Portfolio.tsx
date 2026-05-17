@@ -687,11 +687,12 @@ export default function Portfolio() {
         </motion.div>
 
         <motion.div
+          id="featured-app"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.7 }}
-          className="relative rounded-2xl glass-strong border border-nova-cyan/20 glow-cyan overflow-hidden mb-24"
+          className="relative scroll-mt-24 rounded-2xl glass-strong border border-nova-cyan/20 glow-cyan overflow-hidden mb-24"
         >
           <div className="absolute top-4 right-4">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
